@@ -2,8 +2,8 @@ package com.nizlumina.minori.android.data;
 
 import android.content.Context;
 
-import com.nizlumina.minori.android.data.alarma.Alarm;
-import com.nizlumina.minori.android.data.alarma.AlarmFactory;
+import com.nizlumina.minori.android.data.alarm.Alarm;
+import com.nizlumina.minori.android.data.alarm.AlarmFactory;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 

@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.data.alarma;
+package com.nizlumina.minori.android.data.alarm;
 
 import android.support.annotation.NonNull;
 
