@@ -11,7 +11,14 @@ The classes under this package will be moved to its own GitHub repo in the futur
 
 Building
 ------
-Clone the repo via Git and build.
+Clone the repo via Git and build in Android Studio.
+
+OR 
+
+Just use the "Checkout project from Version Control" option when starting Android Studio and in the Vcs Repository Url section, insert the URL:
+https://github.com/nizlumina/Minori.git
+
+and build.
 
 License
 ------
