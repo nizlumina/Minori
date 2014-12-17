@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/gallery_image_width"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gallery_image_height"
+        android:src="@color/rbc_bg_grey_darkness" />
+
+    <TextView
+        android:id="@+id/item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_image"
+        android:gravity="center"
+        android:padding="4dp"
+        android:singleLine="true"
+        android:text="Series" />
+
+    <TextView
+        android:id="@+id/item_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_title"
+        android:gravity="center"
+        android:paddingBottom="4dp"
+        android:singleLine="true"
+        android:text="Doki" />
+
+    <TextView
+        android:id="@+id/item_episode"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:background="?attr/colorPrimary"
+        android:gravity="center"
+        android:minWidth="40dp"
+        android:text="20"
+        android:textSize="18sp" />
+</RelativeLayout>

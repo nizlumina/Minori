@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Minori colors-->
+    <color name="accent_color">@color/light_blue_200</color>
+    <color name="accent_color_shade">@color/light_blue_100</color>
+
+    <color name="primary_color">#AD1457</color>
+    <!--Material Pink 800-->
+    <color name="primary_color_dark">#8D0641</color>
+    <!--Material Pink 900-->
+
+    <color name="primary_color_complement">#D85B92</color>
+    <color name="primary_color_dark_complement">#C33573</color>
+
+    <!--Robomaru Colors-->
+    <color name="rbc_blue_actionbar">#FF1565C0</color>
+    <color name="rbc_blue_actionbar_dark">#FF104C90</color>
+    <color name="rbc_bg_light_grey">#FF424242</color>
+    <color name="rbc_bg_grey">#FF232323</color>
+    <color name="rbc_bg_grey_shade_light">#FF191919</color>
+    <color name="rbc_bg_grey_shade">#FF1A1A1A</color>
+    <color name="rbc_bg_grey_darkness">#FF141414</color>
+    <color name="rbc_divider_grey">#FF2F2F2F</color>
+    <color name="rbc_button_grey">#FF2F2F2F</color>
+    <color name="rbc_divider_light_grey">#FF4A4a4a</color>
+    <color name="rbc_green_lime">#FFB2FF59</color>
+    <color name="rbc_green_shade">#FF1B5E20</color>
+    <color name="rbc_text_red">#FFF06292</color>
+    <color name="rbc_text_red_half">#80F06292</color>
+    <color name="rbc_text_blue">#FF64B5F6</color>
+    <color name="rbc_text_blue_half">#8064B5F6</color>
+    <color name="rbc_text_green">#FFAED581</color>
+    <color name="rbc_text_green_half">#80AED581</color>
+    <color name="rbc_text_purple">#FFA18EE7</color>
+    <color name="rbc_text_purple_half">#80A18EE7</color>
+    <color name="rbc_text_yellow">#FFFFF176</color>
+    <color name="rbc_text_yellow_half">#80FFF176</color>
+    <color name="rbc_text_orange">#FFFFB24F</color>
+    <color name="rbc_text_orange_half">#80FFB24F</color>\
+
+    <!--Basic colors-->
+    <color name="rb_white">#FFFFFF</color>
+    <color name="rb_white_half">#80FFFFFF</color>
+    <color name="rb_black">#000000</color>
+    <color name="rb_black_half">#80000000</color>
+
+    <!--Shadows color-->
+    <color name="shadow_85">#D9000000</color>
+    <color name="shadow_73">#6A000000</color>
+    <color name="shadow_55">#8C000000</color>
+    <color name="shadow_37">#5E000000</color>
+    <color name="shadow_32">#52000000</color>
+    <color name="shadow_25">#40000000</color>
+    <color name="shadow_13">#21000000</color>
+
+</resources>

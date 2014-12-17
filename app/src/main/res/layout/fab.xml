@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/fab_cont"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    android:background="@drawable/selector_fab"
+    android:clickable="true"
+    android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha">
+
+    <ImageView
+        android:id="@+id/fab_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_launcher"
+        android:tint="@color/rb_white" />
+</FrameLayout>

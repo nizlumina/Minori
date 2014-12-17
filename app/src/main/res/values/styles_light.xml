@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="MinoriLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_color_dark</item>
+    </style>
+
+</resources>

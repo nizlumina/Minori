@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FabDark" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:background">@drawable/floating_action_button</item>
+    </style>
+
+    <!--
+        Base standard background: width = 60 dp, height = 62 dp
+        Standard fab 56 dp diff (w, h) = 4 dp, 6dp
+        Mini fab final size (w, h) = 40 + 4 dp, 40 + 6 dp
+    -->
+
+    <style name="FabDark.Standard">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">62dp</item>
+    </style>
+
+
+    <style name="FabDark.Mini">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">46dp</item>
+    </style>
+
+</resources>
