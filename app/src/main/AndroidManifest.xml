@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/MinoriDark">
         <receiver
-            android:name=".android.data.Alarm.AlarmReceiver"
+            android:name=".android.data.alarma.AlarmReceiver"
             android:enabled="true"
             android:exported="true" />
 
@@ -37,7 +37,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".android.activity.BaseActivity"
+            android:name=".android.activity.GalleryActivity"
             android:label="@string/title_activity_gallery">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

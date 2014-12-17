@@ -1,7 +1,7 @@
 package com.nizlumina.minori.android.factory;
 
-import com.nizlumina.minori.android.data.Alarm.Alarm;
 import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.data.alarma.Alarm;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.nizlumina.minori.android.WatchlistSingleton;
-import com.nizlumina.minori.android.data.Alarm.Alarm;
 import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.data.alarma.Alarm;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.factory.IntentFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
