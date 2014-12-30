@@ -13,13 +13,21 @@ Building
 ------
 Clone the repo via Git and build.
 
+OR 
+
+Just use the *"Checkout project from Version Control"* option when starting Android Studio and in the *Vcs Repository Url* section, insert the URL:
+
+https://github.com/nizlumina/Minori.git
+
+and build.
+
 License
 ------
 The MIT License (MIT)
 
 Copyright (c) 2014 Nizlumina Studio (Malaysia)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
+Unless specified, permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
