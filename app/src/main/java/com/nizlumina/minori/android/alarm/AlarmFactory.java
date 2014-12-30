@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.data.alarm;
+package com.nizlumina.minori.android.alarm;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

@@ -2,8 +2,8 @@ package com.nizlumina.minori.android.data;
 
 import android.content.Context;
 
-import com.nizlumina.minori.android.data.alarm.Alarm;
-import com.nizlumina.minori.android.data.alarm.AlarmFactory;
+import com.nizlumina.minori.android.alarm.Alarm;
+import com.nizlumina.minori.android.alarm.AlarmFactory;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 
@@ -82,4 +82,5 @@ public class WatchData
         if (nextDate > 0)
             AlarmFactory.createAlarm(context, this, nextDate);
     }
+
 }

@@ -3,13 +3,14 @@ package com.nizlumina.minori.android.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.nizlumina.minori.R;
 
 public class BaseActivity extends ActionBarActivity
 {
-
+    private FrameLayout contentContainer;
     private Toolbar toolbarMain;
     private ImageButton fabMain;
     private ImageButton fabMini;
@@ -65,6 +66,11 @@ public class BaseActivity extends ActionBarActivity
         return colorPrimaryDarkComplement;
     }
 
+    public FrameLayout getContentContainer()
+    {
+        return contentContainer;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -109,5 +115,7 @@ public class BaseActivity extends ActionBarActivity
             //fabMini.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
             //Util.tintImageButton(fabMini, Color.WHITE, colorPrimaryComplement);
         }
+
+        contentContainer = (FrameLayout) findViewById(R.id.ma_contentview);
     }
 }

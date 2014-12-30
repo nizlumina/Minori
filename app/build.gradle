@@ -27,4 +27,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.+'
     //noinspection GradleDynamicVersion
     compile 'com.afollestad:material-dialogs:0.3.+'
+    //noinspection GradleDynamicVersion
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
 }
