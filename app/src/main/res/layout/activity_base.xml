@@ -4,24 +4,32 @@
     android:layout_height="match_parent"
     tools:context="com.nizlumina.minori.android.activity.BaseActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/ma_toolbar"
+    <!--This part inside is replaceable-->
+    <FrameLayout
+        android:id="@+id/ma_topcontainer"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="0dp" />
+        android:layout_height="?attr/actionBarSize">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/ma_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/colorPrimary"
+            android:elevation="0dp" />
+
+    </FrameLayout>
 
     <!--This part is replaceable-->
     <FrameLayout
         android:id="@+id/ma_contentview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ma_toolbar" />
+        android:layout_below="@id/ma_topcontainer" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:layout_below="@id/ma_toolbar"
+        android:layout_below="@id/ma_topcontainer"
         android:background="@drawable/shadow_linear_bottom" />
 
     <LinearLayout
@@ -29,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/ma_toolbar"
+        android:layout_below="@id/ma_topcontainer"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="-30dp"
         android:orientation="horizontal">

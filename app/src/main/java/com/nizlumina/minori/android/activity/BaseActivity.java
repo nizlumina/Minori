@@ -10,6 +10,7 @@ import com.nizlumina.minori.R;
 
 public class BaseActivity extends ActionBarActivity
 {
+    private FrameLayout topContainer;
     private FrameLayout contentContainer;
     private Toolbar toolbarMain;
     private ImageButton fabMain;
@@ -71,6 +72,11 @@ public class BaseActivity extends ActionBarActivity
         return contentContainer;
     }
 
+    public FrameLayout getTopContainer()
+    {
+        return topContainer;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -102,20 +108,22 @@ public class BaseActivity extends ActionBarActivity
         }
 
         fabMain = (ImageButton) findViewById(R.id.ma_fab_main);
-        if (fabMain != null)
-        {
-            //fabMain.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-            //fabMain.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
-            //Util.tintImageButton(fabMain, Color.GREEN, Color.BLUE);
-        }
+//        if (fabMain != null)
+//        {
+//            //fabMain.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
+//            //fabMain.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+//            //Util.tintImageButton(fabMain, Color.GREEN, Color.BLUE);
+//        }
 
         fabMini = (ImageButton) findViewById(R.id.ma_fab_mini);
-        if (fabMini != null)
-        {
-            //fabMini.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
-            //Util.tintImageButton(fabMini, Color.WHITE, colorPrimaryComplement);
-        }
+//        if (fabMini != null)
+//        {
+//            //fabMini.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
+//            //Util.tintImageButton(fabMini, Color.WHITE, colorPrimaryComplement);
+//        }
 
         contentContainer = (FrameLayout) findViewById(R.id.ma_contentview);
+        topContainer = (FrameLayout) findViewById(R.id.ma_topcontainer);
     }
+
 }

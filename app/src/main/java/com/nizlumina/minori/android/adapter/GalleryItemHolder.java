@@ -18,28 +18,31 @@ import android.widget.TextView;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.data.WatchDataPresenter;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 class GalleryItemHolder
 {
     public TextView title, group, episode;
-    public ImageView coverImage;
+    public ImageView imageContainer;
 
     public GalleryItemHolder(View convertView)
     {
         episode = (TextView) convertView.findViewById(R.id.item_episode);
         group = (TextView) convertView.findViewById(R.id.item_group);
         title = (TextView) convertView.findViewById(R.id.item_title);
-        coverImage = (ImageView) convertView.findViewById(R.id.item_image);
+        imageContainer = (ImageView) convertView.findViewById(R.id.item_image);
     }
 
     public void applySource(WatchDataPresenter watchDataPresenter)
     {
-        episode.setText(watchDataPresenter.getTitle());
+        episode.setText(watchDataPresenter.getEpisode());
         group.setText(watchDataPresenter.getGroup());
         title.setText(watchDataPresenter.getTitle());
 
-        //Try using Universal Image Loader first. Later, will compare with a normal AsyncTask fork
+        //Try using Universal Image Loader first. Later onwards, will compare with a normal AsyncTask fork
 
+        //TODO: Set options
+        ImageLoader.getInstance().displayImage(watchDataPresenter.getCoverImageURI(), imageContainer);
 
     }
 }

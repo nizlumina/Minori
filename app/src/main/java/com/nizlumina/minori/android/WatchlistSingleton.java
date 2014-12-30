@@ -31,6 +31,7 @@ public class WatchlistSingleton
 
     public synchronized ArrayList<WatchData> getDataList()
     {
+        if (dataList == null) dataList = new ArrayList<WatchData>();
         return dataList;
     }
 

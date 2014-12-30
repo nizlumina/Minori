@@ -1,7 +1,6 @@
 package com.nizlumina.minori.android.controller;
 
 import android.content.Context;
-import android.os.Handler;
 
 import com.nizlumina.minori.android.WatchlistSingleton;
 import com.nizlumina.minori.android.alarm.Alarm;
@@ -71,30 +70,19 @@ public class WatchlistController
 
     }
 
-    public void loadData(final Context context, Handler handler)
+    public synchronized void loadDataAsync(final Context context, Callable onFinish)
     {
-        final String fileName = watchlistFileName;
-        try
+        Callable loadTask = new Callable()
         {
-            final FileInputStream inputStream = context.openFileInput(fileName);
-
-            Thread loadingThread = new Thread(new Runnable()
+            @Override
+            public Object call() throws Exception
             {
-                @Override
-                public void run()
-                {
-                    final JSONStorageController controller = new JSONStorageController();
-                    JSONArray jsonArray = controller.loadJSONArray(inputStream);
-                    WatchDataJSONFactory.setFromJSONArray(jsonArray, WatchlistSingleton.getInstance().getDataList());
-                }
-            });
+                forceLoadData(context);
+                return null;
+            }
+        };
 
-            loadingThread.start();
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
+        ThreadController.postman(loadTask, onFinish);
     }
 
     //force initialize watchlist data

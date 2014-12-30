@@ -28,7 +28,7 @@ public class WatchDataPresenter
         mWatchData = watchData;
     }
 
-    public static final ArrayList<WatchDataPresenter> listFrom(List<WatchData> watchDataList)
+    public static ArrayList<WatchDataPresenter> listFrom(List<WatchData> watchDataList)
     {
         ArrayList<WatchDataPresenter> watchDataPresenters = new ArrayList<WatchDataPresenter>();
         for (WatchData watchData : watchDataList)
@@ -48,21 +48,26 @@ public class WatchDataPresenter
 
     public int getID()
     {
-        return mWatchData.getId();
+        return getWatchData().getId();
     }
 
     public String getTitle()
     {
-        return mWatchData.getAnimeObject().title;
+        return getWatchData().getAnimeObject().title;
     }
 
     public String getGroup()
     {
-        return mWatchData.getNyaaEntry().fansub;
+        return getWatchData().getNyaaEntry().fansub;
     }
 
     public String getEpisode()
     {
-        return mWatchData.getNyaaEntry().episodeString;
+        return getWatchData().getNyaaEntry().episodeString;
+    }
+
+    public String getCoverImageURI()
+    {
+        return getWatchData().getAnimeObject().cachedImageURI;
     }
 }
