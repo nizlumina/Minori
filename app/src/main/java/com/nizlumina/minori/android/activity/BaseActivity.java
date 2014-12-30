@@ -1,13 +1,11 @@
 package com.nizlumina.minori.android.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageButton;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.utility.Util;
 
 public class BaseActivity extends ActionBarActivity
 {
@@ -85,9 +83,8 @@ public class BaseActivity extends ActionBarActivity
         colorPrimaryDark = getResources().getColor(R.color.primary_color_dark);
 
         colorPrimaryComplement = getResources().getColor(R.color.primary_color_complement);
-        colorPrimaryComplement = getResources().getColor(R.color.primary_color_dark_complement);
+        colorPrimaryDarkComplement = getResources().getColor(R.color.primary_color_dark_complement);
     }
-
 
     private void setupBaseViews()
     {
@@ -101,15 +98,16 @@ public class BaseActivity extends ActionBarActivity
         fabMain = (ImageButton) findViewById(R.id.ma_fab_main);
         if (fabMain != null)
         {
-            fabMain.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-            Util.tintImageButton(fabMain, Color.WHITE, colorPrimaryComplement);
+            //fabMain.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
+            //fabMain.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_ATOP);
+            //Util.tintImageButton(fabMain, Color.GREEN, Color.BLUE);
         }
 
         fabMini = (ImageButton) findViewById(R.id.ma_fab_mini);
         if (fabMini != null)
         {
-            fabMini.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
-            Util.tintImageButton(fabMini, Color.WHITE, colorPrimaryComplement);
+            //fabMini.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
+            //Util.tintImageButton(fabMini, Color.WHITE, colorPrimaryComplement);
         }
     }
 }

@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="60dp"
     android:layout_height="60dp"
-    android:background="@drawable/selector_fab"
+    android:background="@drawable/shape_fab_base"
     android:clickable="true"
     android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha">
 

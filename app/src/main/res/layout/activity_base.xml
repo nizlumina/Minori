@@ -38,11 +38,13 @@
             android:id="@+id/ma_fab_mini"
             style="@style/FabDark.Mini"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/activity_horizontal_margin" />
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@drawable/shape_fab_base_mini" />
 
         <ImageButton
             android:id="@+id/ma_fab_main"
-            style="@style/FabDark.Standard" />
+            style="@style/FabDark.Standard"
+            android:background="@drawable/shape_fab_base" />
 
     </LinearLayout>
 
