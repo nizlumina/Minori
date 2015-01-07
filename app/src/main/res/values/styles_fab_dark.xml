@@ -14,12 +14,14 @@
     <style name="FabDark.Standard">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/shape_fab_base</item>
     </style>
 
 
     <style name="FabDark.Mini">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/shape_fab_base_mini</item>
     </style>
 
 </resources>

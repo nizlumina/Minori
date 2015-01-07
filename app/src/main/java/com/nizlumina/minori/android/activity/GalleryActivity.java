@@ -1,6 +1,7 @@
 package com.nizlumina.minori.android.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,7 @@ public class GalleryActivity extends BaseActivity
         initImageLoaderLibrary();
 
         setupFabs();
-        setupGridView();
+        setupContent();
 
         WatchlistController controller = new WatchlistController();
         controller.forceLoadData(this); //will change to async later on
@@ -53,10 +54,10 @@ public class GalleryActivity extends BaseActivity
     private void setupFabs()
     {
         getFabMain().setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
-        Util.tintImageButton(getFabMain(), getColorPrimaryDarkComplement(), getColorAccent());
+        Util.tintImageButton(getFabMain(), Color.WHITE, getColorAccent());
 
         getFabMini().setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
-        Util.tintImageButton(getFabMini(), getColorPrimaryDarkComplement(), getColorAccent());
+        Util.tintImageButton(getFabMini(), Color.WHITE, getColorAccent());
 
         getFabMain().setOnClickListener(new View.OnClickListener()
         {
@@ -68,7 +69,7 @@ public class GalleryActivity extends BaseActivity
         });
     }
 
-    private void setupGridView()
+    private void setupContent()
     {
         GridView gridView = (GridView) LayoutInflater.from(this).inflate(R.layout.fragment_gridview, getContentContainer(), false);
         getContentContainer().addView(gridView);

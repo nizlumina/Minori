@@ -58,7 +58,7 @@ public class AddWatchDataFragment extends Fragment
         listView.setAdapter(hmAdapter);
         if (searchTerms != null)
         {
-            ThreadController.postman(new Callable()
+            ThreadController.post(new Callable()
             {
                 @Override
                 public Object call() throws Exception

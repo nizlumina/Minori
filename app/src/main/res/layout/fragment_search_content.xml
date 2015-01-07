@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</ListView>
+    <include
+        layout="@layout/fragment_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+
+    <EditText
+        android:id="@+id/sa_search_text"
+        style="@style/TextColorBase"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/gridview"
+        android:background="?attr/colorPrimary"
+        android:gravity="center"
+        android:hint="Cat Search" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_above="@id/sa_search_text"
+        android:background="@drawable/shadow_linear_top" />
+
+    <ListView
+        android:id="@+id/sa_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/sa_search_text" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@id/sa_search_text"
+        android:background="@drawable/shadow_linear_bottom" />
+
+    <ImageButton
+        android:id="@+id/sa_fab_search"
+        style="@style/FabDark.Standard"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/sa_search_text"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="-30dp" />
+
+
+</RelativeLayout>

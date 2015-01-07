@@ -82,7 +82,7 @@ public class WatchlistController
             }
         };
 
-        ThreadController.postman(loadTask, onFinish);
+        ThreadController.post(loadTask, onFinish);
     }
 
     //force initialize watchlist data
@@ -136,7 +136,7 @@ public class WatchlistController
                     return null;
                 }
             };
-            ThreadController.postman(task, onFinish);
+            ThreadController.post(task, onFinish);
         }
     }
 }
