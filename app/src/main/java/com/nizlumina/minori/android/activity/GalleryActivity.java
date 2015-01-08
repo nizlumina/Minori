@@ -10,7 +10,7 @@ import android.widget.GridView;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.controller.WatchlistController;
-import com.nizlumina.minori.android.data.WatchDataPresenter;
+import com.nizlumina.minori.android.presenter.WatchDataPresenter;
 import com.nizlumina.minori.android.utility.Util;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

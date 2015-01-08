@@ -62,8 +62,20 @@ public class CoreNetworkFactory
         }
     }
 
-    public static synchronized void getAnimeObject(String title)
+    public static synchronized AnimeObject getAnimeObject(String slugOrID)
     {
+        ConnectionUnit unit = new ConnectionUnit();
+        String resultString = unit.getResponseString(CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString());
+        try
+        {
+            JSONObject jsonObject = new JSONObject(resultString);
+            return CoreJSONFactory.animeObjectFromJSON(jsonObject, false);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
 
     }
 }

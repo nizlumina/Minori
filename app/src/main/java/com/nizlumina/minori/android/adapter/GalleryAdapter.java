@@ -2,12 +2,13 @@ package com.nizlumina.minori.android.adapter;
 
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.nizlumina.minori.android.data.WatchDataPresenter;
+import com.nizlumina.minori.android.presenter.WatchDataPresenter;
 
 import java.util.List;
 
@@ -20,15 +21,15 @@ public class GalleryAdapter extends BaseAdapter
     /**
      * Constructor
      *
-     * @param context  The current context.
-     * @param resource The resource ID for a layout file containing a TextView to use when
-     *                 instantiating views.
-     * @param objects  The objects to represent in the ListView.
+     * @param context            The current context.
+     * @param listItemResourceID The listItemResourceID ID for a layout file containing a TextView to use when
+     *                           instantiating views.
+     * @param objects            The objects to represent in the ListView.
      */
-    public GalleryAdapter(Context context, int resource, List<WatchDataPresenter> objects)
+    public GalleryAdapter(Context context, @LayoutRes int listItemResourceID, List<WatchDataPresenter> objects)
     {
         mContext = context;
-        mResource = resource;
+        mResource = listItemResourceID;
         mWatchDatas = objects;
     }
 
@@ -93,7 +94,7 @@ public class GalleryAdapter extends BaseAdapter
         }
         else galleryItemHolder = (GalleryItemHolder) convertView.getTag();
 
-        galleryItemHolder.applySource(mWatchDatas.get(position));
+        galleryItemHolder.applySource(this.mWatchDatas.get(position));
 
         return convertView;
     }

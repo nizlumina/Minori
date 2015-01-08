@@ -10,64 +10,74 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.data;
+package com.nizlumina.minori.android.presenter;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
 /**
- * Wrapper class for displaying base WatchData
+ * Wrapper presenter class for AnimeObject. Use this for displaying any AnimeObject-only data in the UI
  */
-
-public class WatchDataPresenter
+public class AnimeObjectPresenter
 {
-    private WatchData mWatchData;
+    private AnimeObject mAnimeObject;
 
-    public WatchDataPresenter(WatchData watchData)
+    public AnimeObjectPresenter(AnimeObject animeObject)
     {
-        mWatchData = watchData;
+        this.mAnimeObject = animeObject;
     }
-
-    public static ArrayList<WatchDataPresenter> listFrom(List<WatchData> watchDataList)
-    {
-        ArrayList<WatchDataPresenter> watchDataPresenters = new ArrayList<WatchDataPresenter>();
-        for (WatchData watchData : watchDataList)
-        {
-            watchDataPresenters.add(new WatchDataPresenter(watchData));
-        }
-
-        return watchDataPresenters;
-    }
-
-    public synchronized final WatchData getWatchData()
-    {
-        return mWatchData;
-    }
-
-    //Presenter methods - use these for displaying data to users
 
     public int getID()
     {
-        return getWatchData().getId();
+        return mAnimeObject.id;
+    }
+
+    public String getSlug()
+    {
+        return mAnimeObject.slug;
+    }
+
+    public String getStatus()
+    {
+        return mAnimeObject.status;
     }
 
     public String getTitle()
     {
-        return getWatchData().getAnimeObject().title;
+        return mAnimeObject.title;
     }
 
-    public String getGroup()
+    public String getUrl()
     {
-        return getWatchData().getNyaaEntry().fansub;
+        return mAnimeObject.url;
     }
 
-    public String getEpisode()
+    public int getEpisodeCount()
     {
-        return getWatchData().getNyaaEntry().episodeString;
+        return mAnimeObject.episodeCount;
     }
 
-    public String getCoverImageURI()
+    public String getCachedImageURI()
     {
-        return getWatchData().getAnimeObject().cachedImageURI;
+        return mAnimeObject.cachedImageURI;
+    }
+
+    public String getImageUrl()
+    {
+        return mAnimeObject.imageUrl;
+    }
+
+    public String getSynopsis()
+    {
+        return mAnimeObject.synopsis;
+    }
+
+    public String getStartedAiring()
+    {
+        return mAnimeObject.startedAiring;
+    }
+
+    public String getFinishedAiring()
+    {
+        return mAnimeObject.finishedAiring;
     }
 }

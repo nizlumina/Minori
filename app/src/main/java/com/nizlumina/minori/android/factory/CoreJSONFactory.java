@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Static factory for saving and loading Core data.
+ * Static factory for saving and loading Core data.<br/>
+ * JSONObject methods is returned as an empty object upon exception.<br/>
+ * JSONArray and other collections methods omitted failures and returns data that were only successful.<br/><br/>
+ * NyaaEntry and AnimeObject methods returns NULL on ANY failure due to the higher integrity needed (do null check if you call their methods).
  */
 public class CoreJSONFactory
 {
@@ -73,17 +76,18 @@ public class CoreJSONFactory
         try
         {
             animeObject.id = jsonObject.getInt(AnimeObject.JSON_ID);
+            animeObject.slug = jsonObject.getString(AnimeObject.JSON_SLUG);
             animeObject.status = jsonObject.getString(AnimeObject.JSON_STATUS);
             animeObject.url = jsonObject.getString(AnimeObject.JSON_URL);
             animeObject.title = jsonObject.getString(AnimeObject.JSON_TITLE);
             animeObject.episodeCount = jsonObject.getInt(AnimeObject.JSON_EPS_COUNT);
-            animeObject.imageUrl = jsonObject.getString(AnimeObject.JSON_COVER_IMG);
+            animeObject.imageUrl = jsonObject.getString(AnimeObject.JSON_COVER_IMG_URL);
             animeObject.synopsis = jsonObject.getString(AnimeObject.JSON_SYNOPSIS);
             animeObject.startedAiring = jsonObject.getString(AnimeObject.JSON_STARTED_AIRING);
             animeObject.finishedAiring = jsonObject.getString(AnimeObject.JSON_FINISHED_AIRING);
 
             if (!hummingbirdImageSource)
-                animeObject.cachedImageURI = jsonObject.getString(AnimeObject.JSON_NONAPI_CACHED_IMG_URI);
+                animeObject.cachedImageURI = jsonObject.getString(AnimeObject.JSON_CACHED_IMG_URI);
             return animeObject;
         }
         catch (JSONException e)
@@ -102,7 +106,11 @@ public class CoreJSONFactory
             {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject != null)
-                    results.add(animeObjectFromJSON(jsonObject, hummingbirdImageSource));
+                {
+                    AnimeObject animeObject = animeObjectFromJSON(jsonObject, hummingbirdImageSource);
+                    if (animeObject != null)
+                        results.add(animeObject);
+                }
             }
             catch (JSONException e)
             {
@@ -140,17 +148,18 @@ public class CoreJSONFactory
         try
         {
             jsonObject.put(AnimeObject.JSON_ID, animeObject.id);
+            jsonObject.put(AnimeObject.JSON_SLUG, animeObject.slug);
             jsonObject.put(AnimeObject.JSON_STATUS, animeObject.status);
             jsonObject.put(AnimeObject.JSON_URL, animeObject.url);
             jsonObject.put(AnimeObject.JSON_TITLE, animeObject.title);
             jsonObject.put(AnimeObject.JSON_EPS_COUNT, animeObject.episodeCount);
-            jsonObject.put(AnimeObject.JSON_COVER_IMG, animeObject.imageUrl);
+            jsonObject.put(AnimeObject.JSON_COVER_IMG_URL, animeObject.imageUrl);
             jsonObject.put(AnimeObject.JSON_SYNOPSIS, animeObject.synopsis);
             jsonObject.put(AnimeObject.JSON_STARTED_AIRING, animeObject.startedAiring);
             jsonObject.put(AnimeObject.JSON_FINISHED_AIRING, animeObject.finishedAiring);
 
             if (!hummingbirdImageSource)
-                jsonObject.put(AnimeObject.JSON_NONAPI_CACHED_IMG_URI, animeObject.cachedImageURI);
+                jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.cachedImageURI);
         }
         catch (JSONException e)
         {

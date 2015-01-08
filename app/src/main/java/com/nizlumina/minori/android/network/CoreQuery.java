@@ -11,19 +11,20 @@ public class CoreQuery
 {
     public static class Hummingbird
     {
-        static final String searchPath = "http://hummingbird.me/api/v1/search/anime";
+        static final String endpoint = "http://hummingbird.me/api/v1";
+        static final String searchKey = "search";
+        static final String typeAnime = "anime";
+        static final String typeManga = "manga";
         static final String searchArg = "query";
-
-        static final String idPath = "http://hummingbird.me/api/v1/anime/";
 
         public static Uri searchQuery(String terms)
         {
-            return Uri.parse(searchPath).buildUpon().appendQueryParameter(searchArg, terms).build();
+            return Uri.parse(endpoint).buildUpon().appendPath(searchKey).appendPath(typeAnime).appendQueryParameter(searchArg, terms).build();
         }
 
-        public static Uri getAnimeByID(int id)
+        public static Uri getAnimeByID(String hummingbirdId)
         {
-            return Uri.parse(idPath).buildUpon().appendQueryParameter(searchArg, String.valueOf(id)).build();
+            return Uri.parse(endpoint).buildUpon().appendPath(typeAnime).appendPath(hummingbirdId).build();
         }
     }
 

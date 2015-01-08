@@ -14,9 +14,9 @@ import java.net.URL;
  */
 public class ConnectionUnit
 {
-    final int CONNECT_TIMEOUT = 40000;
-    final int READ_TIMEOUT = 50000;
-    final String requestMethodGET = "GET";
+    static final int CONNECT_TIMEOUT = 40000;
+    static final int READ_TIMEOUT = 50000;
+    static final String requestMethodGET = "GET";
     boolean loggingEnabled = false;
 
     public ConnectionUnit() {}
@@ -125,8 +125,6 @@ public class ConnectionUnit
                 if (listener != null)
                     listener.onProgressUpdate(NetworkProgressListener.ConnectionState.RESPONSE_RETRIEVED);
             }
-
-
         }
         catch (IOException e)
         {
@@ -144,7 +142,6 @@ public class ConnectionUnit
                 listener.onProgressUpdate(NetworkProgressListener.ConnectionState.CONNECTION_CLOSED);
                 listener.onNetworkFinished();
             }
-
         }
     }
 
