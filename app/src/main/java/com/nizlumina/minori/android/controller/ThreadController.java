@@ -2,13 +2,15 @@ package com.nizlumina.minori.android.controller;
 
 import android.os.Handler;
 
+import java.util.concurrent.Callable;
+
 /**
  * Simple Thread controller class.
  * Will be converted into a full handler class if needed
  */
 public class ThreadController
 {
-    public static synchronized void post(final java.util.concurrent.Callable doInBackground, final java.util.concurrent.Callable callOnOriginalThread)
+    public static synchronized void post(final Callable doInBackground, final Callable callOnOriginalThread)
     {
         final Handler originalThreadHandler = new Handler();
         new Thread(new Runnable()
@@ -44,6 +46,12 @@ public class ThreadController
         }).start();
     }
 
+
+    /**
+     * Something I forgot why I put it here in the first place.
+     *
+     * @param <K> Generic return type to be used when Callables returns.
+     */
     public static class Carrier<K>
     {
         public synchronized Thread post(final Callable<K> doInBackground, final Callable<K> callOnOriginalThread, final K resultCarrier)

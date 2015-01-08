@@ -29,39 +29,53 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- * A shoe-horned static cache class. Might not be correct in some parts yet (trying to soft-mitigate race condition). Will rewrite this class later.
+ * A shoe-horned instance-based cache class. Might not be correct in some parts yet (trying to soft-mitigate race condition). Will rewrite this class later.
+ * Currently the cache uses the same file (so just one file) for saving and loading. While a more generic class is much better, the cache currently only handles the corner case for caching Hummingbird specific stuffs. Until MAL have a better API and an intermediary server is becomes feasible enough for OAuth-ing to AniList, this should be adequate for now.
  */
 public final class HummingbirdCacheController
 {
     static final String cacheName = "HummingbirdCache";
-    static final List<AnimeObject> cachedAnimeObjects = new ArrayList<>();
 
-    public synchronized static List<AnimeObject> getCachedAnimeObjects()
+    private final List<AnimeObject> cachedAnimeObjects = new ArrayList<>();
+
+    private final Object instanceLock = new Object();
+
+    public synchronized List<AnimeObject> getCachedAnimeObjects()
     {
         return cachedAnimeObjects;
     }
 
-    public synchronized static void loadToMemory(final Context context, final OnFinishListener onFinishListener)
+    /**
+     * After instance creation, call this first to fill up the neccesary data for getCachedAnimeObjects().
+     * The heavy work is offloaded to a background thread.
+     *
+     * @param context          Any context available. getCacheDir() is called on this.
+     * @param onFinishListener Fires after loading (populating the instance list) is finished.
+     */
+    public synchronized void loadInstanceCache(final Context context, final OnFinishListener onFinishListener)
     {
         final Callable<Void> backTask = new Callable<Void>()
         {
             @Override
             public Void call() throws Exception
             {
-                try
+                synchronized (instanceLock)
                 {
-                    final File cacheFile = new File(context.getCacheDir(), cacheName);
-                    if (cacheFile.exists())
+                    try
                     {
-                        final FileInputStream fileInputStream = new FileInputStream(cacheFile);
-                        cachedAnimeObjects.addAll(CoreJSONFactory.animeObjectsFromJSON(JSONStorageFactory.loadJSONArray(fileInputStream), true));
+                        final File cacheFile = new File(context.getCacheDir(), cacheName);
+                        if (cacheFile.exists())
+                        {
+                            final FileInputStream fileInputStream = new FileInputStream(cacheFile);
+                            cachedAnimeObjects.addAll(CoreJSONFactory.animeObjectsFromJSON(JSONStorageFactory.loadJSONArray(fileInputStream), true));
+                        }
                     }
+                    catch (FileNotFoundException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    return null;
                 }
-                catch (FileNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-                return null;
             }
         };
 
@@ -80,25 +94,34 @@ public final class HummingbirdCacheController
 
     }
 
-    public synchronized static void writeToDisk(final Context context, final OnFinishListener onFinishListener)
+    /**
+     * Write instance cache to disk in background.
+     *
+     * @param context          Any context available. getCacheDir() is called on this.
+     * @param onFinishListener Fires after saving is finished.
+     */
+    public synchronized void writeToDisk(final Context context, final OnFinishListener onFinishListener)
     {
         final Callable<Void> backTask = new Callable<Void>()
         {
             @Override
             public Void call() throws Exception
             {
-                try
+                synchronized (instanceLock)
                 {
-                    final File cacheFile = new File(context.getCacheDir(), cacheName);
-                    if (!cacheFile.exists()) cacheFile.createNewFile();
+                    try
+                    {
+                        final File cacheFile = new File(context.getCacheDir(), cacheName);
+                        if (!cacheFile.exists()) cacheFile.createNewFile();
 
-                    JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(cachedAnimeObjects, true), new FileOutputStream(cacheFile));
+                        JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(cachedAnimeObjects, true), new FileOutputStream(cacheFile));
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    return null;
                 }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-                return null;
             }
         };
 
