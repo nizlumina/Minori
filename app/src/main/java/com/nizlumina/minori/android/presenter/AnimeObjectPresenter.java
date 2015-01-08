@@ -14,10 +14,13 @@ package com.nizlumina.minori.android.presenter;
 
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wrapper presenter class for AnimeObject. Use this for displaying any AnimeObject-only data in the UI
  */
-public class AnimeObjectPresenter
+public class AnimeObjectPresenter implements GalleryPresenter
 {
     private AnimeObject mAnimeObject;
 
@@ -26,58 +29,89 @@ public class AnimeObjectPresenter
         this.mAnimeObject = animeObject;
     }
 
-    public int getID()
+    public static List<AnimeObjectPresenter> listFrom(List<AnimeObject> animeObjects)
     {
-        return mAnimeObject.id;
+        List<AnimeObjectPresenter> presenters = new ArrayList<>();
+        for (AnimeObject animeObject : animeObjects)
+        {
+            presenters.add(new AnimeObjectPresenter(animeObject));
+        }
+        return presenters;
     }
 
-    public String getSlug()
-    {
-        return mAnimeObject.slug;
-    }
-
-    public String getStatus()
-    {
-        return mAnimeObject.status;
-    }
-
+    @Override
     public String getTitle()
     {
         return mAnimeObject.title;
     }
 
-    public String getUrl()
+    @Override
+    public String getEpisode()
     {
-        return mAnimeObject.url;
+        return null;
     }
 
-    public int getEpisodeCount()
+    @Override
+    public String getGroup()
     {
-        return mAnimeObject.episodeCount;
+        return null;
     }
 
-    public String getCachedImageURI()
+    @Override
+    public String getImageURI()
     {
-        return mAnimeObject.cachedImageURI;
+        if (mAnimeObject.cachedImageURI != null) return mAnimeObject.cachedImageURI;
+        if (mAnimeObject.imageUrl != null) return mAnimeObject.imageUrl;
+        return null;
     }
 
-    public String getImageUrl()
-    {
-        return mAnimeObject.imageUrl;
-    }
-
-    public String getSynopsis()
-    {
-        return mAnimeObject.synopsis;
-    }
-
-    public String getStartedAiring()
-    {
-        return mAnimeObject.startedAiring;
-    }
-
-    public String getFinishedAiring()
-    {
-        return mAnimeObject.finishedAiring;
-    }
+//    public int getID()
+//    {
+//        return mAnimeObject.id;
+//    }
+//
+//    public String getSlug()
+//    {
+//        return mAnimeObject.slug;
+//    }
+//
+//    public String getStatus()
+//    {
+//        return mAnimeObject.status;
+//    }
+//
+//    public String getUrl()
+//    {
+//        return mAnimeObject.url;
+//    }
+//
+//    public int getEpisodeCount()
+//    {
+//        return mAnimeObject.episodeCount;
+//    }
+//
+//    public String getCachedImageURI()
+//    {
+//        return mAnimeObject.cachedImageURI;
+//    }
+//
+//    public String getImageUrl()
+//    {
+//        return mAnimeObject.imageUrl;
+//    }
+//
+//    public String getSynopsis()
+//    {
+//        return mAnimeObject.synopsis;
+//    }
+//
+//    public String getStartedAiring()
+//    {
+//        return mAnimeObject.startedAiring;
+//    }
+//
+//    public String getFinishedAiring()
+//    {
+//        return mAnimeObject.finishedAiring;
+//    }
 }

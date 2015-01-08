@@ -8,15 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.nizlumina.minori.android.presenter.WatchDataPresenter;
+import com.nizlumina.minori.android.presenter.GalleryPresenter;
 
 import java.util.List;
 
-public class GalleryAdapter extends BaseAdapter
+public class GalleryAdapter<T extends GalleryPresenter> extends BaseAdapter
 {
     private Context mContext;
     private int mResource;
-    private List<WatchDataPresenter> mWatchDatas;
+    private List<T> mGalleryItems;
 
     /**
      * Constructor
@@ -26,11 +26,11 @@ public class GalleryAdapter extends BaseAdapter
      *                           instantiating views.
      * @param objects            The objects to represent in the ListView.
      */
-    public GalleryAdapter(Context context, @LayoutRes int listItemResourceID, List<WatchDataPresenter> objects)
+    public GalleryAdapter(Context context, @LayoutRes int listItemResourceID, List<T> objects)
     {
         mContext = context;
         mResource = listItemResourceID;
-        mWatchDatas = objects;
+        mGalleryItems = objects;
     }
 
     /**
@@ -41,7 +41,7 @@ public class GalleryAdapter extends BaseAdapter
     @Override
     public int getCount()
     {
-        if (mWatchDatas != null) return mWatchDatas.size();
+        if (mGalleryItems != null) return mGalleryItems.size();
         return 0;
     }
 
@@ -53,10 +53,10 @@ public class GalleryAdapter extends BaseAdapter
      * @return The data at the specified position.
      */
     @Override
-    public WatchDataPresenter getItem(int position)
+    public T getItem(int position)
     {
-        if (mWatchDatas != null)
-            return mWatchDatas.get(position);
+        if (mGalleryItems != null)
+            return mGalleryItems.get(position);
         return null;
     }
 
@@ -94,19 +94,19 @@ public class GalleryAdapter extends BaseAdapter
         }
         else galleryItemHolder = (GalleryItemHolder) convertView.getTag();
 
-        galleryItemHolder.applySource(this.mWatchDatas.get(position));
+        galleryItemHolder.applySource(this.mGalleryItems.get(position));
 
         return convertView;
     }
 
-    public void add(WatchDataPresenter item)
+    public void add(T item)
     {
-        this.mWatchDatas.add(item);
+        this.mGalleryItems.add(item);
     }
 
-    public void add(List<WatchDataPresenter> items)
+    public void add(List<T> items)
     {
-        this.mWatchDatas.addAll(items);
+        this.mGalleryItems.addAll(items);
     }
 
 }

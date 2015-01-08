@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Wrapper class for displaying base WatchData
  */
-public class WatchDataPresenter
+public class WatchDataPresenter implements GalleryPresenter
 {
     private WatchData mWatchData;
 
@@ -52,16 +52,25 @@ public class WatchDataPresenter
         return getWatchData().getId();
     }
 
+    @Override
     public String getTitle()
     {
         return getWatchData().getAnimeObject().title;
     }
 
+    @Override
     public String getGroup()
     {
         return getWatchData().getNyaaEntry().fansub;
     }
 
+    @Override
+    public String getImageURI()
+    {
+        return null;
+    }
+
+    @Override
     public String getEpisode()
     {
         return getWatchData().getNyaaEntry().episodeString;

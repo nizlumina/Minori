@@ -69,7 +69,7 @@ public class CoreNetworkFactory
         try
         {
             JSONObject jsonObject = new JSONObject(resultString);
-            return CoreJSONFactory.animeObjectFromJSON(jsonObject, false);
+            return CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
         }
         catch (JSONException e)
         {

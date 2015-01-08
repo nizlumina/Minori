@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
-import com.nizlumina.minori.android.presenter.WatchDataPresenter;
+import com.nizlumina.minori.android.presenter.AnimeObjectPresenter;
 import com.nizlumina.minori.android.utility.Util;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class SearchActivity extends BaseActivity
 {
 
     GridView gridView;
-    private GalleryAdapter adapter;
+    private GalleryAdapter<AnimeObjectPresenter> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,14 +47,15 @@ public class SearchActivity extends BaseActivity
         searchFab.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_search_api_mtrl_alpha));
         Util.tintImageButton(searchFab, Color.WHITE, getColorAccent());
 
-        List<WatchDataPresenter> watchDataPresenters = new ArrayList<>();
+        List<AnimeObjectPresenter> animeObjectPresenters = new ArrayList<>();
         gridView = (GridView) findViewById(R.id.gridview);
         gridView.setBackgroundColor(Color.WHITE);
-        adapter = new GalleryAdapter(this, R.layout.list_item_compact, watchDataPresenters);
+        adapter = new GalleryAdapter<>(this, R.layout.list_item_compact, animeObjectPresenters);
 
         gridView.setAdapter(adapter);
+
         HummingbirdNetworkController hummingbirdNetworkController = new HummingbirdNetworkController();
-        hummingbirdNetworkController.populateUpcomingAnime(this, adapter, null);
+        hummingbirdNetworkController.populateUpcomingAnime(SearchActivity.this, adapter, null);
 
         searchFab.setOnClickListener(new View.OnClickListener()
         {
@@ -62,6 +63,7 @@ public class SearchActivity extends BaseActivity
             public void onClick(View v)
             {
                 adapter.notifyDataSetChanged();
+                //Debugging
                 Log.v(getClass().getSimpleName(), String.valueOf(adapter.getCount()));
             }
         });

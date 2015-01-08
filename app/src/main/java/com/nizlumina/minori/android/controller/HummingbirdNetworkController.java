@@ -19,25 +19,42 @@ import android.widget.ProgressBar;
 import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.network.ConnectionUnit;
-import com.nizlumina.minori.android.presenter.WatchDataPresenter;
+import com.nizlumina.minori.android.presenter.AnimeObjectPresenter;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for populating data to the UI. <br/>
+ * Make sure to cache the controller instance as well since it also holds the reference to the internal cache mechanism. <br/><br/>
+ * While the implementation of the HummingbirdCacheController is thread-safe, this class is not thread safe (yet).
+ */
 public class HummingbirdNetworkController
 {
     static final String endpoint = "https://hummingbird.me/anime/upcoming/";
 
-    public void populateUpcomingAnime(final Context context, final GalleryAdapter galleryAdapter, final ProgressBar progressBar)
+    private final HummingbirdCacheController mCacheController;
+
+    public HummingbirdNetworkController()
     {
-        AsyncTask<Void, Integer, Void> backTask = new AsyncTask<Void, Integer, Void>()
+        mCacheController = new HummingbirdCacheController();
+    }
+
+    public void populateUpcomingAnime(final Context context, final GalleryAdapter<AnimeObjectPresenter> galleryAdapter, final ProgressBar progressBar)
+    {
+        AsyncTask<Void, Integer, Void> populateTask = new AsyncTask<Void, Integer, Void>()
         {
             @Override
             protected Void doInBackground(Void... params)
             {
-                galleryAdapter.add(populateResults(context));
+                List<AnimeObject> results = populateResults(context);
+                if (results.size() > 0)
+                {
+                    List<AnimeObjectPresenter> animeObjectPresenters = AnimeObjectPresenter.listFrom(results);
+                    galleryAdapter.add(animeObjectPresenters);
+                }
                 publishProgress();
                 return null;
             }
@@ -54,12 +71,12 @@ public class HummingbirdNetworkController
                 if (progressBar != null) progressBar.setProgress(values[0]);
             }
         };
-        backTask.execute(null, null, null);
+        populateTask.execute(null, null, null);
     }
 
-    private List<WatchDataPresenter> populateResults(final Context context)
+    private List<AnimeObject> populateResults(final Context context)
     {
-        List<WatchDataPresenter> results = new ArrayList<>();
+        List<AnimeObject> results = new ArrayList<>();
 
         ConnectionUnit unit = new ConnectionUnit(true);
         String response = unit.getResponseString(endpoint);
@@ -67,32 +84,41 @@ public class HummingbirdNetworkController
         if (response != null)
         {
             List<String> animeSlugs = HummingbirdScraper.scrapePath(response);
-
-            //The code below will generate lots of request to the HummingbirdAPI.
-            //Make sure to cache stuffs if possible.
-
-            HummingbirdCacheController cacheController = new HummingbirdCacheController();
-            cacheController.loadInstanceCache(context);
-
-            for (String animeSlug : animeSlugs)
-            {
-                AnimeObject cachedAnimeObject = cacheController.getCachedAnimeObjects().get(animeSlug);
-                //If not in cache
-                if (cachedAnimeObject == null)
-                {
-                    //initiate response
-                    cachedAnimeObject = CoreNetworkFactory.getAnimeObject(animeSlug);
-
-                    //skip if still null
-                    if (cachedAnimeObject == null)
-                        continue;
-                }
-
-                WatchDataPresenter presenter = new WatchDataPresenter(null); // todo: from animeObject
-                results.add(presenter);
-            }
+            processCache(context, results, animeSlugs);
         }
 
         return results;
+    }
+
+    //The code below will generate lots of request to the HummingbirdAPI.
+    //Make sure to cache stuffs if possible.
+    private void processCache(Context context, List<AnimeObject> results, List<String> animeSlugs)
+    {
+        mCacheController.loadInstanceCache(context);
+
+        for (String animeSlug : animeSlugs)
+        {
+            AnimeObject cachedAnimeObject = mCacheController.getAnimeObjectFromCache(animeSlug);
+            //If not in cache
+            if (cachedAnimeObject == null)
+            {
+                //initiate response
+                cachedAnimeObject = CoreNetworkFactory.getAnimeObject(animeSlug);
+
+                //skip if still null
+                if (cachedAnimeObject == null)
+                    continue;
+            }
+            results.add(cachedAnimeObject);
+        }
+
+        //apply image sources
+        for (AnimeObject animeObject : results)
+        {
+
+        }
+
+        //delegate save task
+        mCacheController.writeToDiskAsync(context, null);
     }
 }

@@ -28,20 +28,26 @@ public class HummingbirdScraper
 {
     static final String identifierClass = "image";
 
+    /**
+     * Try to scrape the data from the HTML body
+     *
+     * @param htmlBody The whole HTML document
+     * @return A list of Hummingbird 'slugs' where it can then be fed to the official API.
+     */
     public static List<String> scrapePath(String htmlBody)
     {
         Document document = Jsoup.parse(htmlBody);
         Elements identifierElements = document.getElementsByClass(identifierClass);
         Elements relativeLinks = identifierElements.select("a[href]");
-        List<String> urls = new ArrayList<>();
+        List<String> slugs = new ArrayList<>();
         for (Element relativeLink : relativeLinks)
         {
             String value = relativeLink.attr("href").substring(7); //it works in the first try!! Woohoo!!
 
             //Future logging
             //Log.v(HummingbirdScraper.class.getSimpleName(), value);
-            urls.add(value);
+            slugs.add(value);
         }
-        return urls;
+        return slugs;
     }
 }

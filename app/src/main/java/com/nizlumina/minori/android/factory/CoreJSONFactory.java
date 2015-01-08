@@ -70,7 +70,7 @@ public class CoreJSONFactory
 
     }
 
-    public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean hummingbirdImageSource)
+    public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean forOnlineInteraction)
     {
         AnimeObject animeObject = new AnimeObject();
         try
@@ -86,7 +86,7 @@ public class CoreJSONFactory
             animeObject.startedAiring = jsonObject.getString(AnimeObject.JSON_STARTED_AIRING);
             animeObject.finishedAiring = jsonObject.getString(AnimeObject.JSON_FINISHED_AIRING);
 
-            if (!hummingbirdImageSource)
+            if (!forOnlineInteraction)
                 animeObject.cachedImageURI = jsonObject.getString(AnimeObject.JSON_CACHED_IMG_URI);
             return animeObject;
         }
@@ -97,7 +97,7 @@ public class CoreJSONFactory
         return null;
     }
 
-    public static List<AnimeObject> animeObjectsFromJSON(JSONArray jsonArray, boolean hummingbirdImageSource)
+    public static List<AnimeObject> animeObjectsFromJSON(JSONArray jsonArray, boolean forOnlineInteraction)
     {
         List<AnimeObject> results = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++)
@@ -107,7 +107,7 @@ public class CoreJSONFactory
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject != null)
                 {
-                    AnimeObject animeObject = animeObjectFromJSON(jsonObject, hummingbirdImageSource);
+                    AnimeObject animeObject = animeObjectFromJSON(jsonObject, forOnlineInteraction);
                     if (animeObject != null)
                         results.add(animeObject);
                 }
@@ -142,7 +142,7 @@ public class CoreJSONFactory
         return null;
     }
 
-    public static JSONObject toJSON(AnimeObject animeObject, boolean hummingbirdImageSource)
+    public static JSONObject toJSON(AnimeObject animeObject, boolean forOnlineInteraction)
     {
         JSONObject jsonObject = new JSONObject();
         try
@@ -158,7 +158,7 @@ public class CoreJSONFactory
             jsonObject.put(AnimeObject.JSON_STARTED_AIRING, animeObject.startedAiring);
             jsonObject.put(AnimeObject.JSON_FINISHED_AIRING, animeObject.finishedAiring);
 
-            if (!hummingbirdImageSource)
+            if (!forOnlineInteraction)
                 jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.cachedImageURI);
         }
         catch (JSONException e)
@@ -226,14 +226,14 @@ public class CoreJSONFactory
         return obj;
     }
 
-    public static JSONArray toJSONArray(List<AnimeObject> animeObjects, boolean hummingbirdImageSource)
+    public static JSONArray toJSONArray(List<AnimeObject> animeObjects, boolean forOnlineInteraction)
     {
         JSONArray results = new JSONArray();
         if (animeObjects != null && animeObjects.size() > 0)
         {
             for (AnimeObject animeObject : animeObjects)
             {
-                results.put(toJSON(animeObject, hummingbirdImageSource));
+                results.put(toJSON(animeObject, forOnlineInteraction));
 
             }
         }

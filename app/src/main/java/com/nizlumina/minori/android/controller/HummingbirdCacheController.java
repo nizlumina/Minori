@@ -52,9 +52,9 @@ public final class HummingbirdCacheController
         return animeObjects;
     }
 
-    public synchronized AnimeObject getAnimeObject(String id)
+    public synchronized AnimeObject getAnimeObjectFromCache(String slug)
     {
-        return cachedAnimeObjects.get(id);
+        return cachedAnimeObjects.get(slug);
     }
 
     /**
@@ -156,7 +156,7 @@ public final class HummingbirdCacheController
                 final File cacheFile = new File(context.getCacheDir(), cacheName);
                 if (!cacheFile.exists()) cacheFile.createNewFile();
 
-                JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(getCachedAnimeObjectsClone(), true), new FileOutputStream(cacheFile));
+                JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(getCachedAnimeObjectsClone(), false), new FileOutputStream(cacheFile));
             }
             catch (IOException e)
             {

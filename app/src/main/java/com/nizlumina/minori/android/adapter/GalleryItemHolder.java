@@ -17,7 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.presenter.WatchDataPresenter;
+import com.nizlumina.minori.android.presenter.GalleryPresenter;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 class GalleryItemHolder
 {
@@ -32,16 +33,20 @@ class GalleryItemHolder
         imageContainer = (ImageView) convertView.findViewById(R.id.item_image);
     }
 
-    public void applySource(WatchDataPresenter watchDataPresenter)
+    public void applySource(GalleryPresenter galleryPresenter)
     {
-        if (episode != null) episode.setText(watchDataPresenter.getEpisode());
-        if (group != null) group.setText(watchDataPresenter.getGroup());
-        if (title != null) title.setText(watchDataPresenter.getTitle());
+        if (episode != null && galleryPresenter.getEpisode() != null)
+            episode.setText(galleryPresenter.getEpisode());
+        if (group != null && galleryPresenter.getGroup() != null)
+            group.setText(galleryPresenter.getGroup());
+        if (title != null && galleryPresenter.getTitle() != null)
+            title.setText(galleryPresenter.getTitle());
 
         //Try using Universal Image Loader first. Later onwards, will compare with a normal AsyncTask fork
 
         //TODO: Set options
-        //if(imageContainer != null) ImageLoader.getInstance().displayImage(watchDataPresenter.getCoverImageURI(), imageContainer);
+        if (imageContainer != null)
+            ImageLoader.getInstance().displayImage(galleryPresenter.getImageURI(), imageContainer);
 
     }
 }
