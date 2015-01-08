@@ -1,5 +1,7 @@
 package com.nizlumina.minori.android.network;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,10 +14,22 @@ import java.net.URL;
  */
 public class ConnectionUnit
 {
-
-    public static final int CONNECT_TIMEOUT = 40000;
-    public static final int READ_TIMEOUT = 50000;
+    final int CONNECT_TIMEOUT = 40000;
+    final int READ_TIMEOUT = 50000;
     final String requestMethodGET = "GET";
+    boolean loggingEnabled = false;
+
+    public ConnectionUnit() {}
+
+    public ConnectionUnit(boolean loggingEnabled)
+    {
+        this.loggingEnabled = loggingEnabled;
+    }
+
+    private void log(String message)
+    {
+        if (loggingEnabled) Log.v(getClass().getSimpleName(), message);
+    }
 
     public String getResponseString(final String url)
     {
@@ -33,6 +47,8 @@ public class ConnectionUnit
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
             connection.connect();
+
+            log(connection.getHeaderFields().toString());
 
             if (listener != null)
                 listener.onProgressUpdate(NetworkProgressListener.ConnectionState.CONN_OPENED);

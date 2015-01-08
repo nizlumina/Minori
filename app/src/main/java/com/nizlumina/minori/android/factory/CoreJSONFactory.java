@@ -4,8 +4,12 @@ import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Static factory for saving and loading Core data.
@@ -63,7 +67,7 @@ public class CoreJSONFactory
 
     }
 
-    public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean hummingbirdFormat)
+    public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean hummingbirdImageSource)
     {
         AnimeObject animeObject = new AnimeObject();
         try
@@ -78,7 +82,7 @@ public class CoreJSONFactory
             animeObject.startedAiring = jsonObject.getString(AnimeObject.JSON_STARTED_AIRING);
             animeObject.finishedAiring = jsonObject.getString(AnimeObject.JSON_FINISHED_AIRING);
 
-            if (!hummingbirdFormat)
+            if (!hummingbirdImageSource)
                 animeObject.cachedImageURI = jsonObject.getString(AnimeObject.JSON_NONAPI_CACHED_IMG_URI);
             return animeObject;
         }
@@ -87,6 +91,25 @@ public class CoreJSONFactory
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static List<AnimeObject> animeObjectsFromJSON(JSONArray jsonArray, boolean hummingbirdImageSource)
+    {
+        List<AnimeObject> results = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++)
+        {
+            try
+            {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (jsonObject != null)
+                    results.add(animeObjectFromJSON(jsonObject, hummingbirdImageSource));
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return results;
     }
 
     public static Alarm alarmFromJSON(JSONObject jsonObject)
@@ -111,7 +134,7 @@ public class CoreJSONFactory
         return null;
     }
 
-    public static JSONObject toJSON(AnimeObject animeObject, boolean hummingbirdFormat)
+    public static JSONObject toJSON(AnimeObject animeObject, boolean hummingbirdImageSource)
     {
         JSONObject jsonObject = new JSONObject();
         try
@@ -126,7 +149,7 @@ public class CoreJSONFactory
             jsonObject.put(AnimeObject.JSON_STARTED_AIRING, animeObject.startedAiring);
             jsonObject.put(AnimeObject.JSON_FINISHED_AIRING, animeObject.finishedAiring);
 
-            if (!hummingbirdFormat)
+            if (!hummingbirdImageSource)
                 jsonObject.put(AnimeObject.JSON_NONAPI_CACHED_IMG_URI, animeObject.cachedImageURI);
         }
         catch (JSONException e)
@@ -192,6 +215,20 @@ public class CoreJSONFactory
             return null;
         }
         return obj;
+    }
+
+    public static JSONArray toJSONArray(List<AnimeObject> animeObjects, boolean hummingbirdImageSource)
+    {
+        JSONArray results = new JSONArray();
+        if (animeObjects != null && animeObjects.size() > 0)
+        {
+            for (AnimeObject animeObject : animeObjects)
+            {
+                results.put(toJSON(animeObject, hummingbirdImageSource));
+
+            }
+        }
+        return results;
     }
 
 }

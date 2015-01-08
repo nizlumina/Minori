@@ -3,7 +3,7 @@ package com.nizlumina.minori.android.service;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.nizlumina.minori.android.AppStateSingleton;
+import com.nizlumina.minori.android.MinoriSingleton;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.data.WatchData;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
@@ -107,7 +107,7 @@ public class ScanService extends IntentService
                     watchData.updateAlarm(getApplicationContext());
                 }
 
-                if (!AppStateSingleton.getInstance().listenersAvailable())
+                if (!MinoriSingleton.getInstance().listenersAvailable())
                 {
                     controller.saveData(getApplicationContext());
                 }

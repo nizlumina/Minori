@@ -7,6 +7,7 @@ import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.android.data.WatchData;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.factory.IntentFactory;
+import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
 import com.nizlumina.minori.android.network.NetworkState;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
@@ -56,8 +57,7 @@ public class WatchlistController
                 @Override
                 public void run()
                 {
-                    final JSONStorageController controller = new JSONStorageController();
-                    controller.saveJSONArray(WatchDataJSONFactory.getJSONArray(WatchlistSingleton.getInstance().getDataList()), outputStream);
+                    JSONStorageFactory.saveJSONArray(WatchDataJSONFactory.getJSONArray(WatchlistSingleton.getInstance().getDataList()), outputStream);
                 }
             });
 
@@ -94,8 +94,7 @@ public class WatchlistController
             try
             {
                 final FileInputStream inputStream = context.openFileInput(fileName);
-                final JSONStorageController controller = new JSONStorageController();
-                JSONArray jsonArray = controller.loadJSONArray(inputStream);
+                JSONArray jsonArray = JSONStorageFactory.loadJSONArray(inputStream);
                 WatchDataJSONFactory.setFromJSONArray(jsonArray, WatchlistSingleton.getInstance().getDataList());
             }
             catch (FileNotFoundException e)

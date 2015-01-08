@@ -18,7 +18,7 @@ public class ThreadController
             {
                 try
                 {
-                    doInBackground.call();
+                    if (doInBackground != null) doInBackground.call();
                 }
                 catch (Exception e)
                 {
@@ -32,7 +32,7 @@ public class ThreadController
                     {
                         try
                         {
-                            callOnOriginalThread.call();
+                            if (callOnOriginalThread != null) callOnOriginalThread.call();
                         }
                         catch (Exception e)
                         {

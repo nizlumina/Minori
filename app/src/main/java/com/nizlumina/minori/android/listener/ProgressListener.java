@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.lListener;
+package com.nizlumina.minori.android.listener;
 
 /**
  * Simple interface for ProgressListener objects

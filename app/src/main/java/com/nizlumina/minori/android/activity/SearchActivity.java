@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.android.utility.Util;
 
 /**
@@ -34,17 +35,14 @@ public class SearchActivity extends BaseActivity
         ImageButton searchFab = (ImageButton) findViewById(R.id.sa_fab_search);
         searchFab.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_search_api_mtrl_alpha));
         Util.tintImageButton(searchFab, Color.WHITE, getColorAccent());
-//        getFabMain().setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_search_api_mtrl_alpha));
-//        Util.tintImageButton(getFabMain(), Color.WHITE, getColorAccent());
-//        getFabMain().setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//
-//            }
-//        });
 
-
+        searchFab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new HummingbirdScraper().populateUpcomingAnime(null, null);
+            }
+        });
     }
 }

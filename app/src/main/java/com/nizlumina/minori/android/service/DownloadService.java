@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
-import com.nizlumina.minori.android.AppStateSingleton;
+import com.nizlumina.minori.android.MinoriSingleton;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.data.WatchData;
 import com.nizlumina.minori.android.factory.DownloadUnitFactory;
@@ -80,13 +80,13 @@ public class DownloadService extends IntentService
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-            String downloadLocation = preferences.getString(AppStateSingleton.Preference.PREF_KEY_DOWNLOAD_LOC, null);
+            String downloadLocation = preferences.getString(MinoriSingleton.Preference.PREF_KEY_DOWNLOAD_LOC, null);
 
             if (downloadLocation == null)
                 request.setDestinationUri(Uri.fromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
             else
                 request.setDestinationUri(Uri.parse(downloadLocation));
-            int preferredNetwork = preferences.getInt(AppStateSingleton.Preference.PREF_KEY_PREFFERED_CONN, -1);
+            int preferredNetwork = preferences.getInt(MinoriSingleton.Preference.PREF_KEY_PREFFERED_CONN, -1);
 
             if (preferredNetwork > 0)
                 request.setAllowedNetworkTypes(preferredNetwork);

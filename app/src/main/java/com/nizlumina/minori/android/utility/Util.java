@@ -62,7 +62,7 @@ public class Util
         }
     }
 
-//Unused
+// Unused
 //
 //    public static int firstDigit(int integer)
 //    {
@@ -81,5 +81,12 @@ public class Util
 //    public static void animateIn(ActionBarActivity currentActivity)
 //    {
 //        currentActivity.overridePendingTransition(R.anim.act_slide_from_right, R.anim.act_slide_to_left);
+//    }
+
+// Just some fun stuffs
+//
+//    public <T> T callMethod(Callable<T> callable) throws Exception
+//    {
+//        return callable.call();
 //    }
 }

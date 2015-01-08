@@ -40,6 +40,7 @@ public class GalleryAdapter extends BaseAdapter
     @Override
     public int getCount()
     {
+        if (mWatchDatas != null) return mWatchDatas.size();
         return 0;
     }
 
@@ -51,8 +52,10 @@ public class GalleryAdapter extends BaseAdapter
      * @return The data at the specified position.
      */
     @Override
-    public Object getItem(int position)
+    public WatchDataPresenter getItem(int position)
     {
+        if (mWatchDatas != null)
+            return mWatchDatas.get(position);
         return null;
     }
 
@@ -93,6 +96,16 @@ public class GalleryAdapter extends BaseAdapter
         galleryItemHolder.applySource(mWatchDatas.get(position));
 
         return convertView;
+    }
+
+    public void add(WatchDataPresenter item)
+    {
+        this.mWatchDatas.add(item);
+    }
+
+    public void add(List<WatchDataPresenter> items)
+    {
+        this.mWatchDatas.addAll(items);
     }
 
 }

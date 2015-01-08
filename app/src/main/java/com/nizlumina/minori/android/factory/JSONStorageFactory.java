@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.controller;
+package com.nizlumina.minori.android.factory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +16,9 @@ import java.nio.charset.Charset;
 /**
  * Accessed for saving and loading
  */
-public class JSONStorageController
+public class JSONStorageFactory
 {
-    public void saveJSONArray(final JSONArray jsonArray, final FileOutputStream fileOutputStream)
+    public static void saveJSONArray(final JSONArray jsonArray, final FileOutputStream fileOutputStream)
     {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
         try
@@ -46,27 +46,33 @@ public class JSONStorageController
         }
     }
 
-    public JSONArray loadJSONArray(final FileInputStream fileInputStream)
+    /**
+     * Try loading a JSONArray from the given FileInputstream. Returns an empty JSON array on failure.
+     *
+     * @param fileInputStream The stream to be read
+     * @return
+     */
+    public static JSONArray loadJSONArray(final FileInputStream fileInputStream)
     {
-        JSONArray result = null;
+        JSONArray result = new JSONArray();
         try
         {
             String jsonString = getStringFromJSON(fileInputStream, Charset.forName("UTF-8"));
 
             if (jsonString != null) result = new JSONArray(jsonString);
         }
-        catch (IOException e)
+        catch (JSONException e)
         {
             e.printStackTrace();
         }
-        catch (JSONException e)
+        catch (IOException e)
         {
             e.printStackTrace();
         }
         return result;
     }
 
-    private String getStringFromJSON(final FileInputStream fileInputStream, final Charset encoding) throws IOException
+    private static String getStringFromJSON(final FileInputStream fileInputStream, final Charset encoding) throws IOException
     {
         try
         {

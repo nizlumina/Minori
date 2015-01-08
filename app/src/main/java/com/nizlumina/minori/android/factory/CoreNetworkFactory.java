@@ -61,4 +61,9 @@ public class CoreNetworkFactory
             }
         }
     }
+
+    public static synchronized void getAnimeObject(String title)
+    {
+
+    }
 }
