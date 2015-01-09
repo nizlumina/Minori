@@ -47,7 +47,7 @@
         </activity>
         <activity
             android:name=".android.activity.SearchActivity"
-            android:label="@string/title_activity_gallery"></activity>
+            android:label="@string/title_activity_gallery" />
     </application>
 
 </manifest>
