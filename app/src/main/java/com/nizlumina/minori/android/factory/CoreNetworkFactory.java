@@ -22,7 +22,6 @@ import java.util.ArrayList;
  */
 public class CoreNetworkFactory
 {
-
     public static synchronized void getNyaaEntries(Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList)
     {
         WebUnit unit = new WebUnit();
@@ -50,11 +49,9 @@ public class CoreNetworkFactory
     public static synchronized void getAnimeObject(Context context, final String searchTerms, final ArrayList<AnimeObject> outputList)
     {
         WebUnit unit = new WebUnit();
-
-        String resultString = null;
         try
         {
-            resultString = unit.getString(context, CoreQuery.Hummingbird.searchQuery(searchTerms).toString());
+            String resultString = unit.getString(context, CoreQuery.Hummingbird.searchQuery(searchTerms).toString());
             if (resultString != null)
             {
 
@@ -97,6 +94,48 @@ public class CoreNetworkFactory
             e.printStackTrace();
         }
         return null;
+    }
 
+    public static synchronized void getAnimeObjectAsync(final Context context, final String slugOrID, final NetworkFactoryListener<AnimeObject> listener)
+    {
+        WebUnit unit = new WebUnit();
+        try
+        {
+            unit.enqueueGetString(context, CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString(), new WebUnit.WebUnitListener()
+            {
+                @Override
+                public void onFailure()
+                {
+
+                }
+
+                @Override
+                public void onFinish(String responseBody)
+                {
+                    JSONObject jsonObject = null;
+                    try
+                    {
+                        jsonObject = new JSONObject(responseBody);
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                        this.onFailure();
+                    }
+                    AnimeObject animeObject = CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
+                    if (listener != null) listener.onFinish(animeObject);
+                }
+            });
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static interface NetworkFactoryListener<T>
+    {
+        public void onFinish(T objectResult);
     }
 }
