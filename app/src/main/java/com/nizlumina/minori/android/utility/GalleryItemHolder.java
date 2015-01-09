@@ -24,6 +24,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 public class GalleryItemHolder
 {
+    private static boolean DEBUG_MODE = false;
     public TextView title, group, episode;
     public ImageView imageContainer;
 
@@ -47,7 +48,7 @@ public class GalleryItemHolder
         //Try using Universal Image Loader first. Later onwards, will compare with a normal AsyncTask fork
 
         //TODO: Set options
-        if (imageContainer != null)
+        if (imageContainer != null && DEBUG_MODE)
         {
             String localURI = galleryPresenter.getLocalImageURI();
             String onlineURI = galleryPresenter.getOnlineImageURI();

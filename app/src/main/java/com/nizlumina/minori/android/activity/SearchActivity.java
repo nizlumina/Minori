@@ -15,6 +15,7 @@ import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.android.presenter.AnimeObjectPresenter;
 import com.nizlumina.minori.android.utility.Util;
+import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,6 @@ public class SearchActivity extends BaseActivity
 
         List<AnimeObjectPresenter> animeObjectPresenters = new ArrayList<>();
         gridView = (GridView) findViewById(R.id.gridview);
-        gridView.setBackgroundColor(Color.WHITE);
         adapter = new GalleryAdapter<AnimeObjectPresenter>(this, R.layout.list_item_compact, animeObjectPresenters);
 
         gridView.setAdapter(adapter);
@@ -62,7 +62,29 @@ public class SearchActivity extends BaseActivity
             @Override
             protected Void doInBackground(Void... params)
             {
-                hummingbirdNetworkController.populateAdapterWithUpcoming(SearchActivity.this, adapter);
+                List<AnimeObject> animeObjects = new ArrayList<>();
+                hummingbirdNetworkController.populateList(SearchActivity.this, animeObjects, new HummingbirdNetworkController.NetworkListener()
+                {
+                    @Override
+                    public void onEachSuccessfulResponses(final AnimeObject animeObject)
+                    {
+                        runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                adapter.add(new AnimeObjectPresenter(animeObject));
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFinish()
+                    {
+
+                    }
+                });
                 return null;
             }
         };

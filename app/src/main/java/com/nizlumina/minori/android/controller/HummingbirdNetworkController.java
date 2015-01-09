@@ -15,12 +15,10 @@ package com.nizlumina.minori.android.controller;
 import android.content.Context;
 import android.util.Log;
 
-import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.network.ConnectionUnit;
-import com.nizlumina.minori.android.presenter.AnimeObjectPresenter;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
@@ -44,36 +42,21 @@ public class HummingbirdNetworkController
         mHummingbirdInternalCache = new HummingbirdInternalCache();
     }
 
-    public synchronized void populateAdapterWithUpcoming(final Context context, final GalleryAdapter<AnimeObjectPresenter> galleryAdapter)
+    public synchronized void populateList(final Context context, final List<AnimeObject> results, NetworkListener networkListener)
     {
-        List<AnimeObject> results = populateResults(context);
-
-        if (results.size() > 0)
-        {
-            List<AnimeObjectPresenter> animeObjectPresenters = AnimeObjectPresenter.listFrom(results);
-            galleryAdapter.add(animeObjectPresenters);
-        }
-    }
-
-    private List<AnimeObject> populateResults(final Context context)
-    {
-        List<AnimeObject> results = new ArrayList<>();
-
         ConnectionUnit unit = new ConnectionUnit(true);
         String response = unit.getResponseString(endpoint);
 
         if (response != null)
         {
             List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(response);
-            this.processCache(context, results, animeSlugs);
+            this.processCache(context, results, animeSlugs, networkListener);
         }
-
-        return results;
     }
 
     //The code below will generate lots of request to the HummingbirdAPI.
     //Make sure to cache stuffs if possible.
-    private void processCache(Context context, List<AnimeObject> results, List<String> animeSlugs)
+    private void processCache(Context context, List<AnimeObject> results, List<String> animeSlugs, NetworkListener networkListener)
     {
         this.mHummingbirdInternalCache.loadInstanceCache(context);
 
@@ -91,7 +74,10 @@ public class HummingbirdNetworkController
                 if (cachedAnimeObject == null)
                     continue;
             }
+            if (networkListener != null)
+                networkListener.onEachSuccessfulResponses(cachedAnimeObject);
             results.add(cachedAnimeObject);
+            Log.v(getClass().getSimpleName(), String.format("Success: %s %s", cachedAnimeObject.title, cachedAnimeObject.id));
         }
 
         //remove old cache
@@ -105,7 +91,7 @@ public class HummingbirdNetworkController
         results.removeAll(removalList);
         Log.v(getClass().getSimpleName(), "Results " + String.valueOf(results.size()));
 
-
+        if (networkListener != null) networkListener.onFinish();
     }
 
     public void saveCacheAsync(Context context, OnFinishListener onFinishListener)
@@ -120,4 +106,10 @@ public class HummingbirdNetworkController
         return mHummingbirdInternalCache.getCache();
     }
 
+    public static interface NetworkListener
+    {
+        void onEachSuccessfulResponses(AnimeObject animeObject);
+
+        void onFinish();
+    }
 }

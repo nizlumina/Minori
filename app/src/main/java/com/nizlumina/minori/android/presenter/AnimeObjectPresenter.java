@@ -14,7 +14,6 @@ package com.nizlumina.minori.android.presenter;
 
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,11 +23,11 @@ import java.util.List;
  */
 public class AnimeObjectPresenter implements GalleryPresenter
 {
-    private SoftReference<AnimeObject> animeObjectWeakReference;
+    private AnimeObject mAnimeObject;
 
     public AnimeObjectPresenter(AnimeObject animeObject)
     {
-        this.animeObjectWeakReference = new SoftReference<>(animeObject);
+        this.mAnimeObject = animeObject;
     }
 
     public static List<AnimeObjectPresenter> listFrom(Collection<AnimeObject> animeObjects)
@@ -44,19 +43,19 @@ public class AnimeObjectPresenter implements GalleryPresenter
     @Override
     public void explicitlySetLocalImageURI(String uri)
     {
-        animeObjectWeakReference.get().cachedImageURI = uri;
+        mAnimeObject.cachedImageURI = uri;
     }
 
     @Override
     public void explicitlySetOnlineImageURI(String uri)
     {
-        animeObjectWeakReference.get().imageUrl = uri;
+        mAnimeObject.imageUrl = uri;
     }
 
     @Override
     public String getTitle()
     {
-        return animeObjectWeakReference.get().title;
+        return mAnimeObject.title;
     }
 
     @Override
@@ -74,13 +73,13 @@ public class AnimeObjectPresenter implements GalleryPresenter
     @Override
     public String getLocalImageURI()
     {
-        return animeObjectWeakReference.get().cachedImageURI;
+        return mAnimeObject.cachedImageURI;
     }
 
     @Override
     public String getOnlineImageURI()
     {
-        return animeObjectWeakReference.get().imageUrl;
+        return mAnimeObject.imageUrl;
     }
 
 //    public int getID()
