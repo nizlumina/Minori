@@ -2,13 +2,13 @@ package com.nizlumina.minori.android.controller;
 
 import android.content.Context;
 
-import com.nizlumina.minori.android.WatchlistSingleton;
 import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.android.data.WatchData;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.factory.IntentFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
+import com.nizlumina.minori.android.internal.WatchlistSingleton;
 import com.nizlumina.minori.android.network.NetworkState;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;

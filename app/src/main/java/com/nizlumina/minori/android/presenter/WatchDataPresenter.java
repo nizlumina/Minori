@@ -65,9 +65,27 @@ public class WatchDataPresenter implements GalleryPresenter
     }
 
     @Override
-    public String getImageURI()
+    public String getLocalImageURI()
     {
         return null;
+    }
+
+    @Override
+    public String getOnlineImageURI()
+    {
+        return null;
+    }
+
+    @Override
+    public void explicitlySetLocalImageURI(String uri)
+    {
+
+    }
+
+    @Override
+    public void explicitlySetOnlineImageURI(String uri)
+    {
+
     }
 
     @Override

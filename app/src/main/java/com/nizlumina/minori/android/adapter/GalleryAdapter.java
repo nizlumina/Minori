@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.nizlumina.minori.android.presenter.GalleryPresenter;
+import com.nizlumina.minori.android.utility.GalleryItemHolder;
 
 import java.util.List;
 

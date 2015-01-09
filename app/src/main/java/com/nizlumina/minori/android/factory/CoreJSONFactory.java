@@ -73,28 +73,21 @@ public class CoreJSONFactory
     public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean forOnlineInteraction)
     {
         AnimeObject animeObject = new AnimeObject();
-        try
-        {
-            animeObject.id = jsonObject.getInt(AnimeObject.JSON_ID);
-            animeObject.slug = jsonObject.getString(AnimeObject.JSON_SLUG);
-            animeObject.status = jsonObject.getString(AnimeObject.JSON_STATUS);
-            animeObject.url = jsonObject.getString(AnimeObject.JSON_URL);
-            animeObject.title = jsonObject.getString(AnimeObject.JSON_TITLE);
-            animeObject.episodeCount = jsonObject.getInt(AnimeObject.JSON_EPS_COUNT);
-            animeObject.imageUrl = jsonObject.getString(AnimeObject.JSON_COVER_IMG_URL);
-            animeObject.synopsis = jsonObject.getString(AnimeObject.JSON_SYNOPSIS);
-            animeObject.startedAiring = jsonObject.getString(AnimeObject.JSON_STARTED_AIRING);
-            animeObject.finishedAiring = jsonObject.getString(AnimeObject.JSON_FINISHED_AIRING);
+        animeObject.id = jsonObject.optInt(AnimeObject.JSON_API_ID);
+        animeObject.slug = jsonObject.optString(AnimeObject.JSON_API_SLUG);
+        animeObject.status = jsonObject.optString(AnimeObject.JSON_API_STATUS);
+        animeObject.url = jsonObject.optString(AnimeObject.JSON_API_URL);
+        animeObject.title = jsonObject.optString(AnimeObject.JSON_API_TITLE);
+        animeObject.episodeCount = jsonObject.optInt(AnimeObject.JSON_API_EPS_COUNT);
+        animeObject.imageUrl = jsonObject.optString(AnimeObject.JSON_API_COVER_IMG_URL);
+        animeObject.synopsis = jsonObject.optString(AnimeObject.JSON_API_SYNOPSIS);
+        animeObject.startedAiring = jsonObject.optString(AnimeObject.JSON_API_STARTED_AIRING);
+        animeObject.finishedAiring = jsonObject.optString(AnimeObject.JSON_API_FINISHED_AIRING);
 
-            if (!forOnlineInteraction)
-                animeObject.cachedImageURI = jsonObject.getString(AnimeObject.JSON_CACHED_IMG_URI);
-            return animeObject;
-        }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        return null;
+        if (!forOnlineInteraction)
+            animeObject.cachedImageURI = jsonObject.optString(AnimeObject.JSON_CACHED_IMG_URI);
+        return animeObject;
+
     }
 
     public static List<AnimeObject> animeObjectsFromJSON(JSONArray jsonArray, boolean forOnlineInteraction)
@@ -147,16 +140,16 @@ public class CoreJSONFactory
         JSONObject jsonObject = new JSONObject();
         try
         {
-            jsonObject.put(AnimeObject.JSON_ID, animeObject.id);
-            jsonObject.put(AnimeObject.JSON_SLUG, animeObject.slug);
-            jsonObject.put(AnimeObject.JSON_STATUS, animeObject.status);
-            jsonObject.put(AnimeObject.JSON_URL, animeObject.url);
-            jsonObject.put(AnimeObject.JSON_TITLE, animeObject.title);
-            jsonObject.put(AnimeObject.JSON_EPS_COUNT, animeObject.episodeCount);
-            jsonObject.put(AnimeObject.JSON_COVER_IMG_URL, animeObject.imageUrl);
-            jsonObject.put(AnimeObject.JSON_SYNOPSIS, animeObject.synopsis);
-            jsonObject.put(AnimeObject.JSON_STARTED_AIRING, animeObject.startedAiring);
-            jsonObject.put(AnimeObject.JSON_FINISHED_AIRING, animeObject.finishedAiring);
+            jsonObject.put(AnimeObject.JSON_API_ID, animeObject.id);
+            jsonObject.put(AnimeObject.JSON_API_SLUG, animeObject.slug);
+            jsonObject.put(AnimeObject.JSON_API_STATUS, animeObject.status);
+            jsonObject.put(AnimeObject.JSON_API_URL, animeObject.url);
+            jsonObject.put(AnimeObject.JSON_API_TITLE, animeObject.title);
+            jsonObject.put(AnimeObject.JSON_API_EPS_COUNT, animeObject.episodeCount);
+            jsonObject.put(AnimeObject.JSON_API_COVER_IMG_URL, animeObject.imageUrl);
+            jsonObject.put(AnimeObject.JSON_API_SYNOPSIS, animeObject.synopsis);
+            jsonObject.put(AnimeObject.JSON_API_STARTED_AIRING, animeObject.startedAiring);
+            jsonObject.put(AnimeObject.JSON_API_FINISHED_AIRING, animeObject.finishedAiring);
 
             if (!forOnlineInteraction)
                 jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.cachedImageURI);

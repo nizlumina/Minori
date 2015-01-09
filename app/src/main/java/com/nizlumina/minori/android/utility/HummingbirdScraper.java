@@ -34,7 +34,7 @@ public class HummingbirdScraper
      * @param htmlBody The whole HTML document
      * @return A list of Hummingbird 'slugs' where it can then be fed to the official API.
      */
-    public static List<String> scrapePath(String htmlBody)
+    public static List<String> scrapeUpcoming(String htmlBody)
     {
         Document document = Jsoup.parse(htmlBody);
         Elements identifierElements = document.getElementsByClass(identifierClass);

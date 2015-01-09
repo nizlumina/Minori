@@ -10,8 +10,9 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.adapter;
+package com.nizlumina.minori.android.utility;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,8 +20,9 @@ import android.widget.TextView;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.presenter.GalleryPresenter;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
-class GalleryItemHolder
+public class GalleryItemHolder
 {
     public TextView title, group, episode;
     public ImageView imageContainer;
@@ -46,7 +48,24 @@ class GalleryItemHolder
 
         //TODO: Set options
         if (imageContainer != null)
-            ImageLoader.getInstance().displayImage(galleryPresenter.getImageURI(), imageContainer);
+        {
+            String localURI = galleryPresenter.getLocalImageURI();
+            String onlineURI = galleryPresenter.getOnlineImageURI();
+            if (onlineURI != null)
+            {
+                if (localURI == null)
+                {
+                    ImageViewAware imageViewAware = new ImageViewAware(imageContainer);
+                    ImageLoader imageLoader = ImageLoader.getInstance();
+                    imageLoader.displayImage(onlineURI, imageViewAware);
+
+                    String newLocalURI = imageLoader.getDiskCache().get(onlineURI).getAbsolutePath();
+                    String newLoadingURI = imageLoader.getLoadingUriForView(imageViewAware);
+
+                    Log.v(getClass().getSimpleName(), String.format("\nLocal[%s]\nLoading[%s]\n", newLocalURI, newLoadingURI));
+                }
+            }
+        }
 
     }
 }

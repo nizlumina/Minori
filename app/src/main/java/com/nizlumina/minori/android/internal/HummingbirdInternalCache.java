@@ -10,10 +10,11 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.controller;
+package com.nizlumina.minori.android.internal;
 
 import android.content.Context;
 
+import com.nizlumina.minori.android.controller.ThreadController;
 import com.nizlumina.minori.android.factory.CoreJSONFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
@@ -25,36 +26,58 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 /**
  * A shoe-horned instance-based cache class. Might not be correct in some parts yet (trying to soft-mitigate race condition). Will rewrite this class later.
  * Currently the cache uses the same file (so just one file) for saving and loading. While a more generic class is much better, the cache currently only handles the corner case for caching Hummingbird specific stuffs. Until MAL have a better API and an intermediary server becomes feasible enough for OAuth-ing to AniList, this should be adequate for now.
  */
-public final class HummingbirdCacheController
+public final class HummingbirdInternalCache
 {
     static final String cacheName = "HummingbirdCache";
-    private final Hashtable<String, AnimeObject> cachedAnimeObjects = new Hashtable<>();
     private final Object instanceLock = new Object();
+    private WeakHashMap<String, AnimeObject> mCachedAnimeObjects = new WeakHashMap<>();
 
-    public Hashtable<String, AnimeObject> getCachedAnimeObjects()
+    /**
+     * A factory method to get an instance cache from a list of AnimeObject.
+     *
+     * @param animeObjects The list to create the cache from.
+     * @return A WeakHashMap cache with the AnimeObject "slugs" being the key.
+     */
+    public static WeakHashMap<String, AnimeObject> createInstanceCacheFrom(List<AnimeObject> animeObjects)
     {
-        return cachedAnimeObjects;
+        WeakHashMap<String, AnimeObject> resultsCache = new WeakHashMap<>();
+        for (AnimeObject animeObject : animeObjects)
+        {
+            resultsCache.put(animeObject.slug, animeObject);
+        }
+        return resultsCache;
     }
 
-    public synchronized List<AnimeObject> getCachedAnimeObjectsClone()
+    public WeakHashMap<String, AnimeObject> getCache()
+    {
+        return mCachedAnimeObjects;
+    }
+
+    public synchronized List<AnimeObject> getCachedAnimeObjectsCopy()
     {
         List<AnimeObject> animeObjects = new ArrayList<>();
-        for (AnimeObject animeObject : cachedAnimeObjects.values())
+        for (AnimeObject animeObject : mCachedAnimeObjects.values())
             animeObjects.add(animeObject);
         return animeObjects;
     }
 
     public synchronized AnimeObject getAnimeObjectFromCache(String slug)
     {
-        return cachedAnimeObjects.get(slug);
+        return mCachedAnimeObjects.get(slug);
+    }
+
+    public synchronized void applyNewCache(WeakHashMap<String, AnimeObject> newCache)
+    {
+        mCachedAnimeObjects.clear();
+        mCachedAnimeObjects.putAll(newCache);
     }
 
     /**
@@ -105,7 +128,7 @@ public final class HummingbirdCacheController
 
                     for (AnimeObject animeObject : diskCachedAnimeObjects)
                     {
-                        cachedAnimeObjects.put(animeObject.slug, animeObject);
+                        mCachedAnimeObjects.put(animeObject.slug, animeObject);
                     }
                 }
             }
@@ -156,7 +179,7 @@ public final class HummingbirdCacheController
                 final File cacheFile = new File(context.getCacheDir(), cacheName);
                 if (!cacheFile.exists()) cacheFile.createNewFile();
 
-                JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(getCachedAnimeObjectsClone(), false), new FileOutputStream(cacheFile));
+                JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(getCachedAnimeObjectsCopy(), false), new FileOutputStream(cacheFile));
             }
             catch (IOException e)
             {

@@ -14,7 +14,9 @@ package com.nizlumina.minori.android.presenter;
 
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,14 +24,14 @@ import java.util.List;
  */
 public class AnimeObjectPresenter implements GalleryPresenter
 {
-    private AnimeObject mAnimeObject;
+    private SoftReference<AnimeObject> animeObjectWeakReference;
 
     public AnimeObjectPresenter(AnimeObject animeObject)
     {
-        this.mAnimeObject = animeObject;
+        this.animeObjectWeakReference = new SoftReference<>(animeObject);
     }
 
-    public static List<AnimeObjectPresenter> listFrom(List<AnimeObject> animeObjects)
+    public static List<AnimeObjectPresenter> listFrom(Collection<AnimeObject> animeObjects)
     {
         List<AnimeObjectPresenter> presenters = new ArrayList<>();
         for (AnimeObject animeObject : animeObjects)
@@ -40,9 +42,21 @@ public class AnimeObjectPresenter implements GalleryPresenter
     }
 
     @Override
+    public void explicitlySetLocalImageURI(String uri)
+    {
+        animeObjectWeakReference.get().cachedImageURI = uri;
+    }
+
+    @Override
+    public void explicitlySetOnlineImageURI(String uri)
+    {
+        animeObjectWeakReference.get().imageUrl = uri;
+    }
+
+    @Override
     public String getTitle()
     {
-        return mAnimeObject.title;
+        return animeObjectWeakReference.get().title;
     }
 
     @Override
@@ -58,11 +72,15 @@ public class AnimeObjectPresenter implements GalleryPresenter
     }
 
     @Override
-    public String getImageURI()
+    public String getLocalImageURI()
     {
-        if (mAnimeObject.cachedImageURI != null) return mAnimeObject.cachedImageURI;
-        if (mAnimeObject.imageUrl != null) return mAnimeObject.imageUrl;
-        return null;
+        return animeObjectWeakReference.get().cachedImageURI;
+    }
+
+    @Override
+    public String getOnlineImageURI()
+    {
+        return animeObjectWeakReference.get().imageUrl;
     }
 
 //    public int getID()

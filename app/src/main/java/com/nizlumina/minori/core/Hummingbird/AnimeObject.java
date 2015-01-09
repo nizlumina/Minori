@@ -5,16 +5,16 @@ package com.nizlumina.minori.core.Hummingbird;
  */
 public class AnimeObject
 {
-    public static final String JSON_ID = "id";
-    public static final String JSON_SLUG = "slug";
-    public static final String JSON_STATUS = "status";
-    public static final String JSON_URL = "url";
-    public static final String JSON_TITLE = "title";
-    public static final String JSON_EPS_COUNT = "episode_count";
-    public static final String JSON_COVER_IMG_URL = "cover_image_url";
-    public static final String JSON_SYNOPSIS = "synopsis";
-    public static final String JSON_STARTED_AIRING = "started_airing";
-    public static final String JSON_FINISHED_AIRING = "finished_airing";
+    public static final String JSON_API_ID = "id";
+    public static final String JSON_API_SLUG = "slug";
+    public static final String JSON_API_STATUS = "status";
+    public static final String JSON_API_URL = "url";
+    public static final String JSON_API_TITLE = "title";
+    public static final String JSON_API_EPS_COUNT = "episode_count";
+    public static final String JSON_API_COVER_IMG_URL = "cover_image";
+    public static final String JSON_API_SYNOPSIS = "synopsis";
+    public static final String JSON_API_STARTED_AIRING = "started_airing";
+    public static final String JSON_API_FINISHED_AIRING = "finished_airing";
     //Non-API
     public static final String JSON_CACHED_IMG_URI = "cached_image_uri";
 

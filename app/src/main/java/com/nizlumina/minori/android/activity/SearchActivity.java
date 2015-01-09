@@ -1,6 +1,7 @@
 package com.nizlumina.minori.android.activity;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,8 @@ public class SearchActivity extends BaseActivity
 {
 
     GridView gridView;
-    private GalleryAdapter<AnimeObjectPresenter> adapter;
+    GalleryAdapter<AnimeObjectPresenter> adapter;
+    HummingbirdNetworkController hummingbirdNetworkController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,12 +52,23 @@ public class SearchActivity extends BaseActivity
         List<AnimeObjectPresenter> animeObjectPresenters = new ArrayList<>();
         gridView = (GridView) findViewById(R.id.gridview);
         gridView.setBackgroundColor(Color.WHITE);
-        adapter = new GalleryAdapter<>(this, R.layout.list_item_compact, animeObjectPresenters);
+        adapter = new GalleryAdapter<AnimeObjectPresenter>(this, R.layout.list_item_compact, animeObjectPresenters);
 
         gridView.setAdapter(adapter);
 
-        HummingbirdNetworkController hummingbirdNetworkController = new HummingbirdNetworkController();
-        hummingbirdNetworkController.populateUpcomingAnime(SearchActivity.this, adapter, null);
+        hummingbirdNetworkController = new HummingbirdNetworkController();
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>()
+        {
+            @Override
+            protected Void doInBackground(Void... params)
+            {
+                hummingbirdNetworkController.populateAdapterWithUpcoming(SearchActivity.this, adapter);
+                return null;
+            }
+        };
+
+        task.execute(null, null, null);
+
 
         searchFab.setOnClickListener(new View.OnClickListener()
         {

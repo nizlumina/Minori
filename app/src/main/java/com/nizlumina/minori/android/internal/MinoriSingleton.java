@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android;
+package com.nizlumina.minori.android.internal;
 
 
 import java.util.ArrayList;
