@@ -66,14 +66,20 @@ class WebUnitMaster
 }
 
 /**
- * Slave class for common HTTP responses. Downloading stuffs is not implemented yet with this class.
+ * Slave class for common HTTP responses and request.
+ * Downloading stuffs is not fully-implemented yet with this class.
+ * Otherwise, instances are thread-safe.
+ * <p>
+ * Any WebUnit calls should be wrapped in a worker thread.
+ * Enqueuing request will be added later as needed (it will follow this <a href="http://stackoverflow.com/a/23965563/3939904">link</a>)
+ * </p>
  */
 public class WebUnit
 {
     private static final String userAgentKey = "User-Agent";
     private static final String userAgent = "minori-android";
 
-    public String getString(Context context, String url) throws IOException
+    public synchronized String getString(Context context, String url) throws IOException
     {
         final Response response = initRequestAndExecute(context, url);
 
@@ -84,7 +90,7 @@ public class WebUnit
         return null;
     }
 
-    public void invokeOnStream(Context context, String url, StreamCallable callable) throws IOException
+    public synchronized void invokeOnStream(Context context, String url, StreamCallable callable) throws IOException
     {
         final Response response = initRequestAndExecute(context, url);
 
@@ -111,5 +117,4 @@ public class WebUnit
          */
         public void onStreamReceived(InputStream inputStream);
     }
-
 }
