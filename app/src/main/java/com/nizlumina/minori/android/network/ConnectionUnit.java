@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * A basic connection unit
+ * A basic legacy connection unit. Use the newer WebUnit for HTTP future responses
  */
 public class ConnectionUnit
 {
