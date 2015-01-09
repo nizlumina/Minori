@@ -20,9 +20,10 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Internal singleton master for WebUnit request.
+ * Internal singleton master for all WebUnit requests.
  */
 class WebUnitMaster
 {
@@ -69,21 +70,46 @@ class WebUnitMaster
  */
 public class WebUnit
 {
-    static final String userAgentKey = "User-Agent";
-    static final String userAgent = "minori-android";
+    private static final String userAgentKey = "User-Agent";
+    private static final String userAgent = "minori-android";
 
     public String getString(Context context, String url) throws IOException
     {
-        final Request request = new Request.Builder()
-                .url(url)
-                .addHeader(userAgentKey, userAgent).build();
-        final Response response = WebUnitMaster.getInstance(context).getClient().newCall(request).execute();
+        final Response response = initRequestAndExecute(context, url);
 
         if (response != null && response.isSuccessful())
         {
             return response.body().string();
         }
         return null;
+    }
+
+    public void invokeOnStream(Context context, String url, StreamCallable callable) throws IOException
+    {
+        final Response response = initRequestAndExecute(context, url);
+
+        if (response != null && response.isSuccessful())
+        {
+            callable.onStreamReceived(response.body().byteStream());
+        }
+    }
+
+    private Response initRequestAndExecute(Context context, String url) throws IOException
+    {
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader(userAgentKey, userAgent).build();
+        return WebUnitMaster.getInstance(context).getClient().newCall(request).execute();
+    }
+
+    public interface StreamCallable
+    {
+        /**
+         * This is called when the stream is fully received
+         *
+         * @param inputStream The full InputStream received
+         */
+        public void onStreamReceived(InputStream inputStream);
     }
 
 }

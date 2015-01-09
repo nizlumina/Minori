@@ -1,7 +1,9 @@
 package com.nizlumina.minori.android.factory;
 
-import com.nizlumina.minori.android.network.ConnectionUnit;
+import android.content.Context;
+
 import com.nizlumina.minori.android.network.CoreQuery;
+import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 import com.nizlumina.minori.core.Nyaa.Parser.NyaaXMLParser;
@@ -10,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -20,11 +23,11 @@ import java.util.ArrayList;
 public class CoreNetworkFactory
 {
 
-    public static synchronized void getNyaaEntries(final String searchTerms, final ArrayList<NyaaEntry> outputList, final ConnectionUnit.NetworkProgressListener listener)
+    public static synchronized void getNyaaEntries(Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList)
     {
-        ConnectionUnit unit = new ConnectionUnit();
+        WebUnit unit = new WebUnit();
 
-        ConnectionUnit.Callable callable = new ConnectionUnit.Callable()
+        WebUnit.StreamCallable callable = new WebUnit.StreamCallable()
         {
             @Override
             public void onStreamReceived(InputStream inputStream)
@@ -34,18 +37,27 @@ public class CoreNetworkFactory
             }
         };
 
-        unit.invokeOnStream(CoreQuery.Nyaa.getEnglishSubRSS(searchTerms).toString(), callable, listener);
+        try
+        {
+            unit.invokeOnStream(context, CoreQuery.Nyaa.getEnglishSubRSS(searchTerms).toString(), callable);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    public static synchronized void getAnimeObject(final String searchTerms, final ArrayList<AnimeObject> outputList, final ConnectionUnit.NetworkProgressListener listener)
+    public static synchronized void getAnimeObject(Context context, final String searchTerms, final ArrayList<AnimeObject> outputList)
     {
-        ConnectionUnit unit = new ConnectionUnit();
+        WebUnit unit = new WebUnit();
 
-        String resultString = unit.getResponseString(CoreQuery.Hummingbird.searchQuery(searchTerms).toString(), listener);
-        if (resultString != null)
+        String resultString = null;
+        try
         {
-            try
+            resultString = unit.getString(context, CoreQuery.Hummingbird.searchQuery(searchTerms).toString());
+            if (resultString != null)
             {
+
                 JSONArray jsonArray = new JSONArray(resultString);
                 for (int i = 0; i < jsonArray.length(); i++)
                 {
@@ -54,24 +66,33 @@ public class CoreNetworkFactory
                     AnimeObject animeObject = CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
                     if (animeObject != null) outputList.add(animeObject);
                 }
+
             }
-            catch (JSONException e)
-            {
-                e.printStackTrace();
-            }
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
-    public static synchronized AnimeObject getAnimeObject(String slugOrID)
+    public static synchronized AnimeObject getAnimeObject(Context context, String slugOrID)
     {
-        ConnectionUnit unit = new ConnectionUnit();
-        String resultString = unit.getResponseString(CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString());
+        WebUnit unit = new WebUnit();
         try
         {
+            String resultString = unit.getString(context, CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString());
             JSONObject jsonObject = new JSONObject(resultString);
             return CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
         }
         catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }

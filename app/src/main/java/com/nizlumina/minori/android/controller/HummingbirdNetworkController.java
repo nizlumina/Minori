@@ -18,10 +18,11 @@ import android.util.Log;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.android.network.ConnectionUnit;
+import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -44,8 +45,16 @@ public class HummingbirdNetworkController
 
     public synchronized void populateList(final Context context, final List<AnimeObject> results, NetworkListener networkListener)
     {
-        ConnectionUnit unit = new ConnectionUnit(true);
-        String response = unit.getResponseString(endpoint);
+        WebUnit unit = new WebUnit();
+        String response = null;
+        try
+        {
+            response = unit.getString(context, endpoint);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         if (response != null)
         {
@@ -68,7 +77,7 @@ public class HummingbirdNetworkController
             if (cachedAnimeObject == null)
             {
                 //initiate response
-                cachedAnimeObject = CoreNetworkFactory.getAnimeObject(animeSlug);
+                cachedAnimeObject = CoreNetworkFactory.getAnimeObject(context, animeSlug);
 
                 //skip if still null
                 if (cachedAnimeObject == null)
