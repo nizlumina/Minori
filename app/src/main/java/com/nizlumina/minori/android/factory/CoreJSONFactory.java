@@ -70,7 +70,7 @@ public class CoreJSONFactory
 
     }
 
-    public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean forOnlineInteraction)
+    public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean strictHummingbirdJSON)
     {
         AnimeObject animeObject = new AnimeObject();
         animeObject.id = jsonObject.optInt(AnimeObject.JSON_API_ID);
@@ -84,13 +84,13 @@ public class CoreJSONFactory
         animeObject.startedAiring = jsonObject.optString(AnimeObject.JSON_API_STARTED_AIRING);
         animeObject.finishedAiring = jsonObject.optString(AnimeObject.JSON_API_FINISHED_AIRING);
 
-        if (!forOnlineInteraction)
+        if (!strictHummingbirdJSON)
             animeObject.cachedImageURI = jsonObject.optString(AnimeObject.JSON_CACHED_IMG_URI);
         return animeObject;
 
     }
 
-    public static List<AnimeObject> animeObjectsFromJSON(JSONArray jsonArray, boolean forOnlineInteraction)
+    public static List<AnimeObject> animeObjectsFromJSON(JSONArray jsonArray, boolean strictHummingbirdJSON)
     {
         List<AnimeObject> results = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++)
@@ -100,7 +100,7 @@ public class CoreJSONFactory
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject != null)
                 {
-                    AnimeObject animeObject = animeObjectFromJSON(jsonObject, forOnlineInteraction);
+                    AnimeObject animeObject = animeObjectFromJSON(jsonObject, strictHummingbirdJSON);
                     if (animeObject != null)
                         results.add(animeObject);
                 }
@@ -135,7 +135,7 @@ public class CoreJSONFactory
         return null;
     }
 
-    public static JSONObject toJSON(AnimeObject animeObject, boolean forOnlineInteraction)
+    public static JSONObject toJSON(AnimeObject animeObject, boolean strictHummingbirdJSON)
     {
         JSONObject jsonObject = new JSONObject();
         try
@@ -151,7 +151,7 @@ public class CoreJSONFactory
             jsonObject.put(AnimeObject.JSON_API_STARTED_AIRING, animeObject.startedAiring);
             jsonObject.put(AnimeObject.JSON_API_FINISHED_AIRING, animeObject.finishedAiring);
 
-            if (!forOnlineInteraction)
+            if (!strictHummingbirdJSON)
                 jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.cachedImageURI);
         }
         catch (JSONException e)
@@ -219,14 +219,14 @@ public class CoreJSONFactory
         return obj;
     }
 
-    public static JSONArray toJSONArray(List<AnimeObject> animeObjects, boolean forOnlineInteraction)
+    public static JSONArray toJSONArray(List<AnimeObject> animeObjects, boolean strictHummingbirdJSON)
     {
         JSONArray results = new JSONArray();
         if (animeObjects != null && animeObjects.size() > 0)
         {
             for (AnimeObject animeObject : animeObjects)
             {
-                results.put(toJSON(animeObject, forOnlineInteraction));
+                results.put(toJSON(animeObject, strictHummingbirdJSON));
 
             }
         }
