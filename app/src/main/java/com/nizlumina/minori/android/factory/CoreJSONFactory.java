@@ -140,16 +140,16 @@ public class CoreJSONFactory
         JSONObject jsonObject = new JSONObject();
         try
         {
-            jsonObject.put(AnimeObject.JSON_API_ID, animeObject.id);
-            jsonObject.put(AnimeObject.JSON_API_SLUG, animeObject.slug);
-            jsonObject.put(AnimeObject.JSON_API_STATUS, animeObject.status);
-            jsonObject.put(AnimeObject.JSON_API_URL, animeObject.url);
-            jsonObject.put(AnimeObject.JSON_API_TITLE, animeObject.title);
-            jsonObject.put(AnimeObject.JSON_API_EPS_COUNT, animeObject.episodeCount);
-            jsonObject.put(AnimeObject.JSON_API_COVER_IMG_URL, animeObject.imageUrl);
-            jsonObject.put(AnimeObject.JSON_API_SYNOPSIS, animeObject.synopsis);
-            jsonObject.put(AnimeObject.JSON_API_STARTED_AIRING, animeObject.startedAiring);
-            jsonObject.put(AnimeObject.JSON_API_FINISHED_AIRING, animeObject.finishedAiring);
+            jsonObject.putOpt(AnimeObject.JSON_API_ID, animeObject.id)
+                    .putOpt(AnimeObject.JSON_API_SLUG, animeObject.slug)
+                    .putOpt(AnimeObject.JSON_API_STATUS, animeObject.status)
+                    .putOpt(AnimeObject.JSON_API_URL, animeObject.url)
+                    .putOpt(AnimeObject.JSON_API_TITLE, animeObject.title)
+                    .putOpt(AnimeObject.JSON_API_EPS_COUNT, animeObject.episodeCount)
+                    .putOpt(AnimeObject.JSON_API_COVER_IMG_URL, animeObject.imageUrl)
+                    .putOpt(AnimeObject.JSON_API_SYNOPSIS, animeObject.synopsis)
+                    .putOpt(AnimeObject.JSON_API_STARTED_AIRING, animeObject.startedAiring)
+                    .putOpt(AnimeObject.JSON_API_FINISHED_AIRING, animeObject.finishedAiring);
 
             if (!strictHummingbirdJSON)
                 jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.cachedImageURI);
