@@ -13,6 +13,7 @@
 package com.nizlumina.minori.android.network;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
@@ -141,6 +142,7 @@ public class WebUnit
      */
     public synchronized void enqueueGetString(final Context context, final String url, final WebUnitListener listener) throws IOException
     {
+        final Handler handler = new Handler();
         executeAsync(context, url, new Callback()
         {
             @Override
@@ -150,9 +152,18 @@ public class WebUnit
             }
 
             @Override
-            public void onResponse(Response response) throws IOException
+            public void onResponse(final Response response) throws IOException
             {
-                if (listener != null) listener.onFinish(response.body().toString());
+                final String finalResponse = response.body().string();
+                handler.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if (listener != null) listener.onFinish(finalResponse);
+                    }
+                });
+
             }
         });
     }
