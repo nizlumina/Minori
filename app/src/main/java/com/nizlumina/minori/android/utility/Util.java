@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.widget.ImageButton;
 
 /**
@@ -60,6 +61,17 @@ public class Util
             Drawable bg = button.getBackground();
             if (bg != null) bg.setColorFilter(backgroundTint, PorterDuff.Mode.MULTIPLY);
         }
+    }
+
+    public static void logThread(String identifier)
+    {
+        Log.v(identifier, "Thread ID:" + Thread.currentThread().getId());
+    }
+
+    public static void logTime(long startTimeInNano)
+    {
+        long d = System.nanoTime() - startTimeInNano;
+        Log.v(Util.class.getSimpleName(), String.format("Time taken: %d ms, or %d ns", (d) / (1000 * 1000), d));
     }
 
 // Unused
