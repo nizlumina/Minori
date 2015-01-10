@@ -136,6 +136,6 @@ public class CoreNetworkFactory
 
     public static interface NetworkFactoryListener<T>
     {
-        public void onFinish(T objectResult);
+        public void onFinish(T result);
     }
 }

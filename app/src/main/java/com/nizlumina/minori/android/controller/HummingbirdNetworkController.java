@@ -16,6 +16,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
+import com.nizlumina.minori.android.factory.CoreNetworkFactory.NetworkFactoryListener;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.network.WebUnit;
@@ -26,6 +27,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.concurrent.Callable;
+
+import bolts.Continuation;
+import bolts.Task;
 
 /**
  * Controller for populating data to the UI. Image loading is handled by ImageLoaderController. <br/>
@@ -80,7 +85,36 @@ public class HummingbirdNetworkController
                 @Override
                 public void onFinish(final String responseBody)
                 {
-                    List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(responseBody);
+                    Task.callInBackground(new Callable<List<String>>()
+                    {
+                        @Override
+                        public List<String> call() throws Exception
+                        {
+                            return HummingbirdScraper.scrapeUpcoming(responseBody);
+                        }
+                    }).continueWith(new Continuation<List<String>, Void>()
+                    {
+                        @Override
+                        public Void then(Task<List<String>> task) throws Exception
+                        {
+                            List<String> animeSlugs = task.getResult();
+
+                            for (String animeSlug : animeSlugs)
+                            {
+                                CoreNetworkFactory.getAnimeObjectAsync(context, animeSlug, new NetworkFactoryListener<AnimeObject>()
+                                {
+                                    @Override
+                                    public void onFinish(AnimeObject result)
+                                    {
+                                        //Todo: Verification.class.verify(objectresult)
+                                        if (networkListener != null)
+                                            networkListener.onEachSuccessfulResponses(result);
+                                    }
+                                });
+                            }
+                            return null;
+                        }
+                    });
 
 
                 }
