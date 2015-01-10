@@ -86,7 +86,7 @@ public class WebUnit
      *
      * @param context Any applicable context for the initialization
      * @param url     The URL for the request
-     * @return The body in a string object
+     * @return The body in a string object. Returns null on failure.
      * @throws IOException
      */
     public synchronized String getString(final Context context, final String url) throws IOException
@@ -136,7 +136,7 @@ public class WebUnit
      *
      * @param context  Any applicable context for the initialization
      * @param url      The URL for the request
-     * @param listener Optional listener to retrieve the string object of the received response body
+     * @param listener Optional listener to retrieve the string object of the received response body. Check for null.
      * @throws IOException
      */
     public synchronized void enqueueGetString(final Context context, final String url, final WebUnitListener listener) throws IOException
