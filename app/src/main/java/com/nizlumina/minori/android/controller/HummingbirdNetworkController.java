@@ -71,7 +71,7 @@ public class HummingbirdNetworkController
     public synchronized void populateListAsync(final Context context, final NetworkListener networkListener)
     {
         final WebUnit webUnit = new WebUnit();
-
+        Log.v(getClass().getName(), String.valueOf(Thread.currentThread().getId()));
         try
         {
             webUnit.enqueueGetString(context, endpoint, new WebUnit.WebUnitListener()
@@ -85,6 +85,8 @@ public class HummingbirdNetworkController
                 @Override
                 public void onFinish(final String responseBody)
                 {
+
+                    Log.v(getClass().getName(), String.valueOf(Thread.currentThread().getId()));
                     Task.callInBackground(new Callable<List<String>>()
                     {
                         @Override
