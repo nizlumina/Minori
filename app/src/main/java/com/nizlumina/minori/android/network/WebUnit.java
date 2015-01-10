@@ -137,7 +137,7 @@ public class WebUnit
      *
      * @param context  Any applicable context for the initialization
      * @param url      The URL for the request
-     * @param listener Optional listener to retrieve the string object of the received response body. Check for null.
+     * @param listener Optional listener to retrieve the string object of the received response body. Check for null. This runs on the original thread that first calls the method.
      * @throws IOException
      */
     public synchronized void enqueueGetString(final Context context, final String url, final WebUnitListener listener) throws IOException
@@ -148,7 +148,14 @@ public class WebUnit
             @Override
             public void onFailure(Request request, IOException e)
             {
-                if (listener != null) listener.onFailure();
+                handler.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if (listener != null) listener.onFailure();
+                    }
+                });
             }
 
             @Override
