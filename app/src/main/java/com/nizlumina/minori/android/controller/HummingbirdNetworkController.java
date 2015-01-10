@@ -45,7 +45,7 @@ public class HummingbirdNetworkController
 
     public synchronized void populateList(final Context context, final List<AnimeObject> results, NetworkListener networkListener)
     {
-        WebUnit unit = new WebUnit();
+        final WebUnit unit = new WebUnit();
         String response = null;
         try
         {
@@ -60,6 +60,37 @@ public class HummingbirdNetworkController
         {
             List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(response);
             this.processCache(context, results, animeSlugs, networkListener);
+        }
+    }
+
+    public synchronized void populateListAsync(final Context context, final NetworkListener networkListener)
+    {
+        final WebUnit webUnit = new WebUnit();
+
+        try
+        {
+            webUnit.enqueueGetString(context, endpoint, new WebUnit.WebUnitListener()
+            {
+                @Override
+                public void onFailure()
+                {
+
+                }
+
+                @Override
+                public void onFinish(final String responseBody)
+                {
+                    List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(responseBody);
+
+
+                }
+            });
+
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
