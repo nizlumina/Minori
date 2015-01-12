@@ -14,7 +14,9 @@ package com.nizlumina.minori.android.network;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
+import com.nizlumina.minori.android.utility.Util;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -23,49 +25,6 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-/**
- * Internal singleton master for all WebUnit requests.
- */
-class WebUnitMaster
-{
-    private static volatile WebUnitMaster INSTANCE = null;
-    private final OkHttpClient okHttpClient;
-
-    private WebUnitMaster(Context context)
-    {
-        okHttpClient = new OkHttpClient();
-        int cacheSize = 10 * 1024 * 1024;
-        try
-        {
-            Cache cache = new Cache(context.getCacheDir(), cacheSize);
-            okHttpClient.setCache(cache);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public static WebUnitMaster getInstance(Context context)
-    {
-        if (INSTANCE == null)
-        {
-            synchronized (WebUnitMaster.class)
-            {
-                if (INSTANCE == null)
-                    INSTANCE = new WebUnitMaster(context);
-
-            }
-        }
-        return INSTANCE;
-    }
-
-    public OkHttpClient getClient()
-    {
-        return okHttpClient;
-    }
-}
 
 /**
  * Slave class for common HTTP responses and request.
@@ -81,18 +40,42 @@ public class WebUnit
 {
     private static final String userAgentKey = "User-Agent";
     private static final String userAgent = "minori-android";
+    private final OkHttpClient mClient;
+
+    public WebUnit()
+    {
+        mClient = new OkHttpClient();
+    }
+
+    public OkHttpClient getClient()
+    {
+        return mClient;
+    }
+
+    public void enableCache(Context context)
+    {
+        int cacheSize = 10 * 1024 * 1024;
+        try
+        {
+            Cache cache = new Cache(context.getCacheDir(), cacheSize);
+            mClient.setCache(cache);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Get a string object from response body of the given url. For threaded calls, use {@link #enqueueGetString}
      *
-     * @param context Any applicable context for the initialization
      * @param url     The URL for the request
      * @return The body in a string object. Returns null on failure.
      * @throws IOException
      */
-    public synchronized String getString(final Context context, final String url) throws IOException
+    public synchronized String getString(final String url) throws IOException
     {
-        final Response response = executeSync(context, url);
+        final Response response = executeSync(url);
 
         if (response != null && response.isSuccessful())
         {
@@ -104,14 +87,13 @@ public class WebUnit
     /**
      * Invoke methods on a returned Stream via a Callable
      *
-     * @param context  Any applicable context for the initialization
      * @param url      The URL for the request
      * @param callable The callable instance to apply on the fully received inputstream
      * @throws IOException
      */
-    public synchronized void invokeOnStream(final Context context, final String url, final StreamCallable callable) throws IOException
+    public synchronized void invokeOnStream(final String url, final StreamCallable callable) throws IOException
     {
-        final Response response = executeSync(context, url);
+        final Response response = executeSync(url);
 
         if (response != null && response.isSuccessful())
         {
@@ -119,11 +101,6 @@ public class WebUnit
         }
     }
 
-    private Response executeSync(final Context context, final String url) throws IOException
-    {
-        final Request request = getFormattedRequest(url);
-        return WebUnitMaster.getInstance(context).getClient().newCall(request).execute();
-    }
 
     private Request getFormattedRequest(String url)
     {
@@ -135,15 +112,15 @@ public class WebUnit
     /**
      * Enqueue a request to the given URL and receive the response body in a String object via a listener
      *
-     * @param context  Any applicable context for the initialization
      * @param url      The URL for the request
      * @param listener Optional listener to retrieve the string object of the received response body. Check for null. This runs on the original thread that first calls the method.
      * @throws IOException
      */
-    public synchronized void enqueueGetString(final Context context, final String url, final WebUnitListener listener) throws IOException
+    public synchronized void enqueueGetString(final String url, final WebUnitListener listener) throws IOException
     {
+        Util.logThread("req enqueued");
         final Handler handler = new Handler();
-        executeAsync(context, url, new Callback()
+        executeAsync(url, new Callback()
         {
             @Override
             public void onFailure(Request request, IOException e)
@@ -175,11 +152,18 @@ public class WebUnit
         });
     }
 
-
-    private void executeAsync(final Context context, final String url, final Callback internalCallback) throws IOException
+    private Response executeSync(final String url) throws IOException
     {
         final Request request = getFormattedRequest(url);
-        WebUnitMaster.getInstance(context).getClient().newCall(request).enqueue(internalCallback);
+        return getClient().newCall(request).execute();
+    }
+
+    private void executeAsync(final String url, final Callback internalCallback) throws IOException
+    {
+        final Request request = getFormattedRequest(url);
+        Log.v("currentreq", request.urlString());
+        getClient().newCall(request).enqueue(internalCallback);
+        Log.v("currentreq finished", "req finish");
     }
 
     /**

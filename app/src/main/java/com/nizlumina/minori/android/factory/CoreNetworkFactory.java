@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.nizlumina.minori.android.network.CoreQuery;
 import com.nizlumina.minori.android.network.WebUnit;
+import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 import com.nizlumina.minori.core.Nyaa.Parser.NyaaXMLParser;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  */
 public class CoreNetworkFactory
 {
-    public static synchronized void getNyaaEntries(Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList)
+    public static void getNyaaEntries(Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList)
     {
         WebUnit unit = new WebUnit();
 
@@ -38,7 +39,7 @@ public class CoreNetworkFactory
 
         try
         {
-            unit.invokeOnStream(context, CoreQuery.Nyaa.getEnglishSubRSS(searchTerms).toString(), callable);
+            unit.invokeOnStream(CoreQuery.Nyaa.getEnglishSubRSS(searchTerms).toString(), callable);
         }
         catch (IOException e)
         {
@@ -46,12 +47,12 @@ public class CoreNetworkFactory
         }
     }
 
-    public static synchronized void getAnimeObject(Context context, final String searchTerms, final ArrayList<AnimeObject> outputList)
+    public static void getAnimeObject(Context context, final String searchTerms, final ArrayList<AnimeObject> outputList)
     {
         WebUnit unit = new WebUnit();
         try
         {
-            String resultString = unit.getString(context, CoreQuery.Hummingbird.searchQuery(searchTerms).toString());
+            String resultString = unit.getString(CoreQuery.Hummingbird.searchQuery(searchTerms).toString());
             if (resultString != null)
             {
 
@@ -76,12 +77,12 @@ public class CoreNetworkFactory
         }
     }
 
-    public static synchronized AnimeObject getAnimeObject(Context context, String slugOrID)
+    public static AnimeObject getAnimeObject(Context context, String slugOrID)
     {
         WebUnit unit = new WebUnit();
         try
         {
-            String resultString = unit.getString(context, CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString());
+            String resultString = unit.getString(CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString());
             JSONObject jsonObject = new JSONObject(resultString);
             return CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
         }
@@ -96,12 +97,13 @@ public class CoreNetworkFactory
         return null;
     }
 
-    public static synchronized void getAnimeObjectAsync(final Context context, final String slugOrID, final NetworkFactoryListener<AnimeObject> listener)
+    public static void getAnimeObjectAsync(final Context context, final String slugOrID, final NetworkFactoryListener<AnimeObject> listener)
     {
         WebUnit unit = new WebUnit();
         try
         {
-            unit.enqueueGetString(context, CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString(), new WebUnit.WebUnitListener()
+            Util.logThread("CoreNetworkFactory");
+            unit.enqueueGetString(CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString(), new WebUnit.WebUnitListener()
             {
                 @Override
                 public void onFailure()
@@ -134,7 +136,7 @@ public class CoreNetworkFactory
         }
     }
 
-    public static interface NetworkFactoryListener<T>
+    public interface NetworkFactoryListener<T>
     {
         public void onFinish(T result);
     }

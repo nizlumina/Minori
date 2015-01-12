@@ -21,6 +21,7 @@ import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
+import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
 import java.io.IOException;
@@ -48,13 +49,13 @@ public class HummingbirdNetworkController
         mHummingbirdInternalCache = new HummingbirdInternalCache();
     }
 
-    public synchronized void populateList(final Context context, final List<AnimeObject> results, NetworkListener networkListener)
+    public synchronized void populateListSync(final Context context, final List<AnimeObject> results, NetworkListener<AnimeObject> networkListener)
     {
         final WebUnit unit = new WebUnit();
         String response = null;
         try
         {
-            response = unit.getString(context, endpoint);
+            response = unit.getString(endpoint);
         }
         catch (IOException e)
         {
@@ -68,13 +69,13 @@ public class HummingbirdNetworkController
         }
     }
 
-    public synchronized void populateListAsync(final Context context, final NetworkListener networkListener)
+    public synchronized void populateListAsync(final Context context, final NetworkListener<AnimeObject> networkListener)
     {
+        Util.logThread("populateListAsync");
         final WebUnit webUnit = new WebUnit();
-        Log.v(getClass().getName(), String.valueOf(Thread.currentThread().getId()));
         try
         {
-            webUnit.enqueueGetString(context, endpoint, new WebUnit.WebUnitListener()
+            webUnit.enqueueGetString(endpoint, new WebUnit.WebUnitListener()
             {
                 @Override
                 public void onFailure()
@@ -85,40 +86,8 @@ public class HummingbirdNetworkController
                 @Override
                 public void onFinish(final String responseBody)
                 {
-
-                    Log.v(getClass().getName(), String.valueOf(Thread.currentThread().getId()));
-                    Task.callInBackground(new Callable<List<String>>()
-                    {
-                        @Override
-                        public List<String> call() throws Exception
-                        {
-                            return HummingbirdScraper.scrapeUpcoming(responseBody);
-                        }
-                    }).continueWith(new Continuation<List<String>, Void>()
-                    {
-                        @Override
-                        public Void then(Task<List<String>> task) throws Exception
-                        {
-                            List<String> animeSlugs = task.getResult();
-
-                            for (String animeSlug : animeSlugs)
-                            {
-                                CoreNetworkFactory.getAnimeObjectAsync(context, animeSlug, new NetworkFactoryListener<AnimeObject>()
-                                {
-                                    @Override
-                                    public void onFinish(AnimeObject result)
-                                    {
-                                        //Todo: Verification.class.verify(objectresult)
-                                        if (networkListener != null)
-                                            networkListener.onEachSuccessfulResponses(result);
-                                    }
-                                });
-                            }
-                            return null;
-                        }
-                    });
-
-
+                    webUnit.enqueueGetString();
+                    processScraperResponse(context, responseBody, networkListener);
                 }
             });
 
@@ -132,7 +101,7 @@ public class HummingbirdNetworkController
 
     //The code below will generate lots of request to the HummingbirdAPI.
     //Make sure to cache stuffs if possible.
-    private void processCache(Context context, List<AnimeObject> results, List<String> animeSlugs, NetworkListener networkListener)
+    private void processCache(Context context, List<AnimeObject> results, List<String> animeSlugs, NetworkListener<AnimeObject> networkListener)
     {
         this.mHummingbirdInternalCache.loadInstanceCache(context);
 
@@ -170,6 +139,52 @@ public class HummingbirdNetworkController
         if (networkListener != null) networkListener.onFinish();
     }
 
+    private void processScraperResponse(final Context context, final String response, final NetworkListener<AnimeObject> networkListener)
+    {
+        Util.logThread("A1:Process Scraper start");
+
+        Task.callInBackground(new Callable<List<String>>()
+        {
+            @Override
+            public List<String> call() throws Exception
+            {
+                final List<String> animeSlugs = new ArrayList<String>();
+                // measured time avg for code below: 70~ ms
+                // Still push it off to another thread? Awww yes.
+                long t = System.nanoTime();
+                animeSlugs.addAll(HummingbirdScraper.scrapeUpcoming(response));
+                Util.logTime(t);
+                Log.v(getClass().getSimpleName(), "Slugs count " + animeSlugs.size());
+                return animeSlugs;
+            }
+        }).continueWith(new Continuation<List<String>, Void>()
+        {
+            @Override
+            public Void then(Task<List<String>> task) throws Exception
+            {
+                Util.logThread("A2:Process mass unit responses start");
+                List<String> animeSlugs = task.getResult();
+                for (String animeSlug : animeSlugs)
+                {
+                    final long t = System.nanoTime();
+                    CoreNetworkFactory.getAnimeObjectAsync(context, animeSlug, new NetworkFactoryListener<AnimeObject>()
+                    {
+                        @Override
+                        public void onFinish(AnimeObject result)
+                        {
+                            Util.logTime(t);
+                            Log.v("Task", "Callback from network!");
+                            if (networkListener != null)
+                                networkListener.onEachSuccessfulResponses(result);
+                        }
+                    });
+                }
+                Log.v("Task", "Task thread exit!");
+                return null;
+            }
+        });
+    }
+
     public void saveCacheAsync(Context context, OnFinishListener onFinishListener)
     {
         //delegate save task
@@ -182,9 +197,9 @@ public class HummingbirdNetworkController
         return mHummingbirdInternalCache.getCache();
     }
 
-    public static interface NetworkListener
+    public interface NetworkListener<Result>
     {
-        void onEachSuccessfulResponses(AnimeObject animeObject);
+        void onEachSuccessfulResponses(Result result);
 
         void onFinish();
     }

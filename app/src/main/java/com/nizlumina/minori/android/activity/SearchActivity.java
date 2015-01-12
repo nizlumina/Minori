@@ -1,7 +1,6 @@
 package com.nizlumina.minori.android.activity;
 
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,39 +56,28 @@ public class SearchActivity extends BaseActivity
         gridView.setAdapter(adapter);
 
         hummingbirdNetworkController = new HummingbirdNetworkController();
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>()
+        hummingbirdNetworkController.populateListAsync(SearchActivity.this, new HummingbirdNetworkController.NetworkListener<AnimeObject>()
         {
             @Override
-            protected Void doInBackground(Void... params)
+            public void onEachSuccessfulResponses(final AnimeObject animeObject)
             {
-                List<AnimeObject> animeObjects = new ArrayList<>();
-                hummingbirdNetworkController.populateList(SearchActivity.this, animeObjects, new HummingbirdNetworkController.NetworkListener()
+                runOnUiThread(new Runnable()
                 {
                     @Override
-                    public void onEachSuccessfulResponses(final AnimeObject animeObject)
+                    public void run()
                     {
-                        runOnUiThread(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                adapter.add(new AnimeObjectPresenter(animeObject));
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFinish()
-                    {
-
+                        adapter.add(new AnimeObjectPresenter(animeObject));
+                        adapter.notifyDataSetChanged();
                     }
                 });
-                return null;
             }
-        };
 
-        task.execute(null, null, null);
+            @Override
+            public void onFinish()
+            {
+
+            }
+        });
 
 
         searchFab.setOnClickListener(new View.OnClickListener()
