@@ -1,7 +1,5 @@
 package com.nizlumina.minori.android.factory;
 
-import android.content.Context;
-
 import com.nizlumina.minori.android.network.CoreQuery;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.Util;
@@ -23,7 +21,7 @@ import java.util.ArrayList;
  */
 public class CoreNetworkFactory
 {
-    public static void getNyaaEntries(Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList)
+    public static void getNyaaEntries(final String searchTerms, final ArrayList<NyaaEntry> outputList)
     {
         WebUnit unit = new WebUnit();
 
@@ -47,7 +45,7 @@ public class CoreNetworkFactory
         }
     }
 
-    public static void getAnimeObject(Context context, final String searchTerms, final ArrayList<AnimeObject> outputList)
+    public static void getAnimeObject(final String searchTerms, final ArrayList<AnimeObject> outputList)
     {
         WebUnit unit = new WebUnit();
         try
@@ -77,7 +75,7 @@ public class CoreNetworkFactory
         }
     }
 
-    public static AnimeObject getAnimeObject(Context context, String slugOrID)
+    public static AnimeObject getAnimeObject(String slugOrID)
     {
         WebUnit unit = new WebUnit();
         try
@@ -97,7 +95,7 @@ public class CoreNetworkFactory
         return null;
     }
 
-    public static void getAnimeObjectAsync(final Context context, final String slugOrID, final NetworkFactoryListener<AnimeObject> listener)
+    public static void getAnimeObjectAsync(final String slugOrID, final NetworkFactoryListener<AnimeObject> listener)
     {
         WebUnit unit = new WebUnit();
         try

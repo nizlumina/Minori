@@ -131,7 +131,7 @@ public class WatchlistController
                 @Override
                 public Object call() throws Exception
                 {
-                    CoreNetworkFactory.getNyaaEntries(context, searchTerms, outputList);
+                    CoreNetworkFactory.getNyaaEntries(searchTerms, outputList);
                     return null;
                 }
             };

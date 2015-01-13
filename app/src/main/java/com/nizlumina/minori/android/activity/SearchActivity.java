@@ -2,7 +2,6 @@ package com.nizlumina.minori.android.activity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -51,33 +50,11 @@ public class SearchActivity extends BaseActivity
 
         List<AnimeObjectPresenter> animeObjectPresenters = new ArrayList<>();
         gridView = (GridView) findViewById(R.id.gridview);
-        adapter = new GalleryAdapter<AnimeObjectPresenter>(this, R.layout.list_item_compact, animeObjectPresenters);
+        adapter = new GalleryAdapter<>(this, R.layout.list_item_singletext, animeObjectPresenters);
 
         gridView.setAdapter(adapter);
 
         hummingbirdNetworkController = new HummingbirdNetworkController();
-        hummingbirdNetworkController.populateListAsync(SearchActivity.this, new HummingbirdNetworkController.NetworkListener<AnimeObject>()
-        {
-            @Override
-            public void onEachSuccessfulResponses(final AnimeObject animeObject)
-            {
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        adapter.add(new AnimeObjectPresenter(animeObject));
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-            }
-
-            @Override
-            public void onFinish()
-            {
-
-            }
-        });
 
 
         searchFab.setOnClickListener(new View.OnClickListener()
@@ -85,9 +62,28 @@ public class SearchActivity extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                adapter.notifyDataSetChanged();
-                //Debugging
-                Log.v(getClass().getSimpleName(), String.valueOf(adapter.getCount()));
+                hummingbirdNetworkController.newPopulateLinkAsync(new HummingbirdNetworkController.NetworkListener<AnimeObject>()
+                {
+                    @Override
+                    public void onEachSuccessfulResponses(final AnimeObject animeObject)
+                    {
+                        runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                adapter.add(new AnimeObjectPresenter(animeObject));
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFinish()
+                    {
+
+                    }
+                });
             }
         });
     }

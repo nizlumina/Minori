@@ -68,12 +68,27 @@ public class Util
         Log.v(identifier, "Thread ID:" + Thread.currentThread().getId());
     }
 
-    public static void logTime(long startTimeInNano)
+    public static long logTime(long startTimeInNano)
     {
-        long d = System.nanoTime() - startTimeInNano;
-        Log.v(Util.class.getSimpleName(), String.format("Time taken: %d ms, or %d ns", (d) / (1000 * 1000), d));
+        return logTime(startTimeInNano, null);
     }
 
+
+    public static long logTime(long startTimeInNano, String extras)
+    {
+        return logTime(startTimeInNano, extras, false);
+    }
+
+    public static long logTime(long startTimeInNano, String extras, boolean alsoShowNanos)
+    {
+        long s = System.nanoTime();
+        long d = (s - startTimeInNano);
+        if (alsoShowNanos)
+            Log.v(Util.class.getSimpleName(), String.format("Time taken: %d ms, %d ns, %s", d / (1000 * 1000), d, extras));
+        else
+            Log.v(Util.class.getSimpleName(), String.format("Time taken: %d ms, %s", d / (1000 * 1000), extras));
+        return s;
+    }
 // Unused
 //
 //    public static int firstDigit(int integer)
