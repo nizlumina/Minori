@@ -153,7 +153,7 @@ public class HummingbirdNetworkController
     {
         final ThreadMaster master = ThreadMaster.getInstance();
         final long startTime = System.nanoTime();
-        Callable<List<AnimeObject>> getString = new Callable<List<AnimeObject>>()
+        Callable<List<AnimeObject>> populate = new Callable<List<AnimeObject>>()
         {
             @Override
             public List<AnimeObject> call() throws Exception
@@ -226,7 +226,7 @@ public class HummingbirdNetworkController
             }
         };
 
-        master.enqueue(getString, new ThreadMaster.Listener<List<AnimeObject>>()
+        master.enqueue(populate, new ThreadMaster.Listener<List<AnimeObject>>()
         {
             @Override
             public void onFinish(List<AnimeObject> animeObjects)
