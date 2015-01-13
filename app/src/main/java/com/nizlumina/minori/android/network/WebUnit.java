@@ -14,6 +14,7 @@ package com.nizlumina.minori.android.network;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.nizlumina.minori.android.utility.Util;
@@ -119,7 +120,7 @@ public class WebUnit
     public synchronized void enqueueGetString(final String url, final WebUnitListener listener) throws IOException
     {
         Util.logThread("req enqueued");
-        final Handler handler = new Handler();
+        final Handler handler = new Handler(Looper.getMainLooper());
         executeAsync(url, new Callback()
         {
             @Override

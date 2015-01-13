@@ -27,6 +27,12 @@ import java.util.List;
 public class HummingbirdScraper
 {
     static final String identifierClass = "image";
+    private static final String endpoint = "https://hummingbird.me/anime/upcoming/";
+
+    public static String getEndpoint()
+    {
+        return endpoint;
+    }
 
     /**
      * Try to scrape the data from the HTML body

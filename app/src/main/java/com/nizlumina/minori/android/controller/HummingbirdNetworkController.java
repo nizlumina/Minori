@@ -13,6 +13,9 @@
 package com.nizlumina.minori.android.controller;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
@@ -23,6 +26,10 @@ import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,7 +47,6 @@ import bolts.Task;
  */
 public class HummingbirdNetworkController
 {
-    private static final String endpoint = "https://hummingbird.me/anime/upcoming/";
 
     private final HummingbirdInternalCache mHummingbirdInternalCache;
 
@@ -55,7 +61,7 @@ public class HummingbirdNetworkController
         String response = null;
         try
         {
-            response = unit.getString(endpoint);
+            response = unit.getString(HummingbirdScraper.getEndpoint());
         }
         catch (IOException e)
         {
@@ -72,31 +78,108 @@ public class HummingbirdNetworkController
     public synchronized void populateListAsync(final Context context, final NetworkListener<AnimeObject> networkListener)
     {
         Util.logThread("populateListAsync");
-        final WebUnit webUnit = new WebUnit();
-        try
+        /**
+         * Test
+         */
+        final OkHttpClient client = new OkHttpClient();
+        final String responseKey = "upcoming_key";
+        final Handler handler = new Handler(new Handler.Callback()
         {
-            webUnit.enqueueGetString(endpoint, new WebUnit.WebUnitListener()
+            @Override
+            public boolean handleMessage(Message msg)
             {
-                @Override
-                public void onFailure()
+                Util.logThread("handler");
+
+                Bundle bundah = msg.getData();
+                if (bundah != null)
                 {
+                    final String response = bundah.getString(responseKey, null);
+                    if (response != null)
+                    {
+
+                        new Thread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                final List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(response);
+                                for (String animeSlug : animeSlugs)
+                                {
+                                    final long t = System.nanoTime();
+                                    CoreNetworkFactory.getAnimeObjectAsync(context, animeSlug, new NetworkFactoryListener<AnimeObject>()
+                                    {
+                                        @Override
+                                        public void onFinish(AnimeObject result)
+                                        {
+                                            Util.logTime(t);
+                                            Log.v("Task", "Callback from network!");
+                                            if (networkListener != null)
+                                                networkListener.onEachSuccessfulResponses(result);
+                                        }
+                                    });
+                                }
+                                Log.v("Task", "Task thread exit!");
+                            }
+                        }).start();
+
+                    }
 
                 }
-
-                @Override
-                public void onFinish(final String responseBody)
-                {
-                    webUnit.enqueueGetString();
-                    processScraperResponse(context, responseBody, networkListener);
-                }
-            });
+                return false;
+            }
+        });
 
 
-        }
-        catch (IOException e)
+        client.newCall(new Request.Builder().get().url(HummingbirdScraper.getEndpoint()).build()).enqueue(new Callback()
         {
-            e.printStackTrace();
-        }
+            @Override
+            public void onFailure(Request request, IOException e)
+            {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException
+            {
+                Util.logThread("On First Response");
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putString(responseKey, response.body().string());
+                message.setData(bundle);
+                message.setTarget(handler);
+                message.sendToTarget();
+            }
+        });
+
+
+        //////////////////////////
+
+
+//        final WebUnit webUnit = new WebUnit();
+//        try
+//        {
+//            webUnit.enqueueGetString(HummingbirdScraper.getEndpoint(), new WebUnit.WebUnitListener()
+//            {
+//                @Override
+//                public void onFailure()
+//                {
+//
+//                }
+//
+//                @Override
+//                public void onFinish(final String responseBody)
+//                {
+//                    webUnit.enqueueGetString();
+//                    processScraperResponse(context, responseBody, networkListener);
+//                }
+//            });
+//
+//
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
     }
 
     //The code below will generate lots of request to the HummingbirdAPI.
