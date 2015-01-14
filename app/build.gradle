@@ -33,5 +33,4 @@ dependencies {
 
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'org.jsoup:jsoup:1.7.2'
-    compile 'com.parse.bolts:bolts-android:1.1.4'
 }
