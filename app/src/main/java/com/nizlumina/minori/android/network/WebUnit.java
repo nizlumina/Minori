@@ -12,12 +12,7 @@
 
 package com.nizlumina.minori.android.network;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-
-import com.nizlumina.minori.android.utility.Util;
+import com.nizlumina.minori.android.internal.MinoriSingleton;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -26,6 +21,55 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+/**
+ * Internal singleton master for all WebUnit requests.
+ */
+final class WebUnitMaster
+{
+    private static volatile WebUnitMaster INSTANCE = null;
+    private final OkHttpClient mainClient;
+    volatile Cache mCache;
+
+    private WebUnitMaster()
+    {
+        mainClient = new OkHttpClient();
+        int cacheSize = 10 * 1024 * 1024; //10 MB
+        try
+        {
+            mCache = new Cache(MinoriSingleton.getInstance().getCacheDir(), cacheSize);
+            mainClient.setCache(mCache);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static WebUnitMaster getInstance()
+    {
+        if (INSTANCE == null)
+        {
+            synchronized (WebUnitMaster.class)
+            {
+                if (INSTANCE == null)
+                    INSTANCE = new WebUnitMaster();
+
+            }
+        }
+        return INSTANCE;
+    }
+
+    public Cache getCache()
+    {
+        return mCache;
+    }
+
+    public OkHttpClient getMainClient()
+    {
+        return mainClient;
+    }
+}
 
 /**
  * Slave class for common HTTP responses and request.
@@ -53,24 +97,18 @@ public class WebUnit
         return mClient;
     }
 
-    public void enableCache(Context context)
+    public void setCache(boolean enabled)
     {
-        int cacheSize = 10 * 1024 * 1024;
-        try
-        {
-            Cache cache = new Cache(context.getCacheDir(), cacheSize);
-            mClient.setCache(cache);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        if (enabled)
+            mClient.setCache(WebUnitMaster.getInstance().getCache());
+        else
+            mClient.setCache(null);
     }
 
     /**
      * Get a string object from response body of the given url. For threaded calls, use {@link #enqueueGetString}
      *
-     * @param url     The URL for the request
+     * @param url The URL for the request
      * @return The body in a string object. Returns null on failure.
      * @throws IOException
      */
@@ -117,38 +155,21 @@ public class WebUnit
      * @param listener Optional listener to retrieve the string object of the received response body. Check for null. This runs on the original thread that first calls the method.
      * @throws IOException
      */
-    public synchronized void enqueueGetString(final String url, final WebUnitListener listener) throws IOException
+    public synchronized void enqueueGetString(final String url, final WebUnitStringListener listener) throws IOException
     {
-        Util.logThread("req enqueued");
-        final Handler handler = new Handler(Looper.getMainLooper());
         executeAsync(url, new Callback()
         {
             @Override
             public void onFailure(Request request, IOException e)
             {
-                handler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (listener != null) listener.onFailure();
-                    }
-                });
+                if (listener != null) listener.onFailure();
             }
 
             @Override
             public void onResponse(final Response response) throws IOException
             {
                 final String finalResponse = response.body().string();
-                handler.post(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (listener != null) listener.onFinish(finalResponse);
-                    }
-                });
-
+                if (listener != null) listener.onFinish(finalResponse);
             }
         });
     }
@@ -162,9 +183,7 @@ public class WebUnit
     private void executeAsync(final String url, final Callback internalCallback) throws IOException
     {
         final Request request = getFormattedRequest(url);
-        Log.v("currentreq", request.urlString());
         getClient().newCall(request).enqueue(internalCallback);
-        Log.v("currentreq finished", "req finish");
     }
 
     /**
@@ -183,7 +202,7 @@ public class WebUnit
     /**
      * A simple listener interface for any WebUnit asynchronous operations
      */
-    public interface WebUnitListener
+    public interface WebUnitStringListener
     {
         /**
          * Fires if the request failed in some way
