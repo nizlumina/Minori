@@ -12,37 +12,22 @@
 
 package com.nizlumina.minori.android.controller;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.nizlumina.minori.android.factory.CoreJSONFactory;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
-import com.nizlumina.minori.android.factory.CoreNetworkFactory.NetworkFactoryListener;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
+import com.nizlumina.minori.android.internal.Minori;
 import com.nizlumina.minori.android.internal.ThreadMaster;
-import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.android.network.CoreQuery;
+import com.nizlumina.minori.android.listener.WebUnitListener;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-
-import bolts.Continuation;
-import bolts.Task;
 
 /**
  * Controller for populating data to the UI. Image loading is handled by ImageLoaderController. <br/>
@@ -52,290 +37,154 @@ import bolts.Task;
 public class HummingbirdNetworkController
 {
 
-    private final HummingbirdInternalCache mHummingbirdInternalCache;
+    private final HummingbirdInternalCache mHummingbirdInstanceCache;
 
     public HummingbirdNetworkController()
     {
-        mHummingbirdInternalCache = new HummingbirdInternalCache();
+        mHummingbirdInstanceCache = new HummingbirdInternalCache();
     }
 
-    public synchronized void populateListSync(final Context context, final List<AnimeObject> results, NetworkListener<AnimeObject> networkListener)
-    {
-        final WebUnit unit = new WebUnit();
-        String response = null;
-        try
-        {
-            response = unit.getString(HummingbirdScraper.getEndpoint());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-        if (response != null)
-        {
-            List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(response);
-            this.processCache(context, results, animeSlugs, networkListener);
-        }
-    }
-
-    public synchronized void populateListAsync(final NetworkListener<AnimeObject> networkListener)
-    {
-        Util.logThread("populateListAsync");
-        /**
-         * Test
-         */
-        final OkHttpClient client = new OkHttpClient();
-
-
-        client.newCall(new Request.Builder().get().url(HummingbirdScraper.getEndpoint()).build()).enqueue(new Callback()
-        {
-            @Override
-            public void onFailure(Request request, IOException e)
-            {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException
-            {
-                final long r = System.nanoTime();
-                Util.logThread("On First Response");
-                final String body = response.body().string();
-                Util.logTime(r);
-                if (body != null)
-                {
-
-                    final long t = System.nanoTime();
-                    new Thread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            Util.logThread("New Thread Start");
-                            Util.logTime(t, "Thread Start");
-                            final List<String> animeSlugs = HummingbirdScraper.scrapeUpcoming(body);
-
-                            int i = 0;
-                            for (String animeSlug : animeSlugs)
-                            {
-                                if (i++ < 5)
-                                {
-                                    final long t = System.nanoTime();
-                                    CoreNetworkFactory.getAnimeObjectAsync(animeSlug, new NetworkFactoryListener<AnimeObject>()
-                                    {
-                                        @Override
-                                        public void onFinish(AnimeObject result)
-                                        {
-                                            Util.logTime(t);
-                                            Log.v("Task", "Callback from network!");
-                                            if (networkListener != null)
-                                                networkListener.onEachSuccessfulResponses(result);
-                                        }
-                                    });
-                                }
-                                else break;
-                            }
-                            Log.v("Task", "Task thread exit!");
-//                            Thread.currentThread().interrupt();
-                        }
-                    }).start();
-
-                }
-                Util.logThread("Finish - On First Response");
-
-            }
-        });
-
-    }
-
-    public synchronized void newPopulateLinkAsync(final NetworkListener<AnimeObject> networkListener)
+    public synchronized void populateLinkAsync(final NetworkListener<AnimeObject> networkListener, final boolean refreshCache)
     {
         final ThreadMaster master = ThreadMaster.getInstance();
         final long startTime = System.nanoTime();
-        Callable<List<AnimeObject>> populate = new Callable<List<AnimeObject>>()
+        Callable<List<AnimeObject>> backgroundTask = new Callable<List<AnimeObject>>()
         {
             @Override
             public List<AnimeObject> call() throws Exception
             {
-                final List<AnimeObject> result = new ArrayList<>();
-                OkHttpClient client = new OkHttpClient();
-                final long connectTime = System.nanoTime();
-                Response response = client.newCall(new Request.Builder().get().url(HummingbirdScraper.getEndpoint()).build()).execute();
-                Util.logTime(connectTime, "Get Upcoming");
-                String body = response.body().string();
 
+                Util.logThread(getClass().getSimpleName());
+                final List<AnimeObject> results = new ArrayList<>();
+                WebUnit webUnit = new WebUnit();
+                //webUnit.setCache(true);
+
+                final long connectTime = System.nanoTime();
+                String body = webUnit.getString(HummingbirdScraper.getEndpoint());
+                Util.logTime(connectTime, "Get Upcoming");
 
                 if (body != null)
                 {
                     List<String> slugs = HummingbirdScraper.scrapeUpcoming(body);
                     Log.v(getClass().getSimpleName(), "Slugs size: " + slugs.size());
-                    final CountDownLatch latch = new CountDownLatch(5);
-                    int i = 0;
-                    for (String slug : slugs)
+                    final CountDownLatch latch = new CountDownLatch(slugs.size()); //Block thread until all finishes
+                    mHummingbirdInstanceCache.loadInstanceCache(Minori.getAppContext());
+                    Log.v(getClass().getSimpleName(), "All is good " + "Cache size is " + mHummingbirdInstanceCache.getCache().size());
+                    for (final String slug : slugs)
                     {
-                        if (++i > 5)
+
+                        final AnimeObject cachedAnimeObject = mHummingbirdInstanceCache.getAnimeObjectFromCache(slug);
+
+                        if (cachedAnimeObject == null || refreshCache)
                         {
-                            break;
-                        }
+                            if (!refreshCache)
+                                Log.v(getClass().getSimpleName(), "No cache for: " + slug);
 
-
-                        final long t = System.nanoTime();
-                        client.newCall(new Request.Builder().get().url(CoreQuery.Hummingbird.getAnimeByID(slug).toString()).build()).enqueue(new Callback()
-                        {
-                            @Override
-                            public void onFailure(Request request, IOException e)
+                            final long t = System.nanoTime();
+                            WebUnitListener<AnimeObject> listener = new WebUnitListener<AnimeObject>()
                             {
-                                latch.countDown();
-                            }
-
-                            @Override
-                            public void onResponse(Response response) throws IOException
-                            {
-                                latch.countDown();
-
-                                final String body = response.body().string();
-                                final long nextT = Util.logTime(t, "Response read! and CD is: " + latch.getCount());
-                                if (body != null)
+                                @Override
+                                public void onFailure()
                                 {
-                                    AnimeObject animeObject = null;
-                                    try
-                                    {
-                                        animeObject = CoreJSONFactory.animeObjectFromJSON(new JSONObject(body), true);
-
-                                    }
-                                    catch (JSONException e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-
-                                    if (animeObject != null)
-                                    {
-                                        Util.logTime(nextT, "JsonConvert for " + animeObject.title, true);
-                                        result.add(animeObject);
-                                        networkListener.onEachSuccessfulResponses(animeObject);
-                                    }
+                                    latch.countDown();
                                 }
 
-                            }
-                        });
+                                @Override
+                                public void onFinish(AnimeObject result)
+                                {
+                                    Util.logTime(t, "Response read! and CD is: " + latch.getCount());
+                                    //the order is very important here!
+                                    if (result != null) results.add(result);
+                                    latch.countDown();
+                                    mHummingbirdInstanceCache.insert(result);
+                                    networkListener.onEachSuccessfulResponses(result);
+                                }
+                            };
+
+                            CoreNetworkFactory.getAnimeObjectAsync(slug, listener, webUnit);
+                        }
+                        else
+                        {
+                            Log.v(getClass().getSimpleName(), "Cache hit for: " + slug);
+                            networkListener.onEachSuccessfulResponses(cachedAnimeObject);
+                        }
+//                                webUnit.getClient().newCall(new Request.Builder().get().url(CoreQuery.Hummingbird.getAnimeByID(slug).toString()).build()).enqueue(new Callback()
+//                        {
+//                            @Override
+//                            public void onFailure(Request request, IOException e)
+//                            {
+//                                latch.countDown();
+//                            }
+//
+//                            @Override
+//                            public void onResponse(Response response) throws IOException
+//                            {
+//                                latch.countDown();
+//
+//                                final String body = response.body().string();
+//                                final long nextT = Util.logTime(t, "Response read! and CD is: " + latch.getCount());
+//                                if (body != null)
+//                                {
+//                                    AnimeObject animeObject = null;
+//                                    try
+//                                    {
+//                                        animeObject = CoreJSONFactory.animeObjectFromJSON(new JSONObject(body), true);
+//
+//                                    }
+//                                    catch (JSONException e)
+//                                    {
+//                                        e.printStackTrace();
+//                                    }
+//
+//                                    if (animeObject != null)
+//                                    {
+//                                        Util.logTime(nextT, "JsonConvert for " + animeObject.title, true);
+//                                        result.add(animeObject);
+//                                        networkListener.onEachSuccessfulResponses(animeObject);
+//                                    }
+//                                }
+//
+//                            }
+//                        });
                     }
                     latch.await();
+
+                    //Sanitize cache
+                    List<AnimeObject> removalList = new ArrayList<>();
+                    for (AnimeObject cachedAnimeObject : results)
+                    {
+                        if (!slugs.contains(cachedAnimeObject.slug)) //check if cached slug is not included in the newer slugs
+                            removalList.add(cachedAnimeObject);
+                    }
+
+                    results.removeAll(removalList);
+                    removalList.clear();
                 }
-                return result;
+
+                return results;
             }
         };
 
-        master.enqueue(populate, new ThreadMaster.Listener<List<AnimeObject>>()
+        master.enqueue(backgroundTask, new ThreadMaster.Listener<List<AnimeObject>>()
         {
             @Override
             public void onFinish(List<AnimeObject> animeObjects)
             {
+                networkListener.onFinish();
                 //process cache!
                 Util.logTime(startTime, "Thread Finishes!");
                 Log.v(getClass().getSimpleName(), "Final size: " + animeObjects.size());
+                mHummingbirdInstanceCache.writeToDisk(Minori.getAppContext());
             }
         });
     }
 
-
-    //The code below will generate lots of request to the HummingbirdAPI.
-    //Make sure to cache stuffs if possible.
-    private void processCache(Context context, List<AnimeObject> results, List<String> animeSlugs, NetworkListener<AnimeObject> networkListener)
-    {
-        this.mHummingbirdInternalCache.loadInstanceCache(context);
-
-        //init cache
-        for (String animeSlug : animeSlugs)
-        {
-            AnimeObject cachedAnimeObject = mHummingbirdInternalCache.getAnimeObjectFromCache(animeSlug);
-            //If not in cache
-            if (cachedAnimeObject == null)
-            {
-                //initiate response
-                cachedAnimeObject = CoreNetworkFactory.getAnimeObject(animeSlug);
-
-                //skip if still null
-                if (cachedAnimeObject == null)
-                    continue;
-            }
-            if (networkListener != null)
-                networkListener.onEachSuccessfulResponses(cachedAnimeObject);
-            results.add(cachedAnimeObject);
-            Log.v(getClass().getSimpleName(), String.format("Success: %s %s", cachedAnimeObject.title, cachedAnimeObject.id));
-        }
-
-        //remove old cache
-        List<AnimeObject> removalList = new ArrayList<>();
-        for (AnimeObject cachedAnimeObject : results)
-        {
-            if (!animeSlugs.contains(cachedAnimeObject.slug))
-                removalList.add(cachedAnimeObject);
-        }
-
-        results.removeAll(removalList);
-        Log.v(getClass().getSimpleName(), "Results " + String.valueOf(results.size()));
-
-        if (networkListener != null) networkListener.onFinish();
-    }
-
-    private void processScraperResponse(final String response, final NetworkListener<AnimeObject> networkListener)
-    {
-        Util.logThread("A1:Process Scraper start");
-
-        Task.callInBackground(new Callable<List<String>>()
-        {
-            @Override
-            public List<String> call() throws Exception
-            {
-                final List<String> animeSlugs = new ArrayList<String>();
-                // measured time avg for code below: 70~ ms
-                // Still push it off to another thread? Awww yes.
-                long t = System.nanoTime();
-                animeSlugs.addAll(HummingbirdScraper.scrapeUpcoming(response));
-                Util.logTime(t);
-                Log.v(getClass().getSimpleName(), "Slugs count " + animeSlugs.size());
-                return animeSlugs;
-            }
-        }).continueWith(new Continuation<List<String>, Void>()
-        {
-            @Override
-            public Void then(Task<List<String>> task) throws Exception
-            {
-                Util.logThread("A2:Process mass unit responses start");
-                List<String> animeSlugs = task.getResult();
-                for (String animeSlug : animeSlugs)
-                {
-                    final long t = System.nanoTime();
-                    CoreNetworkFactory.getAnimeObjectAsync(animeSlug, new NetworkFactoryListener<AnimeObject>()
-                    {
-                        @Override
-                        public void onFinish(AnimeObject result)
-                        {
-                            Util.logTime(t);
-                            Log.v("Task", "Callback from network!");
-                            if (networkListener != null)
-                                networkListener.onEachSuccessfulResponses(result);
-                        }
-                    });
-                }
-                Log.v("Task", "Task thread exit!");
-                return null;
-            }
-        });
-    }
-
-    public void saveCacheAsync(Context context, OnFinishListener onFinishListener)
-    {
-        //delegate save task
-        mHummingbirdInternalCache.writeToDiskAsync(context, null);
-        if (onFinishListener != null) onFinishListener.onFinish();
-    }
-
-    public WeakHashMap<String, AnimeObject> getCache()
-    {
-        return mHummingbirdInternalCache.getCache();
-    }
+//    public void saveCacheAsync(Context context, OnFinishListener onFinishListener)
+//    {
+//        //delegate save task
+//        mHummingbirdInstanceCache.writeToDiskAsync(context, null);
+//        if (onFinishListener != null) onFinishListener.onFinish();
+//    }
 
     public interface NetworkListener<Result>
     {

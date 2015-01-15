@@ -1,48 +1,43 @@
 package com.nizlumina.minori.android.internal;
 
 
+import android.app.Application;
+import android.content.Context;
+
 import java.util.ArrayList;
 
 /**
  * Simple state singleton
  */
-public class MinoriSingleton
+public class Minori extends Application
 {
-    private static volatile MinoriSingleton INSTANCE = null;
     private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<ActivityListener>();
+    private static Context mContext;
 
-    private MinoriSingleton() {}
+    public static Context getAppContext() { return mContext; }
 
-    public static MinoriSingleton getInstance()
-    {
-        if (INSTANCE == null)
-        {
-            synchronized (MinoriSingleton.class)
-            {
-                if (INSTANCE == null)
-                {
-                    INSTANCE = new MinoriSingleton();
-                }
-            }
-        }
-        return INSTANCE;
-    }
-
-    public synchronized boolean listenersAvailable()
+    public synchronized static boolean listenersAvailable()
     {
         return activityListeners != null && activityListeners.size() > 0;
     }
 
-    public synchronized void registerListener(ActivityListener listener)
+    public synchronized static void registerListener(ActivityListener listener)
     {
         if (!activityListeners.contains(listener))
             activityListeners.add(listener);
     }
 
-    public synchronized void unregisterListener(ActivityListener listener)
+    public synchronized static void unregisterListener(ActivityListener listener)
     {
         if (activityListeners.size() > 0)
             activityListeners.remove(listener);
+    }
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        mContext = this.getApplicationContext();
     }
 
     public interface ActivityListener {}
