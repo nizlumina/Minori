@@ -12,7 +12,7 @@
 
 package com.nizlumina.minori.android.network;
 
-import com.nizlumina.minori.android.internal.MinoriSingleton;
+import com.nizlumina.minori.android.internal.Minori;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -29,7 +29,7 @@ final class WebUnitMaster
 {
     private static volatile WebUnitMaster INSTANCE = null;
     private final OkHttpClient mainClient;
-    volatile Cache mCache;
+    private Cache mCache;
 
     private WebUnitMaster()
     {
@@ -37,7 +37,7 @@ final class WebUnitMaster
         int cacheSize = 10 * 1024 * 1024; //10 MB
         try
         {
-            mCache = new Cache(MinoriSingleton.getInstance().getCacheDir(), cacheSize);
+            mCache = new Cache(Minori.getAppContext().getCacheDir(), cacheSize);
             mainClient.setCache(mCache);
         }
         catch (IOException e)
@@ -54,7 +54,6 @@ final class WebUnitMaster
             {
                 if (INSTANCE == null)
                     INSTANCE = new WebUnitMaster();
-
             }
         }
         return INSTANCE;
