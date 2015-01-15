@@ -57,7 +57,7 @@ public class HummingbirdNetworkController
                 Util.logThread(getClass().getSimpleName());
                 final List<AnimeObject> results = new ArrayList<>();
                 WebUnit webUnit = new WebUnit();
-                //webUnit.setCache(true);
+                webUnit.setCache(true);
 
                 final long connectTime = System.nanoTime();
                 String body = webUnit.getString(HummingbirdScraper.getEndpoint());
@@ -72,7 +72,6 @@ public class HummingbirdNetworkController
                     Log.v(getClass().getSimpleName(), "All is good " + "Cache size is " + mHummingbirdInstanceCache.getCache().size());
                     for (final String slug : slugs)
                     {
-
                         final AnimeObject cachedAnimeObject = mHummingbirdInstanceCache.getAnimeObjectFromCache(slug);
 
                         if (cachedAnimeObject == null || refreshCache)
@@ -108,44 +107,6 @@ public class HummingbirdNetworkController
                             Log.v(getClass().getSimpleName(), "Cache hit for: " + slug);
                             networkListener.onEachSuccessfulResponses(cachedAnimeObject);
                         }
-//                                webUnit.getClient().newCall(new Request.Builder().get().url(CoreQuery.Hummingbird.getAnimeByID(slug).toString()).build()).enqueue(new Callback()
-//                        {
-//                            @Override
-//                            public void onFailure(Request request, IOException e)
-//                            {
-//                                latch.countDown();
-//                            }
-//
-//                            @Override
-//                            public void onResponse(Response response) throws IOException
-//                            {
-//                                latch.countDown();
-//
-//                                final String body = response.body().string();
-//                                final long nextT = Util.logTime(t, "Response read! and CD is: " + latch.getCount());
-//                                if (body != null)
-//                                {
-//                                    AnimeObject animeObject = null;
-//                                    try
-//                                    {
-//                                        animeObject = CoreJSONFactory.animeObjectFromJSON(new JSONObject(body), true);
-//
-//                                    }
-//                                    catch (JSONException e)
-//                                    {
-//                                        e.printStackTrace();
-//                                    }
-//
-//                                    if (animeObject != null)
-//                                    {
-//                                        Util.logTime(nextT, "JsonConvert for " + animeObject.title, true);
-//                                        result.add(animeObject);
-//                                        networkListener.onEachSuccessfulResponses(animeObject);
-//                                    }
-//                                }
-//
-//                            }
-//                        });
                     }
                     latch.await();
 
@@ -178,13 +139,6 @@ public class HummingbirdNetworkController
             }
         });
     }
-
-//    public void saveCacheAsync(Context context, OnFinishListener onFinishListener)
-//    {
-//        //delegate save task
-//        mHummingbirdInstanceCache.writeToDiskAsync(context, null);
-//        if (onFinishListener != null) onFinishListener.onFinish();
-//    }
 
     public interface NetworkListener<Result>
     {
