@@ -24,7 +24,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 public class GalleryItemHolder
 {
-    private static boolean DEBUG_MODE = false;
+    private static boolean DEBUG_MODE = true;
     public TextView title, group, episode;
     public ImageView imageContainer;
 
