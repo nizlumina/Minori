@@ -95,7 +95,7 @@ public class GalleryAdapter<T extends GalleryPresenter> extends BaseAdapter
         }
         else galleryItemHolder = (GalleryItemHolder) convertView.getTag();
 
-        galleryItemHolder.applySource(this.mGalleryItems.get(position));
+        galleryItemHolder.applySource(mContext, this.mGalleryItems.get(position));
 
         return convertView;
     }
