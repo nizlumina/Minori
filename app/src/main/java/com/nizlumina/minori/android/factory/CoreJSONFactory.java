@@ -72,6 +72,7 @@ public class CoreJSONFactory
 
     public static AnimeObject animeObjectFromJSON(JSONObject jsonObject, boolean strictHummingbirdJSON)
     {
+        if (jsonObject == null) return null;
         AnimeObject animeObject = new AnimeObject();
         animeObject.id = jsonObject.optInt(AnimeObject.JSON_API_ID);
         animeObject.slug = jsonObject.optString(AnimeObject.JSON_API_SLUG);
