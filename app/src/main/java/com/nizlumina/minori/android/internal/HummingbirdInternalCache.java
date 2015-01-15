@@ -18,6 +18,7 @@ import com.nizlumina.minori.android.controller.ThreadController;
 import com.nizlumina.minori.android.factory.CoreJSONFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
 import java.io.File;
@@ -26,19 +27,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 /**
  * A shoe-horned instance-based cache class. Might not be correct in some parts yet (trying to soft-mitigate race condition). Will rewrite this class later.
  * Currently the cache uses the same file (so just one file) for saving and loading. While a more generic class is much better, the cache currently only handles the corner case for caching Hummingbird specific stuffs. Until MAL have a better API and an intermediary server becomes feasible enough for OAuth-ing to AniList, this should be adequate for now.
  */
-public final class HummingbirdInternalCache
+public class HummingbirdInternalCache
 {
     static final String cacheName = "HummingbirdCache";
-    private final Object instanceLock = new Object();
-    private WeakHashMap<String, AnimeObject> mCachedAnimeObjects = new WeakHashMap<>();
+    private final static Object mCacheIOLock = new Object(); //force IO access/write is limited to one
+    private volatile HashMap<String, AnimeObject> mCachedAnimeObjects = new HashMap<>();
 
     /**
      * A factory method to get an instance cache from a list of AnimeObject.
@@ -46,9 +47,9 @@ public final class HummingbirdInternalCache
      * @param animeObjects The list to create the cache from.
      * @return A WeakHashMap cache with the AnimeObject "slugs" being the key.
      */
-    public static WeakHashMap<String, AnimeObject> createInstanceCacheFrom(List<AnimeObject> animeObjects)
+    public static HashMap<String, AnimeObject> createInstanceCacheFrom(List<AnimeObject> animeObjects)
     {
-        WeakHashMap<String, AnimeObject> resultsCache = new WeakHashMap<>();
+        HashMap<String, AnimeObject> resultsCache = new HashMap<>();
         for (AnimeObject animeObject : animeObjects)
         {
             resultsCache.put(animeObject.slug, animeObject);
@@ -56,7 +57,7 @@ public final class HummingbirdInternalCache
         return resultsCache;
     }
 
-    public WeakHashMap<String, AnimeObject> getCache()
+    public HashMap<String, AnimeObject> getCache()
     {
         return mCachedAnimeObjects;
     }
@@ -74,7 +75,7 @@ public final class HummingbirdInternalCache
         return mCachedAnimeObjects.get(slug);
     }
 
-    public synchronized void applyNewCache(WeakHashMap<String, AnimeObject> newCache)
+    public synchronized void applyNewCache(HashMap<String, AnimeObject> newCache)
     {
         mCachedAnimeObjects.clear();
         mCachedAnimeObjects.putAll(newCache);
@@ -87,39 +88,44 @@ public final class HummingbirdInternalCache
      * @param context          Any context available. getCacheDir() is called on this.
      * @param onFinishListener Fires after loading (populating the instance list) is finished.
      */
-    public synchronized void loadInstanceCacheAsync(final Context context, final OnFinishListener onFinishListener)
+    public void loadInstanceCacheAsync(final Context context, final OnFinishListener onFinishListener)
     {
-        final Callable<Void> backTask = new Callable<Void>()
+        synchronized (mCacheIOLock)
         {
-            @Override
-            public Void call() throws Exception
+            final Callable<Void> backTask = new Callable<Void>()
             {
-                loadInstanceCache(context);
-                return null;
-            }
-        };
+                @Override
+                public Void call() throws Exception
+                {
+                    loadInstanceCache(context);
+                    return null;
+                }
+            };
 
 
-        final Callable<Void> onFinish = new Callable<Void>()
-        {
-            @Override
-            public Void call() throws Exception
+            final Callable<Void> onFinish = new Callable<Void>()
             {
-                if (onFinishListener != null) onFinishListener.onFinish();
-                return null;
-            }
-        };
+                @Override
+                public Void call() throws Exception
+                {
+                    if (onFinishListener != null) onFinishListener.onFinish();
+                    return null;
+                }
+            };
 
-        ThreadController.post(backTask, onFinish);
+            ThreadController.post(backTask, onFinish);
+        }
 
     }
 
-    public synchronized void loadInstanceCache(Context context)
+    public void loadInstanceCache(Context context)
     {
-        synchronized (instanceLock)
+        try
         {
-            try
+            Util.logThread("loadInstanceCache");
+            synchronized (mCacheIOLock)
             {
+                Util.logThread("loadInstanceCache - synchronized");
                 final File cacheFile = new File(context.getCacheDir(), cacheName);
                 if (cacheFile.exists())
                 {
@@ -130,12 +136,17 @@ public final class HummingbirdInternalCache
                     {
                         mCachedAnimeObjects.put(animeObject.slug, animeObject);
                     }
+                    fileInputStream.close();
                 }
             }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -145,40 +156,41 @@ public final class HummingbirdInternalCache
      * @param context          Any context available. getCacheDir() is called on this.
      * @param onFinishListener Fires after saving is finished.
      */
-    public synchronized void writeToDiskAsync(final Context context, final OnFinishListener onFinishListener)
+    public void writeToDiskAsync(final Context context, final OnFinishListener onFinishListener)
     {
-        final Callable<Void> backTask = new Callable<Void>()
+        synchronized (mCacheIOLock)
         {
-            @Override
-            public Void call() throws Exception
+            final Callable<Void> backTask = new Callable<Void>()
             {
-                writeToDisk(context);
-                return null;
-            }
-        };
+                @Override
+                public Void call() throws Exception
+                {
+                    writeToDisk(context);
+                    return null;
+                }
+            };
 
-        final Callable<Void> onFinish = new Callable<Void>()
-        {
-            @Override
-            public Void call() throws Exception
+            final Callable<Void> onFinish = new Callable<Void>()
             {
-                if (onFinishListener != null) onFinishListener.onFinish();
-                return null;
-            }
-        };
+                @Override
+                public Void call() throws Exception
+                {
+                    if (onFinishListener != null) onFinishListener.onFinish();
+                    return null;
+                }
+            };
 
-        ThreadController.post(backTask, onFinish);
+            ThreadController.post(backTask, onFinish);
+        }
     }
 
-    public synchronized void writeToDisk(Context context)
+    public void writeToDisk(Context context)
     {
-        synchronized (instanceLock)
+        synchronized (mCacheIOLock)
         {
             try
             {
                 final File cacheFile = new File(context.getCacheDir(), cacheName);
-                if (!cacheFile.exists()) cacheFile.createNewFile();
-
                 JSONStorageFactory.saveJSONArray(CoreJSONFactory.toJSONArray(getCachedAnimeObjectsCopy(), false), new FileOutputStream(cacheFile));
             }
             catch (IOException e)
@@ -186,5 +198,15 @@ public final class HummingbirdInternalCache
                 e.printStackTrace();
             }
         }
+    }
+
+    public synchronized void insert(AnimeObject animeObject)
+    {
+        mCachedAnimeObjects.put(animeObject.slug, animeObject);
+    }
+
+    public synchronized void remove(AnimeObject animeObject)
+    {
+        mCachedAnimeObjects.remove(animeObject.slug);
     }
 }
