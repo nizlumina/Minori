@@ -3,18 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/fragment_gridview"
-        android:layout_width="match_parent"
-        android:layout_height="400dp" />
-
 
     <EditText
         android:id="@+id/sa_search_text"
         style="@style/TextColorBase"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_below="@id/gridview"
+        android:layout_alignParentBottom="true"
         android:background="?attr/colorPrimary"
         android:gravity="center"
         android:hint="Cat Search" />
@@ -40,10 +35,17 @@
     <ImageButton
         android:id="@+id/sa_fab_search"
         style="@style/FabDark.Standard"
+        android:layout_above="@id/sa_search_text"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/sa_search_text"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="-30dp" />
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="@dimen/activity_horizontal_margin" />
+
+    <include
+        layout="@layout/fragment_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/sa_search_text" />
 
 
 </RelativeLayout>
