@@ -31,6 +31,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.+'
 
+    compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'org.jsoup:jsoup:1.7.2'
 }
