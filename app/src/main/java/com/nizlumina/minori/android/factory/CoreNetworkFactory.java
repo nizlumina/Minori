@@ -1,5 +1,6 @@
 package com.nizlumina.minori.android.factory;
 
+import com.nizlumina.minori.android.listener.WebUnitListener;
 import com.nizlumina.minori.android.network.CoreQuery;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.Util;
@@ -23,7 +24,12 @@ public class CoreNetworkFactory
 {
     public static void getNyaaEntries(final String searchTerms, final ArrayList<NyaaEntry> outputList)
     {
-        WebUnit unit = new WebUnit();
+        getNyaaEntries(searchTerms, outputList, null);
+    }
+
+    public static void getNyaaEntries(final String searchTerms, final ArrayList<NyaaEntry> outputList, WebUnit webUnit)
+    {
+        WebUnit unit = getWebUnit(webUnit);
 
         WebUnit.StreamCallable callable = new WebUnit.StreamCallable()
         {
@@ -95,18 +101,25 @@ public class CoreNetworkFactory
         return null;
     }
 
-    public static void getAnimeObjectAsync(final String slugOrID, final NetworkFactoryListener<AnimeObject> listener)
+    public static void getAnimeObjectAsync(final String slugOrID, final WebUnitListener<AnimeObject> listener)
     {
-        WebUnit unit = new WebUnit();
+        getAnimeObjectAsync(slugOrID, listener, null);
+    }
+
+
+    public static void getAnimeObjectAsync(final String slugOrID, final WebUnitListener<AnimeObject> listener, final WebUnit webUnit)
+    {
+        final WebUnit unit = getWebUnit(webUnit);
+
         try
         {
             Util.logThread("CoreNetworkFactory");
-            unit.enqueueGetString(CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString(), new WebUnit.WebUnitListener()
+            unit.enqueueGetString(CoreQuery.Hummingbird.getAnimeByID(slugOrID).toString(), new WebUnit.WebUnitStringListener()
             {
                 @Override
                 public void onFailure()
                 {
-
+                    if (listener != null) listener.onFailure();
                 }
 
                 @Override
@@ -134,8 +147,12 @@ public class CoreNetworkFactory
         }
     }
 
-    public interface NetworkFactoryListener<T>
+    private static WebUnit getWebUnit(WebUnit overrideWebUnit)
     {
-        public void onFinish(T result);
+        WebUnit unit;
+        if (overrideWebUnit == null) unit = new WebUnit();
+        else unit = overrideWebUnit;
+        return unit;
     }
+
 }
