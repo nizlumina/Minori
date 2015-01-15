@@ -43,14 +43,23 @@ public final class ThreadMaster
         return executorService;
     }
 
-    public <V extends Object> Future enqueue(final Callable<V> callable, final Listener<V> listener)
+
+    /**
+     * While using ExecutorService.submit() is enough for most cases, this method expands on that by providing a guaranteed listener pattern that fires upon completion back on the original thread.
+     *
+     * @param callable
+     * @param listener
+     * @param <V>
+     * @return
+     */
+    public <V> Future<V> enqueue(final Callable<V> callable, final Listener<V> listener)
     {
         if (Looper.myLooper() == null) Looper.prepare();
         final Handler handler = new Handler(Looper.myLooper());
-        Callable internalCallable = new Callable()
+        Callable<V> internalCallable = new Callable<V>()
         {
             @Override
-            public Void call() throws Exception
+            public V call() throws Exception
             {
                 final V returnObject = callable.call();
                 handler.post(new Runnable()
@@ -62,14 +71,14 @@ public final class ThreadMaster
                     }
                 });
 
-                return null;
+                return returnObject;
             }
         };
         return executorService.submit(internalCallable);
     }
 
-    public interface Listener<Result>
+    public interface Listener<V>
     {
-        void onFinish(Result result);
+        void onFinish(V result);
     }
 }
