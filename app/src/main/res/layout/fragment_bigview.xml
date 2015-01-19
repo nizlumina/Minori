@@ -11,7 +11,7 @@
     tools:context=".MainActivity">
 
     <include
-        layout="@layout/list_item_singleview"
+        layout="@layout/list_item_gallery_singleview"
         android:layout_width="@dimen/gallery_image_width"
         android:layout_height="@dimen/gallery_image_height"
         android:layout_marginLeft="-4dp" />
