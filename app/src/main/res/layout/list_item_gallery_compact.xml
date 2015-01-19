@@ -7,6 +7,8 @@
         android:id="@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gallery_image_height"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
         android:src="@color/rbc_bg_grey_darkness" />
 
     <TextView
