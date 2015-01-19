@@ -8,41 +8,18 @@ import android.view.View;
 import android.widget.GridView;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.controller.WatchlistController;
-import com.nizlumina.minori.android.presenter.WatchDataPresenter;
 import com.nizlumina.minori.android.utility.Util;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 /**
  * Main start activity
  */
 public class GalleryActivity extends BaseActivity
 {
-
-    //Any libs should be loaded here since this is the main start Activity.
-    private void initImageLoaderLibrary()
-    {
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheOnDisk(true)
-                .cacheInMemory(true)
-                .build();
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-
-        ImageLoader.getInstance().init(config);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        initImageLoaderLibrary();
 
         setupFabs();
         setupContent();
@@ -75,7 +52,7 @@ public class GalleryActivity extends BaseActivity
         getContentContainer().addView(gridView);
 
         WatchlistController controller = new WatchlistController();
-        GalleryAdapter galleryAdapter = new GalleryAdapter(this, R.layout.list_item_singleview, WatchDataPresenter.listFrom(controller.getWatchDataArray()));
-        gridView.setAdapter(galleryAdapter);
+        //GalleryAdapter galleryAdapter = new GalleryAdapter(this, R.layout.list_item_gallery_singleview, WatchDataPresenter.listFrom(controller.getWatchDataArray()));
+        //gridView.setAdapter(galleryAdapter);
     }
 }
