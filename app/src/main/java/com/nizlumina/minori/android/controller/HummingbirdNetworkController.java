@@ -105,6 +105,8 @@ public class HummingbirdNetworkController
                         else
                         {
                             Log.v(getClass().getSimpleName(), "Cache hit for: " + slug);
+                            results.add(cachedAnimeObject);
+                            latch.countDown();
                             networkListener.onEachSuccessfulResponses(cachedAnimeObject);
                         }
                     }
@@ -134,10 +136,20 @@ public class HummingbirdNetworkController
                 networkListener.onFinish();
                 //process cache!
                 Util.logTime(startTime, "Thread Finishes!");
+                //debugList(animeObjects);
                 Log.v(getClass().getSimpleName(), "Final size: " + animeObjects.size());
                 mHummingbirdInstanceCache.writeToDisk(Minori.getAppContext());
             }
         });
+    }
+
+    private void debugList(List<AnimeObject> animeObjects)
+    {
+        for (AnimeObject animeObject : animeObjects)
+        {
+            String log = String.format("%s \n %s", animeObject.slug, animeObject.imageUrl);
+            Log.v(getClass().getSimpleName(), log);
+        }
     }
 
     public interface NetworkListener<Result>
