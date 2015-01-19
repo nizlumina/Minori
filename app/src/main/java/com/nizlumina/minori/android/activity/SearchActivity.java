@@ -12,9 +12,12 @@ import android.widget.RelativeLayout;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
+import com.nizlumina.minori.android.controller.HummingbirdNetworkController.NetworkListener;
 import com.nizlumina.minori.android.presenter.AnimeObjectPresenter;
 import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +46,11 @@ public class SearchActivity extends BaseActivity
         getContentContainer().addView(mainContent);
 
         getFabMini().setVisibility(View.GONE);
-        getFabMain().setVisibility(View.GONE);
+        ImageButton fabMain = getFabMain();
+        fabMain.setVisibility(View.VISIBLE);
+
+        fabMain.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
+        Util.tintImageButton(fabMain, Color.WHITE, getColorAccent());
 
         ImageButton searchFab = (ImageButton) findViewById(R.id.sa_fab_search);
         searchFab.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_search_api_mtrl_alpha));
@@ -51,12 +58,12 @@ public class SearchActivity extends BaseActivity
 
         List<AnimeObjectPresenter> animeObjectPresenters = new ArrayList<>();
         gridView = (GridView) findViewById(R.id.gridview);
-        adapter = new GalleryAdapter<>(this, R.layout.list_item_compact, animeObjectPresenters);
+        adapter = new GalleryAdapter<>(this, R.layout.list_item_gallery_simple, animeObjectPresenters);
 
         gridView.setAdapter(adapter);
+        gridView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
 
-        hummingbirdNetworkController = new HummingbirdNetworkController();
-        hummingbirdNetworkController.populateLinkAsync(new HummingbirdNetworkController.NetworkListener<AnimeObject>()
+        final NetworkListener<AnimeObject> networkListener = new NetworkListener<AnimeObject>()
         {
             @Override
             public void onEachSuccessfulResponses(final AnimeObject animeObject)
@@ -76,7 +83,10 @@ public class SearchActivity extends BaseActivity
             {
 
             }
-        }, false);
+        };
+
+        hummingbirdNetworkController = new HummingbirdNetworkController();
+        hummingbirdNetworkController.populateLinkAsync(networkListener, false);
 
         searchFab.setOnClickListener(new View.OnClickListener()
         {
@@ -85,6 +95,15 @@ public class SearchActivity extends BaseActivity
             {
                 Log.v(getClass().getSimpleName(), "Search Button clicked!");
 
+            }
+        });
+
+        fabMain.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                hummingbirdNetworkController.populateLinkAsync(networkListener, true);
             }
         });
     }
