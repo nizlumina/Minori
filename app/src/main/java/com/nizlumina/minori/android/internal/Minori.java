@@ -7,14 +7,17 @@ import android.content.Context;
 import java.util.ArrayList;
 
 /**
- * Simple state singleton
+ * Simple application instance
  */
 public class Minori extends Application
 {
     private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<ActivityListener>();
     private static Context mContext;
 
-    public static Context getAppContext() { return mContext; }
+    public static Context getAppContext()
+    {
+        return mContext;
+    }
 
     public synchronized static boolean listenersAvailable()
     {
@@ -37,7 +40,8 @@ public class Minori extends Application
     public void onCreate()
     {
         super.onCreate();
-        mContext = this.getApplicationContext();
+        mContext = this;
+        Config.initLibraries(getAppContext());
     }
 
     public interface ActivityListener {}
