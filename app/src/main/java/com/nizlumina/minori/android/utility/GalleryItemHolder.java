@@ -13,19 +13,24 @@
 package com.nizlumina.minori.android.utility;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.presenter.GalleryPresenter;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 public class GalleryItemHolder
 {
     private static boolean DEBUG_MODE = true;
     public TextView title, group, episode;
     public ImageView imageContainer;
+    public String localURI = null;
 
     public GalleryItemHolder(View convertView)
     {
@@ -35,7 +40,7 @@ public class GalleryItemHolder
         imageContainer = (ImageView) convertView.findViewById(R.id.item_image);
     }
 
-    public void applySource(Context context, GalleryPresenter galleryPresenter)
+    public void applySource(Context context, final GalleryPresenter galleryPresenter)
     {
         if (episode != null && galleryPresenter.getEpisode() != null)
             episode.setText(galleryPresenter.getEpisode());
@@ -49,24 +54,53 @@ public class GalleryItemHolder
         //TODO: Set options
         if (imageContainer != null && DEBUG_MODE)
         {
-            String localURI = galleryPresenter.getLocalImageURI();
-            String onlineURI = galleryPresenter.getOnlineImageURI();
+            localURI = galleryPresenter.getLocalImageURI();
+            final String onlineURI = galleryPresenter.getOnlineImageURI();
+
             if (onlineURI != null)
             {
-                Picasso.with(context).load(onlineURI).fit().into(imageContainer);
+                final ImageViewAware imageViewAware = new ImageViewAware(imageContainer);
+                final ImageLoader imageLoader = ImageLoader.getInstance();
 
+                if (localURI == null)
+                {
 
-//                if (localURI == null)
-//                {
-//                    ImageViewAware imageViewAware = new ImageViewAware(imageContainer);
-//                    ImageLoader imageLoader = ImageLoader.getInstance();
-//                    imageLoader.displayImage(onlineURI, imageViewAware);
-//
-//                    String newLocalURI = imageLoader.getDiskCache().get(onlineURI).getAbsolutePath();
-//                    String newLoadingURI = imageLoader.getLoadingUriForView(imageViewAware);
-//
-//                    Log.v(getClass().getSimpleName(), String.format("\nLocal[%s]\nLoading[%s]\n", newLocalURI, newLoadingURI));
-//                }
+                    imageLoader.displayImage(onlineURI, imageViewAware, new ImageLoadingListener()
+                    {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view)
+                        {
+
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason)
+                        {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
+                        {
+                            localURI = imageLoader.getLoadingUriForView(imageViewAware);
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view)
+                        {
+
+                        }
+                    });
+
+                    imageLoader.loadImage(null, null);
+
+                    //String newLocalURI = imageLoader.getDiskCache().get(onlineURI).getAbsolutePath();
+                    //String newLoadingURI = imageLoader.getLoadingUriForView(imageViewAware);
+
+                    //Log.v(getClass().getSimpleName(), String.format("\nLocal[%s]\nLoading[%s]\n", newLocalURI, newLoadingURI));
+                }
+                else
+                    imageLoader.displayImage(localURI, imageViewAware);
             }
         }
 
