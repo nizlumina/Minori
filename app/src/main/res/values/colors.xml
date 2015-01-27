@@ -36,7 +36,7 @@
     <color name="rbc_text_yellow">#FFFFF176</color>
     <color name="rbc_text_yellow_half">#80FFF176</color>
     <color name="rbc_text_orange">#FFFFB24F</color>
-    <color name="rbc_text_orange_half">#80FFB24F</color>\
+    <color name="rbc_text_orange_half">#80FFB24F</color>
 
     <!--Basic colors-->
     <color name="rb_white">#FFFFFF</color>
