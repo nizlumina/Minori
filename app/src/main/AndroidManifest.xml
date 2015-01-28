@@ -36,15 +36,23 @@
         <service
             android:name=".android.service.DownloadService"
             android:exported="false" />
-
         <activity
-            android:name=".android.activity.GalleryActivity"
+            android:name=".android.activity.DrawerActivity"
             android:label="@string/title_activity_gallery">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".android.activity.GalleryActivity"
+            android:label="@string/title_activity_gallery">
+            <!--<intent-filter>-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
+
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".android.activity.SearchActivity"
