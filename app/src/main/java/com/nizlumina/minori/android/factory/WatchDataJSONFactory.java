@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * JSON Factory for WatchData
@@ -21,7 +22,7 @@ public class WatchDataJSONFactory
     private static final String ALARM_DATA = "ALARM_DATA";
     private static final String ANIME_OBJECT = "ANIME_OBJECT";
 
-    public static JSONArray getJSONArray(final ArrayList<WatchData> inputList)
+    public static JSONArray getJSONArray(final List<WatchData> inputList)
     {
         JSONArray jsonArray = new JSONArray();
         for (WatchData watchData : inputList)
@@ -32,21 +33,23 @@ public class WatchDataJSONFactory
     }
 
 
-    public static void setFromJSONArray(JSONArray jsonArray, final ArrayList<WatchData> outputList)
+    public static List<WatchData> fromJSONArray(final JSONArray jsonArray)
     {
+        List<WatchData> result = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++)
         {
             try
             {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 WatchData watchData = fromJSON(jsonObject);
-                if (watchData != null) outputList.add(watchData);
+                if (watchData != null) result.add(watchData);
             }
             catch (JSONException e)
             {
                 e.printStackTrace();
             }
         }
+        return result;
     }
 
     public static JSONObject makeJSON(WatchData watchData)
