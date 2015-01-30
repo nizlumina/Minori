@@ -3,6 +3,7 @@ package com.nizlumina.minori.android.adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ public class GalleryAdapter<T extends GalleryPresenter> extends BaseAdapter
      *                           instantiating views.
      * @param objects            The objects to represent in the ListView.
      */
-    public GalleryAdapter(Context context, @LayoutRes int listItemResourceID, List<T> objects)
+    public GalleryAdapter(Context context, @LayoutRes int listItemResourceID, @Nullable List<T> objects)
     {
         mContext = context;
         mResource = listItemResourceID;
@@ -95,19 +96,21 @@ public class GalleryAdapter<T extends GalleryPresenter> extends BaseAdapter
         }
         else galleryItemHolder = (GalleryItemHolder) convertView.getTag();
 
-        galleryItemHolder.applySource(mContext, this.mGalleryItems.get(position));
+        if (mGalleryItems != null)
+            galleryItemHolder.applySource(mContext, this.mGalleryItems.get(position));
 
         return convertView;
     }
 
     public void add(T item)
     {
-        this.mGalleryItems.add(item);
+        if (mGalleryItems != null)
+            this.mGalleryItems.add(item);
     }
 
     public void add(List<T> items)
     {
-        this.mGalleryItems.addAll(items);
+        if (mGalleryItems != null) this.mGalleryItems.addAll(items);
     }
 
 }
