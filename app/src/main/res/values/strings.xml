@@ -14,5 +14,6 @@
     <string name="drawer_watchlist">Watchlist</string>
     <string name="drawer_season">Season Browser</string>
     <string name="drawer_explore">Explore</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
