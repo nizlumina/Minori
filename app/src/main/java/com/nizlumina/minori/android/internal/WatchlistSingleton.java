@@ -3,6 +3,7 @@ package com.nizlumina.minori.android.internal;
 import com.nizlumina.minori.android.data.WatchData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A singleton that holds resource for the main watchlist data. This is required since the scanning service may access the main dataset and update it as necessary while the app is being used.
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 public class WatchlistSingleton
 {
     private static volatile WatchlistSingleton INSTANCE = null;
-    private static ArrayList<WatchData> dataList;
+    private static List<WatchData> mDataList;
 
     private WatchlistSingleton() {}
 
@@ -29,14 +30,19 @@ public class WatchlistSingleton
         return INSTANCE;
     }
 
-    public synchronized ArrayList<WatchData> getDataList()
+    public List<WatchData> getDataList()
     {
-        if (dataList == null) dataList = new ArrayList<WatchData>();
-        return dataList;
+        if (mDataList == null) mDataList = new ArrayList<WatchData>();
+        return mDataList;
     }
 
-    public synchronized int getAvailableID()
+    public void setDataList(List<WatchData> newWatchDatas)
     {
-        return dataList.size(); //this only work since only addition/removal will call getAvailableID().
+        mDataList = newWatchDatas;
+    }
+
+    public int getAvailableID()
+    {
+        return mDataList.size(); //this only work since only addition/removal will call getAvailableID().
     }
 }
