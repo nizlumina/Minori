@@ -8,6 +8,7 @@ import android.widget.ImageButton;
 
 import com.nizlumina.minori.R;
 
+@Deprecated
 public class BaseActivity extends ActionBarActivity
 {
     private FrameLayout topContainer;
