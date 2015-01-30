@@ -12,20 +12,36 @@
 
 package com.nizlumina.minori.android.activity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.fragment.GalleryFragment;
+import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity
 {
-
     private Toolbar toolbar;
+    private ImageButton mFabMain;
+    private ImageButton mFabMini;
+
+    public ImageButton getFabMini()
+    {
+        return mFabMini;
+    }
+
+    public ImageButton getFabMain()
+    {
+        return mFabMain;
+    }
 
     public Toolbar getToolbar()
     {
@@ -38,14 +54,53 @@ public class DrawerActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_base);
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
-        toolbar = (Toolbar) findViewById(R.id.base_toolbar);
-        setSupportActionBar(toolbar);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
-        drawerLayout.setDrawerListener(drawerToggle);
-        drawerToggle.syncState();
+        setupViews();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+    }
+
+    private void setupViews()
+    {
+        //Set basics
+        toolbar = (Toolbar) findViewById(R.id.base_toolbar);
+
+        mFabMain = (ImageButton) findViewById(R.id.base_fabmain);
+        setupFab(mFabMain, R.color.accent_color_shade, R.color.accent_color);
+
+        mFabMini = (ImageButton) findViewById(R.id.base_fabmini);
+        setupFab(mFabMini, R.color.accent_color_shade, R.color.accent_color);
+
+        //Set drawers
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+        drawerLayout.setDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+    }
+
+    //Utilize XML bindings
+    public void changeFragment(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.drawer_watchlist:
+                break;
+            case R.id.drawer_season:
+                break;
+            case R.id.drawer_explore:
+                break;
+            case R.id.drawer_downloadqueue:
+                break;
+            case R.id.drawer_settings:
+                break;
+            case R.id.drawer_about:
+                break;
+        }
+    }
+
+    private void setupFab(ImageButton fab, @ColorRes int foregroundColor, @ColorRes int backgroundColor)
+    {
+        Resources resources = getResources();
+        Util.tintImageButton(fab, resources.getColor(foregroundColor), resources.getColor(backgroundColor));
     }
 }
