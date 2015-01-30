@@ -12,7 +12,7 @@
 
 package com.nizlumina.minori.android.listener;
 
-public interface OnFinishListener
+public interface OnFinishListener<T>
 {
-    void onFinish();
+    void onFinish(T result);
 }
