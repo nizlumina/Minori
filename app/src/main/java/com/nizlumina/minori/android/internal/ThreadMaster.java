@@ -47,38 +47,40 @@ public final class ThreadMaster
     /**
      * While using ExecutorService.submit() is enough for most cases, this method expands on that by providing a guaranteed listener pattern that fires upon completion back on the original thread.
      *
-     * @param callable
-     * @param listener
-     * @param <V>
-     * @return
+     * @param backgroundTask The callable task to be done in background thread
+     * @param listener Optional listener that pass the result in OnFinish
+     * @param <Result> Type for the result.
+     * @return a generic Future
      */
-    public <V> Future<V> enqueue(final Callable<V> callable, final Listener<V> listener)
+    public <Result> Future<Result> enqueue(final Callable<Result> backgroundTask, final Listener<Result> listener)
     {
         if (Looper.myLooper() == null) Looper.prepare();
         final Handler handler = new Handler(Looper.myLooper());
-        Callable<V> internalCallable = new Callable<V>()
+        Callable<Result> internalCallable = new Callable<Result>()
         {
             @Override
-            public V call() throws Exception
+            public Result call() throws Exception
             {
-                final V returnObject = callable.call();
-                handler.post(new Runnable()
+                final Result returnObject = backgroundTask.call();
+                if (listener != null)
                 {
-                    @Override
-                    public void run()
+                    handler.post(new Runnable()
                     {
-                        listener.onFinish(returnObject);
-                    }
-                });
-
+                        @Override
+                        public void run()
+                        {
+                            listener.onFinish(returnObject);
+                        }
+                    });
+                }
                 return returnObject;
             }
         };
         return executorService.submit(internalCallable);
     }
 
-    public interface Listener<V>
+    public interface Listener<Result>
     {
-        void onFinish(V result);
+        void onFinish(Result result);
     }
 }
