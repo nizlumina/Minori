@@ -16,18 +16,28 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.activity.DrawerActivity;
+import com.nizlumina.minori.android.controller.WatchlistController;
+import com.nizlumina.minori.android.presenter.WatchDataPresenter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GalleryFragment extends Fragment
 {
+    Toolbar toolbar;
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
+        toolbar = ((DrawerActivity) activity).getToolbar();
     }
 
     @Nullable
@@ -35,10 +45,27 @@ public class GalleryFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_gridview, container, false);
+        return inflater.inflate(R.layout.fragment_gridview, container, false);
+    }
 
-        //load stuffs
-        return view;
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        GridView gridView = (GridView) view;
+        WatchlistController controller = new WatchlistController();
+        List<WatchDataPresenter> presenter = new ArrayList<>();
+//        GalleryAdapter<WatchDataPresenter> adapter = new GalleryAdapter<>(getActivity(), R.layout.list_item_gallery_singleview, );
+//        gridView.setAdapter(adapter);
+
+        toolbar.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+            }
+        });
     }
 
     @Override
