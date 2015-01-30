@@ -8,7 +8,10 @@ import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.factory.IntentFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
+import com.nizlumina.minori.android.internal.ThreadMaster;
+import com.nizlumina.minori.android.internal.ThreadMaster.Listener;
 import com.nizlumina.minori.android.internal.WatchlistSingleton;
+import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.network.NetworkState;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
@@ -19,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -31,7 +35,7 @@ public class WatchlistController
 
     public synchronized WatchData getWatchData(int id)
     {
-        ArrayList<WatchData> watchDatas = WatchlistSingleton.getInstance().getDataList();
+        List<WatchData> watchDatas = WatchlistSingleton.getInstance().getDataList();
         for (WatchData watchData : watchDatas)
         {
             if (watchData.getId() == id)
@@ -40,7 +44,7 @@ public class WatchlistController
         return null;
     }
 
-    public synchronized ArrayList<WatchData> getWatchDataArray()
+    public synchronized List<WatchData> getWatchDataArray()
     {
         return WatchlistSingleton.getInstance().getDataList();
     }
@@ -70,9 +74,10 @@ public class WatchlistController
 
     }
 
-    public synchronized void loadDataAsync(final Context context, Callable onFinish)
+    public synchronized void loadDataAsync(final Context context, final OnFinishListener<List<WatchData>> onFinishListener)
     {
-        Callable loadTask = new Callable()
+        //Normal background task.
+        Callable backgroundTask = new Callable()
         {
             @Override
             public Object call() throws Exception
@@ -81,26 +86,29 @@ public class WatchlistController
                 return null;
             }
         };
-
-        ThreadController.post(loadTask, onFinish);
+        ThreadMaster.getInstance().enqueue(backgroundTask, new Listener()
+        {
+            @Override
+            public void onFinish(Object o)
+            {
+                if (onFinishListener != null)
+                    onFinishListener.onFinish(WatchlistSingleton.getInstance().getDataList());
+            }
+        });
     }
 
     //force initialize watchlist data
     public void forceLoadData(final Context context)
     {
-        if (WatchlistSingleton.getInstance().getDataList() == null)
+        try
         {
-            final String fileName = watchlistFileName;
-            try
-            {
-                final FileInputStream inputStream = context.openFileInput(fileName);
-                JSONArray jsonArray = JSONStorageFactory.loadJSONArray(inputStream);
-                WatchDataJSONFactory.setFromJSONArray(jsonArray, WatchlistSingleton.getInstance().getDataList());
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
+            final FileInputStream inputStream = context.openFileInput(watchlistFileName);
+            JSONArray jsonArray = JSONStorageFactory.loadJSONArray(inputStream);
+            WatchlistSingleton.getInstance().setDataList(WatchDataJSONFactory.fromJSONArray(jsonArray));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
         }
     }
 
