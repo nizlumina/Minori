@@ -108,7 +108,7 @@ public class HummingbirdInternalCache
                 @Override
                 public Void call() throws Exception
                 {
-                    if (onFinishListener != null) onFinishListener.onFinish();
+                    if (onFinishListener != null) onFinishListener.onFinish(null);
                     return null;
                 }
             };
@@ -175,7 +175,7 @@ public class HummingbirdInternalCache
                 @Override
                 public Void call() throws Exception
                 {
-                    if (onFinishListener != null) onFinishListener.onFinish();
+                    if (onFinishListener != null) onFinishListener.onFinish(null);
                     return null;
                 }
             };
