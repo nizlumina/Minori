@@ -13,15 +13,25 @@
 package com.nizlumina.minori.android.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.fragment.GalleryFragment;
 
 public class DrawerActivity extends ActionBarActivity
 {
+
+    private Toolbar toolbar;
+
+    public Toolbar getToolbar()
+    {
+        return toolbar;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -29,11 +39,13 @@ public class DrawerActivity extends ActionBarActivity
         setContentView(R.layout.activity_drawer_base);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.base_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.base_toolbar);
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
         drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.base_contentfragment, new GalleryFragment()).commit();
     }
 }
