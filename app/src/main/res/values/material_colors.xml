@@ -81,20 +81,20 @@
 
     <color name="blue_">#000000</color>
 
-    <color name="blue_50_">#E3F2FD</color>
-    <color name="blue_100_">#BBDEFB</color>
-    <color name="blue_200_">#90CAF9</color>
-    <color name="blue_300_">#64B5F6</color>
-    <color name="blue_400_">#42A5F5</color>
-    <color name="blue_500_">#2196F3</color>
-    <color name="blue_600_">#1E88E5</color>
-    <color name="blue_700_">#1976D2</color>
-    <color name="blue_800_">#1565C0</color>
-    <color name="blue_900_">#0D47A1</color>
-    <color name="blue_A100_">#82B1FF</color>
-    <color name="blue_A200_">#448AFF</color>
-    <color name="blue_A400_">#2979FF</color>
-    <color name="blue_A700_">#2962FF</color>
+    <color name="blue_50">#E3F2FD</color>
+    <color name="blue_100">#BBDEFB</color>
+    <color name="blue_200">#90CAF9</color>
+    <color name="blue_300">#64B5F6</color>
+    <color name="blue_400">#42A5F5</color>
+    <color name="blue_500">#2196F3</color>
+    <color name="blue_600">#1E88E5</color>
+    <color name="blue_700">#1976D2</color>
+    <color name="blue_800">#1565C0</color>
+    <color name="blue_900">#0D47A1</color>
+    <color name="blue_A100">#82B1FF</color>
+    <color name="blue_A200">#448AFF</color>
+    <color name="blue_A400">#2979FF</color>
+    <color name="blue_A700">#2962FF</color>
 
     <color name="light_blue_50">#E1F5FE</color>
     <color name="light_blue_100">#B3E5FC</color>
