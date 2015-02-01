@@ -35,9 +35,9 @@ public class GenericAdapter<T> extends BaseAdapter
     private final Object mLock = new Object();
     private final Context mContext;
     private final int mListItemResource;
+    private final ViewHolder<T> mViewHolder;
     private boolean mNotifyOnChange;
     private List<T> mObjects;
-    private ViewHolder<T> mViewHolder;
 
     /**
      * @param context          Context where this adapter is used
@@ -65,8 +65,8 @@ public class GenericAdapter<T> extends BaseAdapter
         if (convertView == null)
         {
             convertView = LayoutInflater.from(mContext).inflate(mListItemResource, parent, false);
-            //noinspection unchecked
-            viewholder = mViewHolder.setupViewSource(convertView);
+            viewholder = mViewHolder.getNewInstance();
+            viewholder.setupViewSource(convertView);
             convertView.setTag(viewholder);
         }
         else
@@ -254,20 +254,29 @@ public class GenericAdapter<T> extends BaseAdapter
         return position;
     }
 
+    //END SECTION DAVY JONES
+
     /**
-     * A generic interface to be used for the Generic adapter. During anonymous instantiation, declare local View fields and set them in {@link #setupViewSource(android.view.View)}. After that, apply the source in {@link #applySource(android.content.Context, Object)} to the previous View fields.
+     * A generic interface to be used for the Generic adapter. Anonymous instantiation do not work due to {@link #getNewInstance()} being compulsory (plus avoiding heavy reflections). As per how to use it, create a local inner class implementing this interface, declare local View fields and set them in {@link #setupViewSource(android.view.View)}. After that, apply the source in {@link #applySource(android.content.Context, Object)} to the previous View fields.
      *
      * @param <T> Object served as the main source
      */
     public interface ViewHolder<T>
     {
         /**
+         * Simply return a new instance of the class that implement this interface.
+         *
+         * @return An instance class of the implementation.
+         */
+        ViewHolder<T> getNewInstance();
+
+        /**
          * Setup the viewholder with the inflated view. This is where you find/attach any view to the viewholder local fields.
          *
          * @param inflatedConvertView The inflated view
-         * @return A ViewHolder to be saved as tag. This must not return null unless it is intended.
+         * @return A ViewHolder to be used in tagging. This must not return null unless it is intended. Just "return this" is mostly enough.
          */
-        ViewHolder<T> setupViewSource(View inflatedConvertView);
+        ViewHolder<T> setupViewSource(final View inflatedConvertView);
 
         /**
          * Here's where you apply data source to the ViewHolder local fields (which generally are {@link android.view.View} objects)
@@ -275,9 +284,7 @@ public class GenericAdapter<T> extends BaseAdapter
          * @param context Context if needed
          * @param source  The object source
          */
-        void applySource(Context context, T source);
+        void applySource(final Context context, final T source);
     }
-
-    // END SECTION DAVY JONES
 
 }
