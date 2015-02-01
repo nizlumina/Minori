@@ -3,7 +3,9 @@
     android:id="@+id/main_toolbar"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
-    app:title="Minori" />
+    app:title="Minori"
+    tools:ignore="Overdraw" />
