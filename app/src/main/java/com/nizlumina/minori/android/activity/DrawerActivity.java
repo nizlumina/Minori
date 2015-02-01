@@ -15,7 +15,7 @@ package com.nizlumina.minori.android.activity;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
-import android.support.v4.app.FragmentTransaction;
+import android.support.annotation.DrawableRes;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -56,8 +56,7 @@ public class DrawerActivity extends ActionBarActivity
 
         setupViews();
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
     }
 
     private void setupViews()
@@ -66,10 +65,10 @@ public class DrawerActivity extends ActionBarActivity
         toolbar = (Toolbar) findViewById(R.id.base_toolbar);
 
         mFabMain = (ImageButton) findViewById(R.id.base_fabmain);
-        setupFab(mFabMain, R.color.accent_color_shade, R.color.accent_color);
+        //setupFab(mFabMain, R.color.accent_color_shade, R.color.accent_color);
 
         mFabMini = (ImageButton) findViewById(R.id.base_fabmini);
-        setupFab(mFabMini, R.color.accent_color_shade, R.color.accent_color);
+        //setupFab(mFabMini, R.color.accent_color_shade, R.color.accent_color);
 
         //Set drawers
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
@@ -98,9 +97,29 @@ public class DrawerActivity extends ActionBarActivity
         }
     }
 
-    private void setupFab(ImageButton fab, @ColorRes int foregroundColor, @ColorRes int backgroundColor)
+    /**
+     * Set fab with default accent color and shade
+     *
+     * @param fab             The ImageButton or FAB
+     * @param drawableID      The drawable ID used as foreground
+     * @param foregroundColor Color resource ID to tint the foreground icon
+     * @param backgroundColor Color resource ID to tint the background
+     */
+    public void setupFab(ImageButton fab, @DrawableRes int drawableID, @ColorRes int foregroundColor, @ColorRes int backgroundColor)
     {
         Resources resources = getResources();
+        fab.setImageDrawable(resources.getDrawable(drawableID));
         Util.tintImageButton(fab, resources.getColor(foregroundColor), resources.getColor(backgroundColor));
+    }
+
+    /**
+     * Set fab with default accent color and shade
+     *
+     * @param fab        The ImageButton or FAB
+     * @param drawableID The drawable ID used as foreground
+     */
+    public void setupFab(ImageButton fab, @DrawableRes int drawableID)
+    {
+        setupFab(fab, drawableID, R.color.accent_color_shade, R.color.accent_color);
     }
 }
