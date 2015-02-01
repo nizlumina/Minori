@@ -48,8 +48,8 @@ public final class ThreadMaster
      * While using ExecutorService.submit() is enough for most cases, this method expands on that by providing a guaranteed listener pattern that fires upon completion back on the original thread.
      *
      * @param backgroundTask The callable task to be done in background thread
-     * @param listener Optional listener that pass the result in OnFinish
-     * @param <Result> Type for the result.
+     * @param listener       Optional listener that pass the result in OnFinish
+     * @param <Result>       Type for the result.
      * @return a generic Future
      */
     public <Result> Future<Result> enqueue(final Callable<Result> backgroundTask, final Listener<Result> listener)
