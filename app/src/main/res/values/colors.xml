@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Minori colors-->
-    <color name="accent_color">@color/light_blue_200</color>
-    <color name="accent_color_shade">@color/light_blue_100</color>
+    <color name="accent_color">@color/light_green_A200</color>
+    <color name="accent_color_shade">@color/rbc_green_shade</color>
 
     <color name="primary_color">#AD1457</color>
     <!--Material Pink 800-->
@@ -11,6 +11,22 @@
 
     <color name="primary_color_complement">#D85B92</color>
     <color name="primary_color_dark_complement">#C33573</color>
+
+    <!--Shared BG Colors-->
+    <!--<color name="bg_primary">@color/rbc_text_blue</color>-->
+    <!--<color name="bg_secondary">@color/rbc_text_red</color>-->
+    <!--<color name="bg_tertiary">@color/rbc_text_yellow</color>-->
+    <!--<color name="bg_quaternary">@color/rbc_text_orange</color>-->
+    <!--<color name="bg_quinary">@color/rbc_text_green</color>-->
+    <!--<color name="bg_senary">@color/rbc_text_purple</color>-->
+    <color name="bg_primary">@color/blue_700</color>
+    <color name="bg_secondary">@color/red_700</color>
+    <color name="bg_tertiary">@color/yellow_700</color>
+    <color name="bg_quaternary">@color/orange_700</color>
+    <color name="bg_quinary">@color/green_700</color>
+    <color name="bg_senary">@color/purple_700</color>
+    <color name="bg_neutral_primary">@color/grey_700</color>
+    <!--<color name="bg_neutral_secondary">@color/grey_400</color>-->
 
     <!--Robomaru Colors-->
     <color name="rbc_blue_actionbar">#FF1565C0</color>
