@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.activity.DrawerActivity;
@@ -32,12 +31,19 @@ import java.util.List;
 
 public class GalleryFragment extends Fragment
 {
-    Toolbar toolbar;
+    public GalleryFragment() {}
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        toolbar = ((DrawerActivity) activity).getToolbar();
+        ((DrawerActivity) activity).getFabMain().setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SearchFragment()).commit();
+            }
+        });
     }
 
     @Nullable
@@ -52,20 +58,25 @@ public class GalleryFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        GridView gridView = (GridView) view;
         WatchlistController controller = new WatchlistController();
         List<WatchDataPresenter> presenter = new ArrayList<>();
 //        GalleryAdapter<WatchDataPresenter> adapter = new GalleryAdapter<>(getActivity(), R.layout.list_item_gallery_singleview, );
 //        gridView.setAdapter(adapter);
+
+        DrawerActivity drawerActivity = ((DrawerActivity) getActivity());
+        Toolbar toolbar = drawerActivity.getToolbar();
 
         toolbar.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-
+                getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SearchFragment());
             }
         });
+
+        drawerActivity.setupFab(drawerActivity.getFabMain(), R.drawable.ic_add_black_24dp);
+        drawerActivity.setupFab(drawerActivity.getFabMini(), R.drawable.ic_refresh_black_24dp);
     }
 
     @Override
