@@ -11,6 +11,7 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.utility.Util;
 
+@Deprecated
 /**
  * Main start activity
  */
