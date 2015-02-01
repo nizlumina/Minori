@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.adapter.GalleryAdapter;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
-import com.nizlumina.minori.android.controller.HummingbirdNetworkController.NetworkListener;
+import com.nizlumina.minori.android.listener.NetworkListener;
 import com.nizlumina.minori.android.presenter.AnimeObjectPresenter;
 import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
@@ -22,6 +22,7 @@ import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 /**
  * Search activity for both network + Cached seasons
  */
@@ -41,7 +42,7 @@ public class SearchActivity extends BaseActivity
 
     private void setupContent()
     {
-        RelativeLayout mainContent = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.fragment_search_content, getContentContainer(), false);
+        RelativeLayout mainContent = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.fragment_search, getContentContainer(), false);
 
         getContentContainer().addView(mainContent);
 
@@ -52,7 +53,7 @@ public class SearchActivity extends BaseActivity
         fabMain.setImageDrawable(getResources().getDrawable(R.drawable.ic_refresh_black_24dp));
         Util.tintImageButton(fabMain, Color.WHITE, getColorAccent());
 
-        ImageButton searchFab = (ImageButton) findViewById(R.id.sa_fab_search);
+        ImageButton searchFab = (ImageButton) findViewById(R.id.sf_fab_search);
         searchFab.setImageDrawable(getResources().getDrawable(R.drawable.abc_ic_search_api_mtrl_alpha));
         Util.tintImageButton(searchFab, Color.WHITE, getColorAccent());
 
@@ -63,7 +64,7 @@ public class SearchActivity extends BaseActivity
         gridView.setAdapter(adapter);
         gridView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
 
-        final NetworkListener<AnimeObject> networkListener = new NetworkListener<AnimeObject>()
+        final com.nizlumina.minori.android.listener.NetworkListener<AnimeObject> networkListener = new NetworkListener<AnimeObject>()
         {
             @Override
             public void onEachSuccessfulResponses(final AnimeObject animeObject)
