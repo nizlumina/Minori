@@ -1,10 +1,10 @@
 package com.nizlumina.minori.android.utility;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.nizlumina.minori.android.network.CoreQuery;
@@ -32,7 +32,7 @@ public final class NotificationFactory
 
     public void postNotification(final Context context, final NyaaEntry nyaaEntry)
     {
-        final NotificationManagerCompat ntManager = (NotificationManagerCompat) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManager ntManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         //if(largeIcon == null) largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_stat_noti);
