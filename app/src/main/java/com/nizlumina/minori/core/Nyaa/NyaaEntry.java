@@ -191,9 +191,14 @@ public final class NyaaEntry
     {
         DEFAULT, R480, R720, R1080;
 
-        public static String getResolutionDisplayString(NyaaEntry displayEntry, boolean showDefault)
+        public static String getResolutionDisplayString(NyaaEntry displayEntry, boolean displayDefaultForNonStandard)
         {
-            switch (displayEntry.resolution)
+            return getResolutionDisplayString(displayEntry.resolution, displayDefaultForNonStandard);
+        }
+
+        public static String getResolutionDisplayString(Resolution resolutionKey, boolean displayDefaultForNonStandard)
+        {
+            switch (resolutionKey)
             {
                 case R480:
                     return Static.R480 + 'p';
@@ -202,23 +207,17 @@ public final class NyaaEntry
                 case R1080:
                     return Static.R1080 + 'p';
                 case DEFAULT:
-                    if (showDefault)
+                    if (displayDefaultForNonStandard)
                     {
-                        if (displayEntry.resolutionString == null) return "Default";
-                        else if (displayEntry.resolutionString.equalsIgnoreCase(Static.UNDEFINED_STRING))
-                            return "Default";
-                        else return displayEntry.resolutionString;
+                        return "Default";
                     }
                     else
                     {
-                        if (displayEntry.resolutionString == null) return Static.UNDEFINED_STRING;
-                        else if (displayEntry.resolutionString.equalsIgnoreCase(Static.UNDEFINED_STRING))
-                            return Static.UNDEFINED_STRING;
-                        else return displayEntry.resolutionString;
+                        return null;
                     }
-
+                default:
+                    return null;
             }
-            return null;
         }
 
         public static Resolution matchResolution(String searchString)
@@ -232,7 +231,15 @@ public final class NyaaEntry
             if (searchString.contains(Static.R1080))
                 return R1080;
             return DEFAULT;
+        }
 
+        public static Resolution getResolutionFromOrdinals(int ordinal)
+        {
+            if (ordinal == DEFAULT.ordinal()) return DEFAULT;
+            if (ordinal == R480.ordinal()) return R480;
+            if (ordinal == R720.ordinal()) return R720;
+            if (ordinal == R1080.ordinal()) return R1080;
+            return null;
         }
     }
 
@@ -278,5 +285,4 @@ public final class NyaaEntry
         public static final String UNDEFINED_STRING = ""; //Use this only for internal, never for query
         public static final int UNDEFINED_INT = -1; //same as above
     }
-
 }

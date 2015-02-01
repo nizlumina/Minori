@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 //import android.util.Log;
 
@@ -37,7 +38,7 @@ public class NyaaXMLParser
      * @param rawList
      * @return
      */
-    public static ArrayList<NyaaFansubGroup> Group(@NonNull ArrayList<NyaaEntry> rawList)
+    public static List<NyaaFansubGroup> Group(@NonNull List<NyaaEntry> rawList)
     {
         HashMap<Pair<String, String>, NyaaFansubGroup> fMap = new HashMap<Pair<String, String>, NyaaFansubGroup>();
 
@@ -55,12 +56,12 @@ public class NyaaXMLParser
             {
                 nyaaFansubGroup = new NyaaFansubGroup(rawEntry.fansub);
 
-                nyaaFansubGroup.id = rawEntry.id;
-                nyaaFansubGroup.seriesTitle = rawEntry.title;
-                nyaaFansubGroup.latestEpisode = rawEntry.currentEpisode;
-                nyaaFansubGroup.trustCategory = rawEntry.trustCategory;
-                nyaaFansubGroup.resolutions.add(rawEntry.resolution);
-                nyaaFansubGroup.animeEntries.add(rawEntry);
+                nyaaFansubGroup.setId(rawEntry.id);
+                nyaaFansubGroup.setSeriesTitle(rawEntry.title);
+                nyaaFansubGroup.setLatestEpisode(rawEntry.currentEpisode);
+                nyaaFansubGroup.setTrustCategory(rawEntry.trustCategory);
+                nyaaFansubGroup.getResolutions().add(rawEntry.resolution);
+                nyaaFansubGroup.getNyaaEntries().add(rawEntry);
 
                 fMap.put(new Pair<String, String>(rawEntry.fansub, rawEntry.title), nyaaFansubGroup);
             }
@@ -68,39 +69,39 @@ public class NyaaXMLParser
             {
                 nyaaFansubGroup = fMap.get(new Pair<String, String>(rawEntry.fansub, rawEntry.title));
 
-                nyaaFansubGroup.animeEntries.add(rawEntry);
+                nyaaFansubGroup.getNyaaEntries().add(rawEntry);
 
-                if (rawEntry.currentEpisode > nyaaFansubGroup.latestEpisode)
+                if (rawEntry.currentEpisode > nyaaFansubGroup.getLatestEpisode())
                 {
-                    nyaaFansubGroup.latestEpisode = rawEntry.currentEpisode;
-                    nyaaFansubGroup.id = rawEntry.id;
+                    nyaaFansubGroup.setLatestEpisode(rawEntry.currentEpisode);
+                    nyaaFansubGroup.setId(rawEntry.id);
                 }
 
 
-                if (nyaaFansubGroup.trustCategory.ordinal() < rawEntry.trustCategory.ordinal()) //Nyaa Rules. If the group already is A+ in another release, they will be considered A+ in another release.. or was it still the same now..?
+                if (nyaaFansubGroup.getTrustCategory().ordinal() < rawEntry.trustCategory.ordinal()) //Nyaa Rules. If the group already is A+ in another release, they will be considered A+ in another release.. or was it still the same now..?
                 {
-                    nyaaFansubGroup.trustCategory = rawEntry.trustCategory;
+                    nyaaFansubGroup.setTrustCategory(rawEntry.trustCategory);
                 }
 
-                if (rawEntry.resolution != null && !nyaaFansubGroup.resolutions.contains(rawEntry.resolution))
+                if (rawEntry.resolution != null && !nyaaFansubGroup.getResolutions().contains(rawEntry.resolution))
                 {
-                    nyaaFansubGroup.resolutions.add(rawEntry.resolution);
+                    nyaaFansubGroup.getResolutions().add(rawEntry.resolution);
                 }
 
-                if (rawEntry.quality != null && !nyaaFansubGroup.qualities.contains(rawEntry.quality))
+                if (rawEntry.quality != null && !nyaaFansubGroup.getQualities().contains(rawEntry.quality))
                 {
-                    nyaaFansubGroup.qualities.add(rawEntry.quality);
+                    nyaaFansubGroup.getQualities().add(rawEntry.quality);
                 }
             }
         }
 
-        ArrayList<NyaaFansubGroup> finalGroups = new ArrayList<NyaaFansubGroup>(fMap.values());
+        List<NyaaFansubGroup> finalGroups = new ArrayList<NyaaFansubGroup>(fMap.values());
 
         for (NyaaFansubGroup nyaaFansubGroup : finalGroups)
         {
-            if (nyaaFansubGroup.animeEntries.size() > 1)
+            if (nyaaFansubGroup.getNyaaEntries().size() > 1)
             {
-                Collections.sort(nyaaFansubGroup.animeEntries, new Comparator<NyaaEntry>()
+                Collections.sort(nyaaFansubGroup.getNyaaEntries(), new Comparator<NyaaEntry>()
                 {
                     @Override
                     public int compare(NyaaEntry entry, NyaaEntry entry2)
@@ -114,7 +115,7 @@ public class NyaaXMLParser
     }
 
     //This will always return an empty list (not null) even if nothing is found
-    public ArrayList<NyaaEntry> Parse(InputStream inputStream) //throws XmlPullParserException,IOException... or yer mom
+    public List<NyaaEntry> Parse(InputStream inputStream) //throws XmlPullParserException,IOException... or yer mom
     {
         ArrayList<NyaaEntry> entries = new ArrayList<NyaaEntry>();
 
