@@ -4,5 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="gallery_image_width">140dp</dimen>
     <dimen name="gallery_image_height">200dp</dimen>
+    <dimen name="round_rect_corner_small">4dp</dimen>
 </resources>
 
