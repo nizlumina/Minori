@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Use this to build the WatchData members from the network.
@@ -22,12 +23,12 @@ import java.util.ArrayList;
  */
 public class CoreNetworkFactory
 {
-    public static void getNyaaEntries(final String searchTerms, final ArrayList<NyaaEntry> outputList)
+    public static void getNyaaEntries(final String searchTerms, final List<NyaaEntry> outputList)
     {
         getNyaaEntries(searchTerms, outputList, null);
     }
 
-    public static void getNyaaEntries(final String searchTerms, final ArrayList<NyaaEntry> outputList, WebUnit webUnit)
+    public static void getNyaaEntries(final String searchTerms, final List<NyaaEntry> outputList, WebUnit webUnit)
     {
         WebUnit unit = getWebUnit(webUnit);
 
@@ -149,10 +150,8 @@ public class CoreNetworkFactory
 
     private static WebUnit getWebUnit(WebUnit overrideWebUnit)
     {
-        WebUnit unit;
-        if (overrideWebUnit == null) unit = new WebUnit();
-        else unit = overrideWebUnit;
-        return unit;
+        if (overrideWebUnit == null) return new WebUnit();
+        else return overrideWebUnit;
     }
 
 }
