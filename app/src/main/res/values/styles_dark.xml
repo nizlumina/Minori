@@ -16,7 +16,13 @@
 
     <style name="TextStyle" parent="MinoriDark">
         <item name="android:fontFamily" tools:ignore="NewApi">sans-serif-light</item>
-        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="TextStyle.Small">
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
     </style>
 
     <style name="TextColorBase" parent="TextStyle">
@@ -31,19 +37,19 @@
         <item name="android:textColor">@color/rbc_text_red</item>
     </style>
 
-    <style name="TextColorTertiaryBright" parent="TextStyle">
+    <style name="TextColorTertiary" parent="TextStyle">
         <item name="android:textColor">@color/rbc_text_yellow</item>
     </style>
 
-    <style name="TextColorTertiaryLight" parent="TextStyle">
+    <style name="TextColorQuaternary" parent="TextStyle">
         <item name="android:textColor">@color/rbc_text_orange</item>
     </style>
 
-    <style name="TextColorTertiaryMedium" parent="TextStyle">
+    <style name="TextColorQuinary" parent="TextStyle">
         <item name="android:textColor">@color/rbc_text_green</item>
     </style>
 
-    <style name="TextColorTertiaryDark" parent="TextStyle">
+    <style name="TextColorSenary" parent="TextStyle">
         <item name="android:textColor">@color/rbc_text_purple</item>
     </style>
 </resources>
