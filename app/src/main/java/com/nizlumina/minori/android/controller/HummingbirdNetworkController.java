@@ -18,6 +18,7 @@ import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.internal.Minori;
 import com.nizlumina.minori.android.internal.ThreadMaster;
+import com.nizlumina.minori.android.listener.NetworkListener;
 import com.nizlumina.minori.android.listener.WebUnitListener;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
@@ -152,10 +153,4 @@ public class HummingbirdNetworkController
         }
     }
 
-    public interface NetworkListener<Result>
-    {
-        void onEachSuccessfulResponses(Result result);
-
-        void onFinish();
-    }
 }
