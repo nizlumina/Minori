@@ -62,11 +62,6 @@ public class ParcelableNyaaFansubGroup implements Parcelable
         return mNyaaFansubGroup;
     }
 
-    public void setNyaaFansubGroup(NyaaFansubGroup nyaaFansubGroup)
-    {
-        this.mNyaaFansubGroup = nyaaFansubGroup;
-    }
-
     @Override
     public int describeContents()
     {
@@ -80,7 +75,9 @@ public class ParcelableNyaaFansubGroup implements Parcelable
 
         List<ParcelableNyaaEntry> parcelableNyaaEntries = new ArrayList<>();
         for (NyaaEntry nyaaEntry : mNyaaFansubGroup.getNyaaEntries())
+        {
             parcelableNyaaEntries.add(new ParcelableNyaaEntry(nyaaEntry));
+        }
         dest.writeList(parcelableNyaaEntries);
 
         dest.writeStringList(mNyaaFansubGroup.getQualities());
