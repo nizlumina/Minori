@@ -2,166 +2,199 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
-
-    <TextView
-        android:id="@+id/setup_humm_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:drawableRight="@android:drawable/ic_menu_info_details"
-        android:gravity="center_vertical"
-        android:text="Select Series Data" />
-
-    <Button
-        android:id="@+id/setup_humm_customsearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text="CUSTOM" />
-
-    <ListView
-        android:id="@+id/setup_humm_listview"
-        android:layout_width="match_parent"
-        android:layout_height="84dp"
-        android:layout_below="@id/setup_humm_guide"
-        android:choiceMode="singleChoice" />
-
-    <!--Episode Selection-->
-    <TextView
-        android:id="@+id/setup_episode_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/setup_humm_listview"
-        android:layout_marginTop="8dp"
-        android:drawableRight="@android:drawable/ic_menu_info_details"
-        android:gravity="center_vertical"
-        android:text="Select Episode" />
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/setup_add_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
-        android:text="ADD TO WATCHLIST" />
+        android:background="@color/accent_color"
+        android:text="ADD TO WATCHLIST"
+        android:textColor="@color/accent_color_shade" />
 
-    <Button
-        android:id="@+id/setup_episode_nexteps_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/setup_episode_guide"
-        android:text="NEXT EPS" />
-
-    <EditText
-        android:id="@+id/setup_episode_edittext"
+    <ScrollView
+        android:id="@+id/setup_scrollcontainer"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/setup_episode_nexteps_button"
-        android:layout_alignTop="@id/setup_episode_nexteps_button"
-        android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@id/setup_episode_nexteps_button"
-        android:gravity="center_horizontal"
-        android:inputType="numberDecimal" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/setup_add_button"
+        android:clipToPadding="false"
+        android:paddingTop="8dp">
 
-    <!--Resolution Selection-->
-    <TextView
-        android:id="@+id/setup_res_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/setup_episode_edittext"
-        android:layout_marginTop="8dp"
-        android:drawableRight="@android:drawable/ic_menu_info_details"
-        android:gravity="center_vertical"
-        android:text="Select Resolution" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <RadioGroup
-        android:id="@+id/setup_res_radiogroup"
+            <TextView
+                android:id="@+id/setup_humm_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableRight="@android:drawable/ic_menu_info_details"
+                android:gravity="center_vertical"
+                android:text="Select Series Data" />
+
+            <ListView
+                android:id="@+id/setup_humm_listview"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:layout_below="@id/setup_humm_guide"
+                android:choiceMode="singleChoice" />
+
+            <!--<Button-->
+            <!--android:id="@+id/setup_humm_customsearch"-->
+            <!--android:layout_below="@id/setup_humm_listview"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:text="CUSTOM" />-->
+
+            <!--Episode Selection-->
+            <TextView
+                android:id="@+id/setup_episode_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setup_humm_listview"
+                android:layout_marginTop="8dp"
+                android:drawableRight="@android:drawable/ic_menu_info_details"
+                android:gravity="center_vertical"
+                android:text="Select Episode" />
+
+
+            <Button
+                android:id="@+id/setup_episode_nexteps_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/setup_episode_guide"
+                android:text="NEXT EPS" />
+
+            <Button
+                android:id="@+id/setup_episode_currenteps_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setup_episode_guide"
+                android:layout_toLeftOf="@id/setup_episode_nexteps_button"
+                android:text="CURRENT EPS" />
+
+            <EditText
+                android:id="@+id/setup_episode_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/setup_episode_nexteps_button"
+                android:layout_alignTop="@id/setup_episode_nexteps_button"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@id/setup_episode_currenteps_button"
+                android:gravity="center_horizontal"
+                android:inputType="numberDecimal" />
+
+            <!--Resolution Selection-->
+            <TextView
+                android:id="@+id/setup_res_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setup_episode_edittext"
+                android:layout_marginTop="8dp"
+                android:drawableRight="@android:drawable/ic_menu_info_details"
+                android:gravity="center_vertical"
+                android:text="Select Resolution" />
+
+            <RadioGroup
+                android:id="@+id/setup_res_radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@id/setup_res_guide"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/setup_res_default"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="Default" />
+
+                <RadioButton
+                    android:id="@+id/setup_res_480p"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="480p" />
+
+                <RadioButton
+                    android:id="@+id/setup_res_720p"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="720p" />
+
+                <RadioButton
+                    android:id="@+id/setup_res_1080p"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="1080p" />
+            </RadioGroup>
+
+            <!--Mode Selection-->
+            <TextView
+                android:id="@+id/setup_mode_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setup_res_radiogroup"
+                android:layout_marginTop="8dp"
+                android:drawableRight="@android:drawable/ic_menu_info_details"
+                android:gravity="center_vertical"
+                android:text="Select Mode" />
+
+            <RadioGroup
+                android:id="@+id/setup_mode_radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@id/setup_mode_guide"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/setup_mode_release"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="Release Day" />
+
+                <RadioButton
+                    android:id="@+id/setup_mode_irregular"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="Irregular" />
+
+                <RadioButton
+                    android:id="@+id/setup_mode_catlike"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="Cat-like" />
+            </RadioGroup>
+        </RelativeLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/view_shadow_top"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/setup_res_guide"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/setup_res_default"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="Default" />
-
-        <RadioButton
-            android:id="@+id/setup_res_480p"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="480p" />
-
-        <RadioButton
-            android:id="@+id/setup_res_720p"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="720p" />
-
-        <RadioButton
-            android:id="@+id/setup_res_1080p"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="1080p" />
-    </RadioGroup>
-
-    <!--Mode Selection-->
-    <TextView
-        android:id="@+id/setup_mode_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/setup_res_radiogroup"
-        android:layout_marginTop="8dp"
-        android:drawableRight="@android:drawable/ic_menu_info_details"
-        android:gravity="center_vertical"
-        android:text="Select Mode" />
-
-    <RadioGroup
-        android:id="@+id/setup_mode_radiogroup"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/setup_mode_guide"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/setup_mode_release"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="Release Day" />
-
-        <RadioButton
-            android:id="@+id/setup_mode_irregular"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="Irregular" />
-
-        <RadioButton
-            android:id="@+id/setup_mode_catlike"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="Cat-like" />
-    </RadioGroup>
+        android:layout_height="3dp"
+        android:layout_above="@id/setup_add_button" />
 </RelativeLayout>
