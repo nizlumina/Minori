@@ -28,6 +28,7 @@
 
             <TextView
                 android:id="@+id/setup_humm_guide"
+                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -42,17 +43,9 @@
                 android:layout_below="@id/setup_humm_guide"
                 android:choiceMode="singleChoice" />
 
-            <!--<Button-->
-            <!--android:id="@+id/setup_humm_customsearch"-->
-            <!--android:layout_below="@id/setup_humm_listview"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:text="CUSTOM" />-->
-
-            <!--Episode Selection-->
             <TextView
                 android:id="@+id/setup_episode_guide"
+                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_humm_listview"
@@ -92,6 +85,7 @@
             <!--Resolution Selection-->
             <TextView
                 android:id="@+id/setup_res_guide"
+                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_episode_edittext"
@@ -147,6 +141,7 @@
             <!--Mode Selection-->
             <TextView
                 android:id="@+id/setup_mode_guide"
+                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_res_radiogroup"
