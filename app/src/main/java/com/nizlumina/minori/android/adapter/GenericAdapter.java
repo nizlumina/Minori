@@ -26,7 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Generic Adapter with ArrayAdapter methods (except the filtering) that also implements a generic ViewHolder interface
+ * A Generic Adapter that partly implements ArrayAdapter methods (except the filtering) and also uses a concrete implementation of an inner static ViewHolder interface
  *
  * @param <T> The object backed by the Adapter
  */
@@ -40,15 +40,14 @@ public class GenericAdapter<T> extends BaseAdapter
     private List<T> mObjects;
 
     /**
-     * @param context          Context where this adapter is used
-     * @param listItemResource The layout resource ID for each list item
-     * @param list             The list that backs the T object
-     * @param viewHolder       Pass an anonymous interface like how you do with all those anonymous onClickListeners
+     * @param context    Context where this adapter is used
+     * @param list       The list that backs the T object. Passing an empty list and then populate the adapter later also works.
+     * @param viewHolder Pass a concrete {@link com.nizlumina.minori.android.adapter.GenericAdapter.ViewHolder} interface implementation. Anonymous interface do not work due to {@linkplain com.nizlumina.minori.android.adapter.GenericAdapter.ViewHolder#getNewInstance()} required for instantiation.
      */
-    public GenericAdapter(Context context, @LayoutRes int listItemResource, @NonNull List<T> list, ViewHolder<T> viewHolder)
+    public GenericAdapter(Context context, @NonNull List<T> list, ViewHolder<T> viewHolder)
     {
         mContext = context;
-        mListItemResource = listItemResource;
+        mListItemResource = viewHolder.getLayoutResource();
         mObjects = list;
         mViewHolder = viewHolder;
     }
@@ -264,7 +263,21 @@ public class GenericAdapter<T> extends BaseAdapter
     public interface ViewHolder<T>
     {
         /**
-         * Simply return a new instance of the class that implement this interface.
+         * Returns the layout resource item to be used here
+         *
+         * @return The layout resource id
+         */
+        @LayoutRes
+        int getLayoutResource();
+
+        /**
+         * Simply return a new instance of the class that implement this interface.<br />e.g.<br />
+         * {@code public class CustomerViewHolder implements ViewHolder<Customer>}
+         * <br /><br />
+         * then writing:<br /><br />
+         * {@code ViewHolder<Customer> getNewInstance(){ return new CustomerViewHolder(); } }
+         * <br /><br />
+         * is enough.
          *
          * @return An instance class of the implementation.
          */
@@ -281,7 +294,7 @@ public class GenericAdapter<T> extends BaseAdapter
         /**
          * Here's where you apply data source to the ViewHolder local fields (which generally are {@link android.view.View} objects)
          *
-         * @param context Context if needed
+         * @param context Context if needed. This is the same context being used in the {@link GenericAdapter} constructor
          * @param source  The object source
          */
         void applySource(final Context context, final T source);
