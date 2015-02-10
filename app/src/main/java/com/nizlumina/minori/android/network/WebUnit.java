@@ -15,12 +15,15 @@ package com.nizlumina.minori.android.network;
 import com.nizlumina.minori.android.internal.Minori;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Internal singleton master for all WebUnit requests.
@@ -85,10 +88,29 @@ public class WebUnit
     private static final String userAgentKey = "User-Agent";
     private static final String userAgent = "minori-android";
     private final OkHttpClient mClient;
+    private Map<String, String> mHeaders = new HashMap<String, String>(0);
+    private String mUserAgent;
 
     public WebUnit()
     {
         mClient = new OkHttpClient();
+    }
+
+    public void setUserAgent(String mUserAgent)
+    {
+        this.mUserAgent = mUserAgent;
+    }
+
+    public void setCredentials(String user, String password)
+    {
+        String credentials = Credentials.basic(user, password);
+        System.out.print("Authorization: " + credentials);
+        mHeaders.put("Authorization", credentials);
+    }
+
+    public void addHeaders(String key, String value)
+    {
+        mHeaders.put(key, value);
     }
 
     public OkHttpClient getClient()
@@ -109,7 +131,7 @@ public class WebUnit
      *
      * @param url The URL for the request
      * @return The body in a string object. Returns null on failure.
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public synchronized String getString(final String url) throws IOException
     {
@@ -127,7 +149,7 @@ public class WebUnit
      *
      * @param url      The URL for the request
      * @param callable The callable instance to apply on the fully received inputstream
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public synchronized void invokeOnStream(final String url, final StreamCallable callable) throws IOException
     {
@@ -142,9 +164,20 @@ public class WebUnit
 
     private Request getFormattedRequest(String url)
     {
-        return new Request.Builder()
+        String agent;
+        if (mUserAgent != null) agent = mUserAgent;
+        else agent = userAgent;
+
+        Request.Builder requestBuilder = new Request.Builder()
                 .url(url)
-                .addHeader(userAgentKey, userAgent).build();
+                .addHeader(userAgentKey, agent);
+
+        for (Map.Entry<String, String> header : mHeaders.entrySet())
+        {
+            requestBuilder.addHeader(header.getKey(), header.getValue());
+        }
+
+        return requestBuilder.build();
     }
 
     /**
@@ -152,7 +185,7 @@ public class WebUnit
      *
      * @param url      The URL for the request
      * @param listener Optional listener to retrieve the string object of the received response body. Check for null. This runs on the original thread that first calls the method.
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public synchronized void enqueueGetString(final String url, final WebUnitStringListener listener) throws IOException
     {
