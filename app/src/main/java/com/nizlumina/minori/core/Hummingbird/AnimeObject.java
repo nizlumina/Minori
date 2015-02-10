@@ -30,4 +30,9 @@ public class AnimeObject
     public String startedAiring;
     public String finishedAiring;
 
+    //For loggings
+    public String stringData()
+    {
+        return String.format("ID [%s]\nSlug [%s]\nStatus [%s]\nTitle [%s]\nURL [%s]\nEps Count[%s]\nCache IMG URI [%s]\nWeb IMG URI [%s]\n\nSynopsis:\n %s\n\nAir Start [%s]\nAir Finish[%s]\n ", id, slug, status, title, url, episodeCount, cachedImageURI, imageUrl, synopsis, startedAiring, finishedAiring);
+    }
 }
