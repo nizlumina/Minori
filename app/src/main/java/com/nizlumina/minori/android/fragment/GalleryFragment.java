@@ -12,7 +12,7 @@
 
 package com.nizlumina.minori.android.fragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,63 +20,61 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.activity.DrawerActivity;
+import com.nizlumina.minori.android.adapter.GenericAdapter;
 import com.nizlumina.minori.android.controller.WatchlistController;
-import com.nizlumina.minori.android.presenter.WatchDataPresenter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.nizlumina.minori.android.data.WatchData;
 
 public class GalleryFragment extends Fragment
 {
+    private GridView mGridView;
+
     public GalleryFragment() {}
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        ((DrawerActivity) activity).getFabMain().setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SearchFragment()).commit();
-            }
-        });
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.fragment_gridview, container, false);
+        mGridView = (GridView) inflater.inflate(R.layout.fragment_gridview, container, false);
+        return mGridView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        WatchlistController controller = new WatchlistController();
-        List<WatchDataPresenter> presenter = new ArrayList<>();
-//        GalleryAdapter<WatchDataPresenter> adapter = new GalleryAdapter<>(getActivity(), R.layout.list_item_gallery_singleview, );
-//        gridView.setAdapter(adapter);
-
         DrawerActivity drawerActivity = ((DrawerActivity) getActivity());
         Toolbar toolbar = drawerActivity.getToolbar();
+        toolbar.setTitle(R.string.app_name);
 
-        toolbar.setOnClickListener(new View.OnClickListener()
+        drawerActivity.getFabMain().setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SearchFragment());
+                getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SearchFragment()).addToBackStack(GalleryFragment.class.getSimpleName()).commit();
             }
         });
 
         drawerActivity.setupFab(drawerActivity.getFabMain(), R.drawable.ic_add_black_24dp);
         drawerActivity.setupFab(drawerActivity.getFabMini(), R.drawable.ic_refresh_black_24dp);
+
+        setupGridView(mGridView);
+    }
+
+    private void setupGridView(GridView gridView)
+    {
+        WatchlistController controller = new WatchlistController();
+        GenericAdapter<WatchData> watchDataAdapter = new GenericAdapter<>(getActivity(), controller.getWatchDataList(), new GalleryItemHolder());
+        gridView.setAdapter(watchDataAdapter);
+
     }
 
     @Override
@@ -89,5 +87,53 @@ public class GalleryFragment extends Fragment
     public void onPause()
     {
         super.onPause();
+    }
+
+    private static class GalleryItemHolder implements GenericAdapter.ViewHolder<WatchData>
+    {
+
+        private ImageView image;
+        private TextView title;
+        private TextView group;
+        private TextView episode;
+
+        @Override
+        public int getLayoutResource()
+        {
+            return R.layout.list_item_gallery_compact;
+        }
+
+        @Override
+        public GenericAdapter.ViewHolder<WatchData> getNewInstance()
+        {
+            return new GalleryItemHolder();
+        }
+
+        @Override
+        public GenericAdapter.ViewHolder<WatchData> setupViewSource(View inflatedConvertView)
+        {
+            image = (ImageView) inflatedConvertView.findViewById(R.id.item_image);
+            title = (TextView) inflatedConvertView.findViewById(R.id.item_title);
+            group = (TextView) inflatedConvertView.findViewById(R.id.item_group);
+            episode = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
+            return this;
+        }
+
+        @Override
+        public void applySource(Context context, WatchData source)
+        {
+            if (image != null)
+            {
+                Glide.with(context).load(source.getAnimeObject().imageUrl).into(image);
+            }
+            if (title != null)
+                title.setText(source.getAnimeObject().title);
+            if (group != null)
+                group.setText(source.getNyaaEntry().fansub);
+
+            if (episode != null)
+                episode.setText(source.getNyaaEntry().episodeString);
+
+        }
     }
 }
