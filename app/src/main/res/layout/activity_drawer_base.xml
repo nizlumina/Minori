@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,8 +7,6 @@
     <include
         android:id="@+id/base_toolbar"
         layout="@layout/layout_main_toolbar" />
-
-    <include layout="@layout/view_shadow_top" />
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/base_drawerlayout"
@@ -21,17 +18,23 @@
         <FrameLayout
             android:id="@+id/base_contentfragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout="@layout/fragment_search" />
+            android:layout_height="match_parent" />
 
         <include
             android:id="@+id/base_drawer"
-            layout="@layout/fragment_drawer"
+            layout="@layout/layout_drawer"
             android:layout_width="320dp"
             android:layout_height="match_parent"
             android:layout_gravity="left" />
 
     </android.support.v4.widget.DrawerLayout>
+
+
+    <include
+        layout="@layout/view_shadow_top"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@id/base_toolbar" />
 
     <LinearLayout
         android:id="@+id/base_fabgroup"
@@ -54,5 +57,4 @@
             style="@style/FabDark.Standard" />
 
     </LinearLayout>
-
 </RelativeLayout>
