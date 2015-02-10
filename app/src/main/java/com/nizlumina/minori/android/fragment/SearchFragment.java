@@ -33,6 +33,7 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.adapter.GenericAdapter;
 import com.nizlumina.minori.android.controller.SearchController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.wrapper.ParcelableNyaaFansubGroup;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 import com.nizlumina.minori.core.Nyaa.NyaaFansubGroup;
 import com.nizlumina.minori.core.Nyaa.Parser.NyaaXMLParser;
@@ -75,7 +76,7 @@ public class SearchFragment extends Fragment
 
     private void setupList(ListView listView)
     {
-        mGenericAdapter = new GenericAdapter<NyaaFansubGroup>(getActivity(), R.layout.list_item_search, new ArrayList<NyaaFansubGroup>(), new SearchItemHolder());
+        mGenericAdapter = new GenericAdapter<NyaaFansubGroup>(getActivity(), new ArrayList<NyaaFansubGroup>(), new SearchItemHolder());
         mGenericAdapter.setNotifyOnChange(true);
         listView.setAdapter(mGenericAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -86,7 +87,13 @@ public class SearchFragment extends Fragment
                 NyaaFansubGroup nyaaFansubGroup = mGenericAdapter.getItem(position);
                 if (nyaaFansubGroup != null)
                 {
-                    getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SetupFragment()).commit();
+                    //Because the Android framework literally force you to do shit like this
+                    SetupFragment setupFragment = new SetupFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(SetupFragment.NYAAFANSUBGROUP_PARCELKEY, new ParcelableNyaaFansubGroup(nyaaFansubGroup));
+                    setupFragment.setArguments(bundle);
+
+                    getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, setupFragment).addToBackStack(SearchFragment.class.getSimpleName()).commit();
                 }
             }
         });
@@ -161,6 +168,12 @@ public class SearchFragment extends Fragment
         private TextView trust;
         private TextView resolution;
         private TextView quality;
+
+        @Override
+        public int getLayoutResource()
+        {
+            return R.layout.list_item_search;
+        }
 
         @Override
         public GenericAdapter.ViewHolder<NyaaFansubGroup> getNewInstance()
