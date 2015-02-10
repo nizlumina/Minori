@@ -1,11 +1,11 @@
 package com.nizlumina.minori.android.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.android.data.WatchData;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
-import com.nizlumina.minori.android.factory.IntentFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
 import com.nizlumina.minori.android.internal.ThreadMaster;
@@ -44,12 +44,12 @@ public class WatchlistController
         return null;
     }
 
-    public synchronized List<WatchData> getWatchDataArray()
+    public synchronized List<WatchData> getWatchDataList()
     {
         return WatchlistSingleton.getInstance().getDataList();
     }
 
-    public void saveData(final Context context)
+    public synchronized void saveData(final Context context)
     {
         final String fileName = watchlistFileName;
         try
@@ -98,7 +98,7 @@ public class WatchlistController
     }
 
     //force initialize watchlist data
-    public void forceLoadData(final Context context)
+    public synchronized void forceLoadData(final Context context)
     {
         try
         {
@@ -112,25 +112,36 @@ public class WatchlistController
         }
     }
 
-    public void addNewWatchData(final Context context, NyaaEntry selectedNyaaEntry, String selectedEpisode, AnimeObject selectedAnimeObject, Alarm.Mode selectedMode)
+    public synchronized void addNewWatchData(final Context context, NyaaEntry selectedNyaaEntry, String selectedEpisode, AnimeObject selectedAnimeObject, Alarm.Mode selectedMode)
     {
-
-        selectedNyaaEntry.currentEpisode = Integer.parseInt(selectedEpisode);
+        boolean debug = true;
+        if (debug)
+        {
+            String debugString = String.format(
+                    "NyaaEntry: \n %s \n\n Eps: %s \n\n AnimeObject %s \n\n Mode: %s",
+                    selectedNyaaEntry.stringData(),
+                    selectedEpisode,
+                    selectedAnimeObject.stringData(),
+                    selectedMode.name());
+            Log.v(getClass().getSimpleName(), debugString);
+        }
+        selectedNyaaEntry.currentEpisode = Integer.parseInt(selectedEpisode); //sneakily set it as current episode.
 
         Alarm alarm = new Alarm(selectedNyaaEntry.pubDate, selectedMode, null);
 
         WatchData watchData = new WatchData(WatchlistSingleton.getInstance().getAvailableID(), selectedNyaaEntry, alarm, selectedAnimeObject);
         WatchlistSingleton.getInstance().getDataList().add(watchData);
+        //Todo: Uncomment after finalizing
         //queue Nyaa scan
-        context.sendBroadcast(IntentFactory.getScanIntent(context, watchData, true));
+        //context.sendBroadcast(IntentFactory.getScanIntent(context, watchData, true));
     }
 
-    public void removeWatchData(WatchData watchData)
+    public synchronized void removeWatchData(WatchData watchData)
     {
         WatchlistSingleton.getInstance().getDataList().remove(watchData);
     }
 
-    public void buildSearchResult(final Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList, final Callable onFinish)
+    public synchronized void buildSearchResult(final Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList, final Callable onFinish)
     {
         if (NetworkState.networkOK(context))
         {
