@@ -19,13 +19,13 @@
     <!--<color name="bg_quaternary">@color/rbc_text_orange</color>-->
     <!--<color name="bg_quinary">@color/rbc_text_green</color>-->
     <!--<color name="bg_senary">@color/rbc_text_purple</color>-->
+    <color name="bg_neutral">@color/grey_700</color>
     <color name="bg_primary">@color/blue_700</color>
     <color name="bg_secondary">@color/red_700</color>
     <color name="bg_tertiary">@color/yellow_700</color>
     <color name="bg_quaternary">@color/orange_700</color>
     <color name="bg_quinary">@color/green_700</color>
     <color name="bg_senary">@color/purple_700</color>
-    <color name="bg_neutral_primary">@color/grey_700</color>
     <!--<color name="bg_neutral_secondary">@color/grey_400</color>-->
 
     <!--Robomaru Colors-->
