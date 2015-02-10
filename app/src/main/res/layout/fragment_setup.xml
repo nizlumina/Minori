@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,6 +21,8 @@
         android:layout_height="match_parent"
         android:layout_above="@id/setup_add_button"
         android:clipToPadding="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="8dp">
 
         <RelativeLayout
@@ -39,9 +42,11 @@
             <ListView
                 android:id="@+id/setup_humm_listview"
                 android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_height="112dp"
                 android:layout_below="@id/setup_humm_guide"
-                android:choiceMode="singleChoice" />
+                android:choiceMode="singleChoice"
+                android:listSelector="@color/rbc_bg_grey"
+                tools:listitem="@layout/list_item_singletext" />
 
             <TextView
                 android:id="@+id/setup_episode_guide"
@@ -49,38 +54,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_humm_listview"
-                android:layout_marginTop="8dp"
                 android:drawableRight="@android:drawable/ic_menu_info_details"
                 android:gravity="center_vertical"
                 android:text="Select Episode" />
 
+            <EditText
+                android:id="@+id/setup_episode_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/setup_episode_guide"
+                android:gravity="center_horizontal"
+                android:inputType="numberDecimal" />
 
             <Button
                 android:id="@+id/setup_episode_nexteps_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_below="@id/setup_episode_guide"
+                android:layout_below="@id/setup_episode_edittext"
                 android:text="NEXT EPS" />
 
             <Button
                 android:id="@+id/setup_episode_currenteps_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/setup_episode_guide"
+                android:layout_below="@id/setup_episode_edittext"
                 android:layout_toLeftOf="@id/setup_episode_nexteps_button"
                 android:text="CURRENT EPS" />
 
-            <EditText
-                android:id="@+id/setup_episode_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/setup_episode_nexteps_button"
-                android:layout_alignTop="@id/setup_episode_nexteps_button"
-                android:layout_marginRight="8dp"
-                android:layout_toLeftOf="@id/setup_episode_currenteps_button"
-                android:gravity="center_horizontal"
-                android:inputType="numberDecimal" />
 
             <!--Resolution Selection-->
             <TextView
@@ -88,7 +89,7 @@
                 style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/setup_episode_edittext"
+                android:layout_below="@id/setup_episode_nexteps_button"
                 android:layout_marginTop="8dp"
                 android:drawableRight="@android:drawable/ic_menu_info_details"
                 android:gravity="center_vertical"
@@ -106,9 +107,12 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/roundrect_inline_grey"
                     android:button="@null"
+                    android:enabled="false"
                     android:gravity="center"
-                    android:text="Default" />
+                    android:text="Default"
+                    tools:enabled="true" />
 
                 <RadioButton
                     android:id="@+id/setup_res_480p"
@@ -116,8 +120,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
+                    android:enabled="false"
                     android:gravity="center"
-                    android:text="480p" />
+                    android:text="480p"
+                    tools:enabled="true" />
 
                 <RadioButton
                     android:id="@+id/setup_res_720p"
@@ -125,8 +131,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
+                    android:enabled="false"
                     android:gravity="center"
-                    android:text="720p" />
+                    android:text="720p"
+                    tools:enabled="true" />
 
                 <RadioButton
                     android:id="@+id/setup_res_1080p"
@@ -134,8 +142,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
+                    android:enabled="false"
                     android:gravity="center"
-                    android:text="1080p" />
+                    android:text="1080p"
+                    tools:enabled="true" />
             </RadioGroup>
 
             <!--Mode Selection-->
