@@ -14,6 +14,5 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="3dp"
-    android:layout_below="@id/base_toolbar"
     android:background="@drawable/shadow_linear_bottom"
     tools:showIn="@layout/activity_drawer_base" />
