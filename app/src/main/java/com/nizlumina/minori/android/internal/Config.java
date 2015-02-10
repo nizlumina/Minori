@@ -14,34 +14,10 @@ package com.nizlumina.minori.android.internal;
 
 import android.content.Context;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-
 public class Config
 {
     public static void initLibraries(Context context)
     {
-        InternalImageLoaderConfig.init(context);
-    }
 
-    private static class InternalImageLoaderConfig
-    {
-        static void init(Context context)
-        {
-            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                    .cacheOnDisk(true)
-                    .cacheInMemory(true)
-                            //.displayer(new RoundedBitmapDisplayer(16))
-                    .displayer(new FadeInBitmapDisplayer(200))
-                    .build();
-
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-                    .defaultDisplayImageOptions(defaultOptions)
-                    .build();
-
-            ImageLoader.getInstance().init(config);
-        }
     }
 }
