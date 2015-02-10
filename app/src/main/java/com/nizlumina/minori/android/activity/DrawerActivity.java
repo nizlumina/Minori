@@ -25,6 +25,7 @@ import android.widget.ImageButton;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.fragment.GalleryFragment;
+import com.nizlumina.minori.android.fragment.UpcomingFragment;
 import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity
@@ -32,6 +33,8 @@ public class DrawerActivity extends ActionBarActivity
     private Toolbar toolbar;
     private ImageButton mFabMain;
     private ImageButton mFabMini;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     public ImageButton getFabMini()
     {
@@ -71,20 +74,23 @@ public class DrawerActivity extends ActionBarActivity
         //setupFab(mFabMini, R.color.accent_color_shade, R.color.accent_color);
 
         //Set drawers
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
-        drawerLayout.setDrawerListener(drawerToggle);
-        drawerToggle.syncState();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
     }
 
     //Utilize XML bindings
-    public void changeFragment(View view)
+    public void onDrawerInteraction(View view)
     {
         switch (view.getId())
         {
             case R.id.drawer_watchlist:
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
                 break;
             case R.id.drawer_season:
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new UpcomingFragment()).commit();
+                mDrawerLayout.closeDrawers();
                 break;
             case R.id.drawer_explore:
                 break;
