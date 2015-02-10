@@ -136,11 +136,65 @@ public class CoreNetworkFactory
                         e.printStackTrace();
                         this.onFailure();
                     }
-                    AnimeObject animeObject = CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
-                    if (listener != null) listener.onFinish(animeObject);
+
+                    if (jsonObject != null)
+                    {
+                        AnimeObject animeObject = CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
+                        if (listener != null)
+                            listener.onFinish(animeObject);
+                    }
+                    else
+                    {
+                        if (listener != null)
+                            listener.onFinish(null);
+                    }
                 }
             });
 
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void searchAnimeAsync(final String terms, final WebUnitListener<List<AnimeObject>> resultsListener)
+    {
+        final WebUnit unit = new WebUnit();
+        try
+        {
+            unit.enqueueGetString(CoreQuery.Hummingbird.searchQuery(terms).toString(), new WebUnit.WebUnitStringListener()
+            {
+                @Override
+                public void onFailure()
+                {
+                    if (resultsListener != null) resultsListener.onFailure();
+                }
+
+                @Override
+                public void onFinish(String responseBody)
+                {
+                    JSONArray jsonArray = null;
+                    try
+                    {
+                        jsonArray = new JSONArray(responseBody);
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    if (jsonArray != null)
+                    {
+                        List<AnimeObject> animeObjects = CoreJSONFactory.animeObjectsFromJSON(jsonArray, true);
+                        if (resultsListener != null) resultsListener.onFinish(animeObjects);
+                    }
+                    else
+                    {
+                        if (resultsListener != null) resultsListener.onFinish(null);
+                    }
+                }
+            });
         }
         catch (IOException e)
         {
