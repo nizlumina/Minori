@@ -19,6 +19,7 @@ import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.internal.Minori;
 import com.nizlumina.minori.android.internal.ThreadMaster;
 import com.nizlumina.minori.android.listener.NetworkListener;
+import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.listener.WebUnitListener;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
@@ -45,7 +46,7 @@ public class HummingbirdNetworkController
         mHummingbirdInstanceCache = new HummingbirdInternalCache();
     }
 
-    public synchronized void populateLinkAsync(final NetworkListener<AnimeObject> networkListener, final boolean refreshCache)
+    public synchronized void getUpcomingAnimeObjectAsync(final NetworkListener<AnimeObject> networkListener, final boolean refreshCache)
     {
         final ThreadMaster master = ThreadMaster.getInstance();
         final long startTime = System.nanoTime();
@@ -140,6 +141,24 @@ public class HummingbirdNetworkController
                 //debugList(animeObjects);
                 Log.v(getClass().getSimpleName(), "Final size: " + animeObjects.size());
                 mHummingbirdInstanceCache.writeToDisk(Minori.getAppContext());
+            }
+        });
+    }
+
+    public synchronized void searchAnimeAsync(final String terms, final OnFinishListener<List<AnimeObject>> resultListener)
+    {
+        CoreNetworkFactory.searchAnimeAsync(terms, new WebUnitListener<List<AnimeObject>>()
+        {
+            @Override
+            public void onFailure()
+            {
+
+            }
+
+            @Override
+            public void onFinish(List<AnimeObject> result)
+            {
+                if (resultListener != null) resultListener.onFinish(result);
             }
         });
     }
