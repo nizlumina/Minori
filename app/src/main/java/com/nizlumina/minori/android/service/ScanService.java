@@ -4,10 +4,10 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.nizlumina.minori.android.controller.WatchlistController;
-import com.nizlumina.minori.android.data.WatchData;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.factory.IntentFactory;
 import com.nizlumina.minori.android.internal.Minori;
+import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.network.DownloadUnit;
 import com.nizlumina.minori.android.receiver.ScanReceiver;
 import com.nizlumina.minori.android.utility.ScanNotification;

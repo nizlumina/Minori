@@ -3,7 +3,7 @@ package com.nizlumina.minori.android.factory;
 import android.content.Context;
 import android.content.Intent;
 
-import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.network.DownloadUnit;
 import com.nizlumina.minori.android.receiver.DownloadReceiver;
 import com.nizlumina.minori.android.receiver.ScanReceiver;

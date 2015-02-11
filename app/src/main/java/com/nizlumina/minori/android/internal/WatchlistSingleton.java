@@ -1,6 +1,6 @@
 package com.nizlumina.minori.android.internal;
 
-import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.model.WatchData;
 
 import java.util.ArrayList;
 import java.util.List;

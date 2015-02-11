@@ -29,7 +29,7 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.activity.DrawerActivity;
 import com.nizlumina.minori.android.adapter.GenericAdapter;
 import com.nizlumina.minori.android.controller.WatchlistController;
-import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.model.WatchData;
 
 public class GalleryFragment extends Fragment
 {

@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.data;
+package com.nizlumina.minori.android.model;
 
 import android.content.Context;
 

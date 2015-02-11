@@ -1,6 +1,6 @@
 package com.nizlumina.minori.android.factory;
 
-import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.network.DownloadUnit;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.nizlumina.minori.android.data.WatchData;
+import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.service.ScanService;
 
 import java.util.Calendar;
