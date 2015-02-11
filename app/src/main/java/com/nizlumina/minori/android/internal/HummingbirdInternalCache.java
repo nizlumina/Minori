@@ -14,7 +14,6 @@ package com.nizlumina.minori.android.internal;
 
 import android.content.Context;
 
-import com.nizlumina.minori.android.controller.ThreadController;
 import com.nizlumina.minori.android.factory.CoreJSONFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
@@ -38,7 +37,7 @@ import java.util.concurrent.Callable;
 public class HummingbirdInternalCache
 {
     static final String cacheName = "HummingbirdCache";
-    private final static Object mCacheIOLock = new Object(); //force IO access/write is limited to one
+    private final static Object mCacheIOLock = new Object(); //force synchronized IO read/writes
     private volatile HashMap<String, AnimeObject> mCachedAnimeObjects = new HashMap<>();
 
     /**
@@ -88,11 +87,11 @@ public class HummingbirdInternalCache
      * @param context          Any context available. getCacheDir() is called on this.
      * @param onFinishListener Fires after loading (populating the instance list) is finished.
      */
-    public void loadInstanceCacheAsync(final Context context, final OnFinishListener onFinishListener)
+    public void loadInstanceCacheAsync(final Context context, final OnFinishListener<Void> onFinishListener)
     {
         synchronized (mCacheIOLock)
         {
-            final Callable<Void> backTask = new Callable<Void>()
+            final Callable<Void> backgroundTask = new Callable<Void>()
             {
                 @Override
                 public Void call() throws Exception
@@ -101,19 +100,7 @@ public class HummingbirdInternalCache
                     return null;
                 }
             };
-
-
-            final Callable<Void> onFinish = new Callable<Void>()
-            {
-                @Override
-                public Void call() throws Exception
-                {
-                    if (onFinishListener != null) onFinishListener.onFinish(null);
-                    return null;
-                }
-            };
-
-            ThreadController.post(backTask, onFinish);
+            ThreadMaster.getInstance().enqueue(backgroundTask, onFinishListener);
         }
 
     }
@@ -156,7 +143,7 @@ public class HummingbirdInternalCache
      * @param context          Any context available. getCacheDir() is called on this.
      * @param onFinishListener Fires after saving is finished.
      */
-    public void writeToDiskAsync(final Context context, final OnFinishListener onFinishListener)
+    public void writeToDiskAsync(final Context context, final OnFinishListener<Void> onFinishListener)
     {
         synchronized (mCacheIOLock)
         {
@@ -170,17 +157,7 @@ public class HummingbirdInternalCache
                 }
             };
 
-            final Callable<Void> onFinish = new Callable<Void>()
-            {
-                @Override
-                public Void call() throws Exception
-                {
-                    if (onFinishListener != null) onFinishListener.onFinish(null);
-                    return null;
-                }
-            };
-
-            ThreadController.post(backTask, onFinish);
+            ThreadMaster.getInstance().enqueue(backTask, onFinishListener);
         }
     }
 

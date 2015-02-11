@@ -15,6 +15,8 @@ package com.nizlumina.minori.android.internal;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.nizlumina.minori.android.listener.OnFinishListener;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +38,7 @@ public final class ThreadMaster
     public static ThreadMaster getInstance()
     {
         return ourInstance;
-    }
+    } //we don't implement singleton since this is just a helper threading class. TODO: Recheck singleton needs later
 
     public synchronized ExecutorService getExecutorService()
     {
@@ -47,12 +49,12 @@ public final class ThreadMaster
     /**
      * While using ExecutorService.submit() is enough for most cases, this method expands on that by providing a guaranteed listener pattern that fires upon completion back on the original thread.
      *
-     * @param backgroundTask The callable task to be done in background thread
-     * @param listener       Optional listener that pass the result in OnFinish
-     * @param <Result>       Type for the result.
+     * @param backgroundTask   The callable task to be done in background thread
+     * @param onFinishListener Optional listener that pass the result in OnFinish
+     * @param <Result>         Type for the result.
      * @return a generic Future
      */
-    public <Result> Future<Result> enqueue(final Callable<Result> backgroundTask, final Listener<Result> listener)
+    public <Result> Future<Result> enqueue(final Callable<Result> backgroundTask, final OnFinishListener<Result> onFinishListener)
     {
         if (Looper.myLooper() == null) Looper.prepare();
         final Handler handler = new Handler(Looper.myLooper());
@@ -62,14 +64,14 @@ public final class ThreadMaster
             public Result call() throws Exception
             {
                 final Result returnObject = backgroundTask.call();
-                if (listener != null)
+                if (onFinishListener != null)
                 {
                     handler.post(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            listener.onFinish(returnObject);
+                            onFinishListener.onFinish(returnObject);
                         }
                     });
                 }
@@ -79,8 +81,4 @@ public final class ThreadMaster
         return executorService.submit(internalCallable);
     }
 
-    public interface Listener<Result>
-    {
-        void onFinish(Result result);
-    }
 }

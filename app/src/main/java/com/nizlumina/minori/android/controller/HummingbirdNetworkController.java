@@ -130,7 +130,7 @@ public class HummingbirdNetworkController
             }
         };
 
-        master.enqueue(backgroundTask, new ThreadMaster.Listener<List<AnimeObject>>()
+        master.enqueue(backgroundTask, new OnFinishListener<List<AnimeObject>>()
         {
             @Override
             public void onFinish(List<AnimeObject> animeObjects)

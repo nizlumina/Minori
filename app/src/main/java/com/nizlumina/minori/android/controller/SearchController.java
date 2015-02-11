@@ -27,7 +27,7 @@ public class SearchController
 
     private Future<List<NyaaEntry>> searchFuture;
 
-    public void searchNyaa(final String terms, final OnFinishListener<List<NyaaEntry>> onFinishListener)
+    public void searchNyaa(final String terms, final OnFinishListener onFinishListener)
     {
         this.stopSearch(); //try to stop any search that is running
         Callable<List<NyaaEntry>> backgroundTask = new Callable<List<NyaaEntry>>()
@@ -41,7 +41,7 @@ public class SearchController
             }
         };
 
-        searchFuture = ThreadMaster.getInstance().enqueue(backgroundTask, new ThreadMaster.Listener<List<NyaaEntry>>()
+        searchFuture = ThreadMaster.getInstance().enqueue(backgroundTask, new OnFinishListener<List<NyaaEntry>>()
         {
             @Override
             public void onFinish(List<NyaaEntry> result)

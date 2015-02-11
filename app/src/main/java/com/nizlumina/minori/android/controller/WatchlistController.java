@@ -5,14 +5,11 @@ import android.util.Log;
 
 import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.android.data.WatchData;
-import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
 import com.nizlumina.minori.android.internal.ThreadMaster;
-import com.nizlumina.minori.android.internal.ThreadMaster.Listener;
 import com.nizlumina.minori.android.internal.WatchlistSingleton;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.android.network.NetworkState;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 
@@ -21,7 +18,6 @@ import org.json.JSONArray;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -86,10 +82,10 @@ public class WatchlistController
                 return null;
             }
         };
-        ThreadMaster.getInstance().enqueue(backgroundTask, new Listener()
+        ThreadMaster.getInstance().enqueue(backgroundTask, new OnFinishListener()
         {
             @Override
-            public void onFinish(Object o)
+            public void onFinish(Object o) //no result since this is just a generic listener
             {
                 if (onFinishListener != null)
                     onFinishListener.onFinish(WatchlistSingleton.getInstance().getDataList());
@@ -139,22 +135,5 @@ public class WatchlistController
     public synchronized void removeWatchData(WatchData watchData)
     {
         WatchlistSingleton.getInstance().getDataList().remove(watchData);
-    }
-
-    public synchronized void buildSearchResult(final Context context, final String searchTerms, final ArrayList<NyaaEntry> outputList, final Callable onFinish)
-    {
-        if (NetworkState.networkOK(context))
-        {
-            Callable task = new Callable()
-            {
-                @Override
-                public Object call() throws Exception
-                {
-                    CoreNetworkFactory.getNyaaEntries(searchTerms, outputList);
-                    return null;
-                }
-            };
-            ThreadController.post(task, onFinish);
-        }
     }
 }
