@@ -14,9 +14,48 @@ package com.nizlumina.syncmaru.model;
 
 public class SmallAnimeObject
 {
+    private int id;
+    private String slug;
+    private String showType;
+    private String posterImage;
 
-    int id;
-    String slug;
-    String showType;
-    String posterImage;
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public String getSlug()
+    {
+        return slug;
+    }
+
+    public void setSlug(String slug)
+    {
+        this.slug = slug;
+    }
+
+    public String getShowType()
+    {
+        return showType;
+    }
+
+    public void setShowType(String showType)
+    {
+        this.showType = showType;
+    }
+
+    public String getPosterImage()
+    {
+        return posterImage;
+    }
+
+    public void setPosterImage(String posterImage)
+    {
+        this.posterImage = posterImage;
+    }
 }
