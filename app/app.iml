@@ -93,6 +93,7 @@
     <orderEntry type="library" exported="" name="okhttp-integration-1.2.1" level="project" />
     <orderEntry type="library" exported="" name="glide-3.5.1" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="commons-io-2.4" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.6.2.1" level="project" />
   </component>
 </module>
