@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 //A simple utility cache class for strings (UTF-8) with stale methods baked in
-public class StringCacheManager
+public class StringCache
 {
     private static final String timeIdentifier = "%{t}%";
     private static final String encoding = "UTF-8";
@@ -30,19 +30,19 @@ public class StringCacheManager
     private String mStringCache;
     private long mLastSavedTime;
 
-    public StringCacheManager(String cacheFileName)
+    public StringCache(String cacheFileName)
     {
         this.mCacheFileName = cacheFileName;
     }
 
-    public String getStringCache()
+    public String getCache()
     {
         return mStringCache;
     }
 
-    public void setStringCache(String mCache)
+    public void setCache(String input)
     {
-        this.mStringCache = mCache;
+        this.mStringCache = input;
     }
 
     public String getCacheFileName()
