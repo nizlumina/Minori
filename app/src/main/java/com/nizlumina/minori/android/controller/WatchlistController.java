@@ -82,7 +82,7 @@ public class WatchlistController
                 return null;
             }
         };
-        ThreadMaster.getInstance().enqueue(backgroundTask, new OnFinishListener()
+        new ThreadMaster().enqueue(backgroundTask, new OnFinishListener()
         {
             @Override
             public void onFinish(Object o) //no result since this is just a generic listener

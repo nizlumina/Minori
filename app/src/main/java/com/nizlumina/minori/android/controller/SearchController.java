@@ -41,7 +41,7 @@ public class SearchController
             }
         };
 
-        searchFuture = ThreadMaster.getInstance().enqueue(backgroundTask, new OnFinishListener<List<NyaaEntry>>()
+        searchFuture = new ThreadMaster().enqueue(backgroundTask, new OnFinishListener<List<NyaaEntry>>()
         {
             @Override
             public void onFinish(List<NyaaEntry> result)

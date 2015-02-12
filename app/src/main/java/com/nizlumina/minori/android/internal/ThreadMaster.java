@@ -27,24 +27,17 @@ import java.util.concurrent.Future;
  */
 public final class ThreadMaster
 {
-    private static final ThreadMaster ourInstance = new ThreadMaster();
     private ExecutorService executorService;
 
-    private ThreadMaster()
+    public ThreadMaster()
     {
         executorService = Executors.newCachedThreadPool();
     }
-
-    public static ThreadMaster getInstance()
-    {
-        return ourInstance;
-    } //we don't implement singleton since this is just a helper threading class. TODO: Recheck singleton needs later
 
     public synchronized ExecutorService getExecutorService()
     {
         return executorService;
     }
-
 
     /**
      * While using ExecutorService.submit() is enough for most cases, this method expands on that by providing a guaranteed listener pattern that fires upon completion back on the original thread.
