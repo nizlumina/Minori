@@ -48,7 +48,7 @@ public class HummingbirdNetworkController
 
     public synchronized void getUpcomingAnimeObjectAsync(final NetworkListener<AnimeObject> networkListener, final boolean refreshCache)
     {
-        final ThreadMaster master = ThreadMaster.getInstance();
+        final ThreadMaster master = new ThreadMaster();
         final long startTime = System.nanoTime();
         Callable<List<AnimeObject>> backgroundTask = new Callable<List<AnimeObject>>()
         {

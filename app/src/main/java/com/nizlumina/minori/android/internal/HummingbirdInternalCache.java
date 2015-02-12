@@ -100,7 +100,7 @@ public class HummingbirdInternalCache
                     return null;
                 }
             };
-            ThreadMaster.getInstance().enqueue(backgroundTask, onFinishListener);
+            new ThreadMaster().enqueue(backgroundTask, onFinishListener);
         }
 
     }
@@ -157,7 +157,7 @@ public class HummingbirdInternalCache
                 }
             };
 
-            ThreadMaster.getInstance().enqueue(backTask, onFinishListener);
+            new ThreadMaster().enqueue(backTask, onFinishListener);
         }
     }
 
