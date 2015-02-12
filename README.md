@@ -1,16 +1,23 @@
-Minori
-==============
-
+#Minori  
 Minori is an Android app that allows you to follow releases on a certain cat site.  
 It can be paired with any torrent app that can watch a directory for a full automation.
 
-Note about Core classes
-------
-Improvement is much needed on the Core package that retrieves data from HummingBird, Nyaa, and MAL (in the future).
-The classes under this package will be moved to its own GitHub repo in the future upon meeting a satisfactory library standard.
 
-Building
-------
+##Core packages  
+Currently the classes under this package use Hummingbird API v1 model and a standard model of a Nyaa XML entry.
+
+##Season database
+To relief the strain on various servers that provided this data, the season database currently runs on our own Firebase instance. This database is updated monthly on best-effort/new-info basis. The `CompositeData` model applicable to this linkage is provided under the Syncmaru package and described below:
+
+- `MALObject`: A POJO for the official MAL API
+- `SmallAnimeObject`: A sparse version derived from Hummingbird API v2 AnimeObject
+- `LiveChartObject`: A parsed version of a LiveChart card
+
+(We did created a working Anichart model by mistake. However, we still prefer LiveChart for its ease of use and opted to leave the Anichart stuffs in Syncmaru as backup).
+
+Feel free to check the Syncmaru console application for the relevant CRUD tasks [here](https://github.com/nizlumina/Syncmaru). 
+
+##Building
 Clone the repo via Git and build.
 
 OR 
@@ -21,9 +28,17 @@ https://github.com/nizlumina/Minori.git
 
 and build.
 
-License
-------
-Unless specified, the applicable parts of the app follows the license below:
+##Dependencies
+The project make use of the following great libraries:
+
+- [Glide](https://github.com/bumptech/glide)
+- [OkHttp](https://github.com/square/okhttp)
+- [GSON](http://code.google.com/p/google-gson/)
+- [Commons IO](http://commons.apache.org/proper/commons-io/)
+- [Material Dialogs](https://github.com/afollestad/material-dialogs)
+
+##License
+Where applicable, this Minori project follows the standard MIT license as below:
 
 The MIT License (MIT)
 
