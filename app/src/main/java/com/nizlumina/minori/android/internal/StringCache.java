@@ -28,18 +28,24 @@ public class StringCache
     private final Object mLock = new Object();
     private String mCacheFileName;
     private String mStringCache;
-    private long mLastSavedTime;
+    private long mLastSavedTime = -1;
 
     public StringCache(String cacheFileName)
     {
         this.mCacheFileName = cacheFileName;
     }
 
+    /**
+     * @return The string that was set to this {@link StringCache}
+     */
     public String getCache()
     {
         return mStringCache;
     }
 
+    /**
+     * Set the string for this {@link StringCache}
+     */
     public void setCache(String input)
     {
         this.mStringCache = input;
@@ -55,6 +61,10 @@ public class StringCache
         this.mCacheFileName = mCacheFileName;
     }
 
+    /**
+     * Safely read the cache from disk and populate {@link #getCache()}.
+     * For all loading task, this must be called before any other methods is called.
+     */
     public void loadCache()
     {
         File cacheFileInput = getCacheFile();
@@ -76,6 +86,9 @@ public class StringCache
         }
     }
 
+    /**
+     * Safely save the cache to disk.
+     */
     public void saveCache()
     {
         File cacheFileOutput = getCacheFile();
@@ -85,6 +98,7 @@ public class StringCache
             {
                 try
                 {
+                    this.setLastSavedTime(System.currentTimeMillis());
                     FileOutputStream fileOutputStream = new FileOutputStream(cacheFileOutput);
                     IOUtils.write(formatCache(mStringCache), fileOutputStream, encoding);
                 }
@@ -96,26 +110,54 @@ public class StringCache
         }
     }
 
+    /**
+     * Release the cached string of the current StringCache object
+     */
     public void releaseCache()
     {
         mStringCache = null;
     }
 
+    /**
+     * @return The cache file instance from the application cache dir.
+     */
     private File getCacheFile()
     {
         return new File(Minori.getAppContext().getCacheDir(), mCacheFileName);
     }
 
+    /**
+     * Format the current string cache for storage. LastSavedTime value is set and appended to the beginning string here.
+     *
+     * @param input The original string from {@link #getCache()}
+     * @return A formatted string of {@link #getCache()}
+     */
     private String formatCache(String input)
     {
         return timeIdentifier + System.currentTimeMillis() + timeIdentifier + input;
     }
 
+    /**
+     * @return The saved time of this cache.  This will return -1 if the cache isn't saved yet.
+     */
     public long getLastSavedTime()
     {
         return mLastSavedTime;
     }
 
+    /**
+     * This is set to private since LastSavedTime is only set when the cache is saved.
+     */
+    private void setLastSavedTime(long mLastSavedTime)
+    {
+        this.mLastSavedTime = mLastSavedTime;
+    }
+
+    /**
+     * Deformat raw cache from storage
+     * @param input The raw {@link #getCache()} from storage
+     * @return The original string ({@link #getCache()}) before being saved.
+     */
     private String deformatCache(String input)
     {
         if (input != null)
@@ -150,4 +192,13 @@ public class StringCache
 
         return Calendar.getInstance().get(calendarUnit) - lastUpdatedDay > staleThreshold;
     }
+
+    /**
+     * Check whether {@link #getCache()} is valid (not null and not empty).
+     */
+    public boolean isValid()
+    {
+        return this.getCache() != null && this.getCache().length() > 0;
+    }
+
 }
