@@ -22,4 +22,56 @@ public class CompositeData
     private MALObject malObject;
     private SmallAnimeObject smallAnimeObject;
     private LiveChartObject liveChartObject;
+
+    public CompositeData(int id, MALObject malObject, SmallAnimeObject smallAnimeObject, LiveChartObject liveChartObject)
+    {
+        this.id = id;
+        this.malObject = malObject;
+        this.smallAnimeObject = smallAnimeObject;
+        this.liveChartObject = liveChartObject;
+    }
+
+    public CompositeData()
+    {
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public MALObject getMalObject()
+    {
+        return malObject;
+    }
+
+    public void setMalObject(MALObject malObject)
+    {
+        this.malObject = malObject;
+    }
+
+    public SmallAnimeObject getSmallAnimeObject()
+    {
+        return smallAnimeObject;
+    }
+
+    public void setSmallAnimeObject(SmallAnimeObject smallAnimeObject)
+    {
+        this.smallAnimeObject = smallAnimeObject;
+    }
+
+    public LiveChartObject getLiveChartObject()
+    {
+        return liveChartObject;
+    }
+
+    public void setLiveChartObject(LiveChartObject liveChartObject)
+    {
+        this.liveChartObject = liveChartObject;
+    }
 }

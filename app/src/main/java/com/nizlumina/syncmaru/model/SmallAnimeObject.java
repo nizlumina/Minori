@@ -58,4 +58,9 @@ public class SmallAnimeObject
     {
         this.posterImage = posterImage;
     }
+
+    public String getMediumPosterImage()
+    {
+        return posterImage.replace("/large/", "/medium/");
+    }
 }
