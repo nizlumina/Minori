@@ -51,7 +51,7 @@ public class HummingbirdInternalCache
         HashMap<String, AnimeObject> resultsCache = new HashMap<>();
         for (AnimeObject animeObject : animeObjects)
         {
-            resultsCache.put(animeObject.slug, animeObject);
+            resultsCache.put(animeObject.getSlug(), animeObject);
         }
         return resultsCache;
     }
@@ -121,7 +121,7 @@ public class HummingbirdInternalCache
 
                     for (AnimeObject animeObject : diskCachedAnimeObjects)
                     {
-                        mCachedAnimeObjects.put(animeObject.slug, animeObject);
+                        mCachedAnimeObjects.put(animeObject.getSlug(), animeObject);
                     }
                     fileInputStream.close();
                 }
@@ -179,11 +179,11 @@ public class HummingbirdInternalCache
 
     public synchronized void insert(AnimeObject animeObject)
     {
-        mCachedAnimeObjects.put(animeObject.slug, animeObject);
+        mCachedAnimeObjects.put(animeObject.getSlug(), animeObject);
     }
 
     public synchronized void remove(AnimeObject animeObject)
     {
-        mCachedAnimeObjects.remove(animeObject.slug);
+        mCachedAnimeObjects.remove(animeObject.getSlug());
     }
 }

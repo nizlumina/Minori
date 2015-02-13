@@ -24,40 +24,40 @@ public class CoreJSONFactory
         NyaaEntry entry = new NyaaEntry();
         try
         {
-            entry.id = jsonObject.getInt(NyaaEntry.Static.ID);
-            entry.title = jsonObject.getString(NyaaEntry.Static.TITLE);
-            entry.fansub = jsonObject.getString(NyaaEntry.Static.FANSUB);
+            entry.setId(jsonObject.getInt(NyaaEntry.Static.ID));
+            entry.setTitle(jsonObject.getString(NyaaEntry.Static.TITLE));
+            entry.setFansub(jsonObject.getString(NyaaEntry.Static.FANSUB));
 
             String mTrustCat = jsonObject.getString(NyaaEntry.Static.TRUST);
             if (mTrustCat.equalsIgnoreCase(NyaaEntry.Trust.APLUS.name()))
-                entry.trustCategory = NyaaEntry.Trust.APLUS;
+                entry.setTrustCategory(NyaaEntry.Trust.APLUS);
             else if (mTrustCat.equalsIgnoreCase(NyaaEntry.Trust.TRUSTED.name()))
-                entry.trustCategory = NyaaEntry.Trust.TRUSTED;
+                entry.setTrustCategory(NyaaEntry.Trust.TRUSTED);
             else if (mTrustCat.equalsIgnoreCase(NyaaEntry.Trust.REMAKES.name()))
-                entry.trustCategory = NyaaEntry.Trust.REMAKES;
-            else entry.trustCategory = NyaaEntry.Trust.ALL;
+                entry.setTrustCategory(NyaaEntry.Trust.REMAKES);
+            else entry.setTrustCategory(NyaaEntry.Trust.ALL);
 
             String mResolution = jsonObject.getString(NyaaEntry.Static.RESOLUTION);
             if (mResolution == null)
             {
-                entry.resolutionString = null;
-                entry.resolution = NyaaEntry.Resolution.DEFAULT;
+                entry.setResolutionString(null);
+                entry.setResolution(NyaaEntry.Resolution.DEFAULT);
             }
             else
             {
-                entry.resolutionString = mResolution;
-                entry.resolution = NyaaEntry.Resolution.matchResolution(mResolution);
+                entry.setResolutionString(mResolution);
+                entry.setResolution(NyaaEntry.Resolution.matchResolution(mResolution));
             }
 
             String mQuality = jsonObject.getString(NyaaEntry.Static.QUALITY);
             if (mQuality.equals(NyaaEntry.Static.UNDEFINED_STRING))
-                entry.quality = null;
+                entry.setQuality(null);
             else
-                entry.quality = mQuality;
+                entry.setQuality(mQuality);
 
-            entry.currentEpisode = jsonObject.getInt(NyaaEntry.Static.CURRENT_EPISODE);
-            entry.episodeString = jsonObject.getString(NyaaEntry.Static.CURRENT_EPISODE_STRING);
-            entry.pubDate = jsonObject.getString(NyaaEntry.Static.PUBDATE);
+            entry.setCurrentEpisode(jsonObject.getInt(NyaaEntry.Static.CURRENT_EPISODE));
+            entry.setEpisodeString(jsonObject.getString(NyaaEntry.Static.CURRENT_EPISODE_STRING));
+            entry.setPubDate(jsonObject.getString(NyaaEntry.Static.PUBDATE));
 
             return entry;
         }
@@ -74,19 +74,19 @@ public class CoreJSONFactory
     {
         if (jsonObject == null) return null;
         AnimeObject animeObject = new AnimeObject();
-        animeObject.id = jsonObject.optInt(AnimeObject.JSON_API_ID);
-        animeObject.slug = jsonObject.optString(AnimeObject.JSON_API_SLUG);
-        animeObject.status = jsonObject.optString(AnimeObject.JSON_API_STATUS);
-        animeObject.url = jsonObject.optString(AnimeObject.JSON_API_URL);
-        animeObject.title = jsonObject.optString(AnimeObject.JSON_API_TITLE);
-        animeObject.episodeCount = jsonObject.optInt(AnimeObject.JSON_API_EPS_COUNT);
-        animeObject.imageUrl = jsonObject.optString(AnimeObject.JSON_API_COVER_IMG_URL);
-        animeObject.synopsis = jsonObject.optString(AnimeObject.JSON_API_SYNOPSIS);
-        animeObject.startedAiring = jsonObject.optString(AnimeObject.JSON_API_STARTED_AIRING);
-        animeObject.finishedAiring = jsonObject.optString(AnimeObject.JSON_API_FINISHED_AIRING);
+        animeObject.setId(jsonObject.optInt(AnimeObject.JSON_API_ID));
+        animeObject.setSlug(jsonObject.optString(AnimeObject.JSON_API_SLUG));
+        animeObject.setStatus(jsonObject.optString(AnimeObject.JSON_API_STATUS));
+        animeObject.setUrl(jsonObject.optString(AnimeObject.JSON_API_URL));
+        animeObject.setTitle(jsonObject.optString(AnimeObject.JSON_API_TITLE));
+        animeObject.setEpisodeCount(jsonObject.optInt(AnimeObject.JSON_API_EPS_COUNT));
+        animeObject.setImageUrl(jsonObject.optString(AnimeObject.JSON_API_COVER_IMG_URL));
+        animeObject.setSynopsis(jsonObject.optString(AnimeObject.JSON_API_SYNOPSIS));
+        animeObject.setStartedAiring(jsonObject.optString(AnimeObject.JSON_API_STARTED_AIRING));
+        animeObject.setFinishedAiring(jsonObject.optString(AnimeObject.JSON_API_FINISHED_AIRING));
 
         if (!strictHummingbirdJSON)
-            animeObject.cachedImageURI = jsonObject.optString(AnimeObject.JSON_CACHED_IMG_URI);
+            animeObject.setCachedImageURI(jsonObject.optString(AnimeObject.JSON_CACHED_IMG_URI));
         return animeObject;
 
     }
@@ -141,19 +141,19 @@ public class CoreJSONFactory
         JSONObject jsonObject = new JSONObject();
         try
         {
-            jsonObject.putOpt(AnimeObject.JSON_API_ID, animeObject.id)
-                    .putOpt(AnimeObject.JSON_API_SLUG, animeObject.slug)
-                    .putOpt(AnimeObject.JSON_API_STATUS, animeObject.status)
-                    .putOpt(AnimeObject.JSON_API_URL, animeObject.url)
-                    .putOpt(AnimeObject.JSON_API_TITLE, animeObject.title)
-                    .putOpt(AnimeObject.JSON_API_EPS_COUNT, animeObject.episodeCount)
-                    .putOpt(AnimeObject.JSON_API_COVER_IMG_URL, animeObject.imageUrl)
-                    .putOpt(AnimeObject.JSON_API_SYNOPSIS, animeObject.synopsis)
-                    .putOpt(AnimeObject.JSON_API_STARTED_AIRING, animeObject.startedAiring)
-                    .putOpt(AnimeObject.JSON_API_FINISHED_AIRING, animeObject.finishedAiring);
+            jsonObject.putOpt(AnimeObject.JSON_API_ID, animeObject.getId())
+                    .putOpt(AnimeObject.JSON_API_SLUG, animeObject.getSlug())
+                    .putOpt(AnimeObject.JSON_API_STATUS, animeObject.getStatus())
+                    .putOpt(AnimeObject.JSON_API_URL, animeObject.getUrl())
+                    .putOpt(AnimeObject.JSON_API_TITLE, animeObject.getTitle())
+                    .putOpt(AnimeObject.JSON_API_EPS_COUNT, animeObject.getEpisodeCount())
+                    .putOpt(AnimeObject.JSON_API_COVER_IMG_URL, animeObject.getImageUrl())
+                    .putOpt(AnimeObject.JSON_API_SYNOPSIS, animeObject.getSynopsis())
+                    .putOpt(AnimeObject.JSON_API_STARTED_AIRING, animeObject.getStartedAiring())
+                    .putOpt(AnimeObject.JSON_API_FINISHED_AIRING, animeObject.getFinishedAiring());
 
             if (!strictHummingbirdJSON)
-                jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.cachedImageURI);
+                jsonObject.put(AnimeObject.JSON_CACHED_IMG_URI, animeObject.getCachedImageURI());
         }
         catch (JSONException e)
         {
@@ -168,22 +168,22 @@ public class CoreJSONFactory
         JSONObject obj = new JSONObject();
         try
         {
-            obj.put(NyaaEntry.Static.ID, entry.id);
-            obj.put(NyaaEntry.Static.TITLE, entry.title);
-            obj.put(NyaaEntry.Static.FANSUB, entry.fansub);
+            obj.put(NyaaEntry.Static.ID, entry.getId());
+            obj.put(NyaaEntry.Static.TITLE, entry.getTitle());
+            obj.put(NyaaEntry.Static.FANSUB, entry.getFansub());
 
-            obj.put(NyaaEntry.Static.TRUST, entry.trustCategory.name());
-            if (entry.resolutionString == null)
+            obj.put(NyaaEntry.Static.TRUST, entry.getTrustCategory().name());
+            if (entry.getResolutionString() == null)
                 obj.put(NyaaEntry.Static.RESOLUTION, NyaaEntry.Static.UNDEFINED_STRING);
             else
-                obj.put(NyaaEntry.Static.RESOLUTION, entry.resolutionString);
-            if (entry.quality == null)
+                obj.put(NyaaEntry.Static.RESOLUTION, entry.getResolutionString());
+            if (entry.getQuality() == null)
                 obj.put(NyaaEntry.Static.QUALITY, NyaaEntry.Static.UNDEFINED_STRING);
             else
-                obj.put(NyaaEntry.Static.QUALITY, entry.quality);
-            obj.put(NyaaEntry.Static.CURRENT_EPISODE, entry.currentEpisode);
-            obj.put(NyaaEntry.Static.CURRENT_EPISODE_STRING, entry.episodeString);
-            obj.put(NyaaEntry.Static.PUBDATE, entry.pubDate);
+                obj.put(NyaaEntry.Static.QUALITY, entry.getQuality());
+            obj.put(NyaaEntry.Static.CURRENT_EPISODE, entry.getCurrentEpisode());
+            obj.put(NyaaEntry.Static.CURRENT_EPISODE_STRING, entry.getEpisodeString());
+            obj.put(NyaaEntry.Static.PUBDATE, entry.getPubDate());
 
         }
         catch (JSONException e)

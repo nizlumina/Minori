@@ -72,11 +72,11 @@ public class ScanService extends IntentService
                 {
                     if (scanResult.matchOriginalSignature(original))
                     {
-                        if (scanResult.currentEpisode > original.currentEpisode)
+                        if (scanResult.getCurrentEpisode() > original.getCurrentEpisode())
                         {
-                            String outputFileName = String.format("[%s] %s - %d", scanResult.fansub, scanResult.title, scanResult.currentEpisode);
-                            String notificationTitle = String.format("[%s] %s - %d", scanResult.fansub, scanResult.title, scanResult.currentEpisode);
-                            DownloadUnit downloadUnit = new DownloadUnit(scanResult.id, scanResult.torrentLink, outputFileName, notificationTitle);
+                            String outputFileName = String.format("[%s] %s - %d", scanResult.getFansub(), scanResult.getTitle(), scanResult.getCurrentEpisode());
+                            String notificationTitle = String.format("[%s] %s - %d", scanResult.getFansub(), scanResult.getTitle(), scanResult.getCurrentEpisode());
+                            DownloadUnit downloadUnit = new DownloadUnit(scanResult.getId(), scanResult.getTorrentLink(), outputFileName, notificationTitle);
 
 
                             sendBroadcast(IntentFactory.getDownloadIntent(getApplicationContext(), downloadUnit));
@@ -86,7 +86,7 @@ public class ScanService extends IntentService
                                 latestEntry = scanResult;
                                 continue;
                             }
-                            if (scanResult.currentEpisode > latestEntry.currentEpisode)
+                            if (scanResult.getCurrentEpisode() > latestEntry.getCurrentEpisode())
                                 latestEntry = scanResult;
                         }
                     }

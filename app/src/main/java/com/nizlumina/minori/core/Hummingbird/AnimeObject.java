@@ -18,21 +18,131 @@ public class AnimeObject
     //Non-API
     public static final String JSON_CACHED_IMG_URI = "cached_image_uri";
 
-    public int id;
-    public String slug;
-    public String status;
-    public String title;
-    public String url;
-    public int episodeCount;
-    public String cachedImageURI;
-    public String imageUrl;
-    public String synopsis;
-    public String startedAiring;
-    public String finishedAiring;
+    private int id;
+    private String slug;
+    private String status;
+    private String title;
+    private String url;
+    private int episodeCount;
+    private String cachedImageURI;
+    private String imageUrl;
+    private String synopsis;
+    private String startedAiring;
+    private String finishedAiring;
 
     //For loggings
     public String stringData()
     {
-        return String.format("ID [%s]\nSlug [%s]\nStatus [%s]\nTitle [%s]\nURL [%s]\nEps Count[%s]\nCache IMG URI [%s]\nWeb IMG URI [%s]\n\nSynopsis:\n %s\n\nAir Start [%s]\nAir Finish[%s]\n ", id, slug, status, title, url, episodeCount, cachedImageURI, imageUrl, synopsis, startedAiring, finishedAiring);
+        return String.format("ID [%s]\nSlug [%s]\nStatus [%s]\nTitle [%s]\nURL [%s]\nEps Count[%s]\nCache IMG URI [%s]\nWeb IMG URI [%s]\n\nSynopsis:\n %s\n\nAir Start [%s]\nAir Finish[%s]\n ", getId(), getSlug(), getStatus(), getTitle(), getUrl(), getEpisodeCount(), getCachedImageURI(), getImageUrl(), getSynopsis(), getStartedAiring(), getFinishedAiring());
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public String getSlug()
+    {
+        return slug;
+    }
+
+    public void setSlug(String slug)
+    {
+        this.slug = slug;
+    }
+
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+
+    public int getEpisodeCount()
+    {
+        return episodeCount;
+    }
+
+    public void setEpisodeCount(int episodeCount)
+    {
+        this.episodeCount = episodeCount;
+    }
+
+    public String getCachedImageURI()
+    {
+        return cachedImageURI;
+    }
+
+    public void setCachedImageURI(String cachedImageURI)
+    {
+        this.cachedImageURI = cachedImageURI;
+    }
+
+    public String getImageUrl()
+    {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl)
+    {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getSynopsis()
+    {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis)
+    {
+        this.synopsis = synopsis;
+    }
+
+    public String getStartedAiring()
+    {
+        return startedAiring;
+    }
+
+    public void setStartedAiring(String startedAiring)
+    {
+        this.startedAiring = startedAiring;
+    }
+
+    public String getFinishedAiring()
+    {
+        return finishedAiring;
+    }
+
+    public void setFinishedAiring(String finishedAiring)
+    {
+        this.finishedAiring = finishedAiring;
     }
 }

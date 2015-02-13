@@ -44,53 +44,53 @@ public class NyaaXMLParser
 
         for (NyaaEntry rawEntry : rawList)
         {
-            if (rawEntry.fansub == null || rawEntry.title == null)
+            if (rawEntry.getFansub() == null || rawEntry.getTitle() == null)
             {
 //                Log.v(debugKey + "Group()", rawEntry.stringData());
                 continue;
             }
             NyaaFansubGroup nyaaFansubGroup;
 
-            Pair<String, String> pair = new Pair<String, String>(rawEntry.fansub, rawEntry.title);
+            Pair<String, String> pair = new Pair<String, String>(rawEntry.getFansub(), rawEntry.getTitle());
             if (!fMap.keySet().contains(pair))
             {
-                nyaaFansubGroup = new NyaaFansubGroup(rawEntry.fansub);
+                nyaaFansubGroup = new NyaaFansubGroup(rawEntry.getFansub());
 
-                nyaaFansubGroup.setId(rawEntry.id);
-                nyaaFansubGroup.setSeriesTitle(rawEntry.title);
-                nyaaFansubGroup.setLatestEpisode(rawEntry.currentEpisode);
-                nyaaFansubGroup.setTrustCategory(rawEntry.trustCategory);
-                nyaaFansubGroup.getResolutions().add(rawEntry.resolution);
+                nyaaFansubGroup.setId(rawEntry.getId());
+                nyaaFansubGroup.setSeriesTitle(rawEntry.getTitle());
+                nyaaFansubGroup.setLatestEpisode(rawEntry.getCurrentEpisode());
+                nyaaFansubGroup.setTrustCategory(rawEntry.getTrustCategory());
+                nyaaFansubGroup.getResolutions().add(rawEntry.getResolution());
                 nyaaFansubGroup.getNyaaEntries().add(rawEntry);
 
-                fMap.put(new Pair<String, String>(rawEntry.fansub, rawEntry.title), nyaaFansubGroup);
+                fMap.put(new Pair<String, String>(rawEntry.getFansub(), rawEntry.getTitle()), nyaaFansubGroup);
             }
             else
             {
-                nyaaFansubGroup = fMap.get(new Pair<String, String>(rawEntry.fansub, rawEntry.title));
+                nyaaFansubGroup = fMap.get(new Pair<String, String>(rawEntry.getFansub(), rawEntry.getTitle()));
 
                 nyaaFansubGroup.getNyaaEntries().add(rawEntry);
 
-                if (rawEntry.currentEpisode > nyaaFansubGroup.getLatestEpisode())
+                if (rawEntry.getCurrentEpisode() > nyaaFansubGroup.getLatestEpisode())
                 {
-                    nyaaFansubGroup.setLatestEpisode(rawEntry.currentEpisode);
-                    nyaaFansubGroup.setId(rawEntry.id);
+                    nyaaFansubGroup.setLatestEpisode(rawEntry.getCurrentEpisode());
+                    nyaaFansubGroup.setId(rawEntry.getId());
                 }
 
 
-                if (nyaaFansubGroup.getTrustCategory().ordinal() < rawEntry.trustCategory.ordinal()) //Nyaa Rules. If the group already is A+ in another release, they will be considered A+ in another release.. or was it still the same now..?
+                if (nyaaFansubGroup.getTrustCategory().ordinal() < rawEntry.getTrustCategory().ordinal()) //Nyaa Rules. If the group already is A+ in another release, they will be considered A+ in another release.. or was it still the same now..?
                 {
-                    nyaaFansubGroup.setTrustCategory(rawEntry.trustCategory);
+                    nyaaFansubGroup.setTrustCategory(rawEntry.getTrustCategory());
                 }
 
-                if (rawEntry.resolution != null && !nyaaFansubGroup.getResolutions().contains(rawEntry.resolution))
+                if (rawEntry.getResolution() != null && !nyaaFansubGroup.getResolutions().contains(rawEntry.getResolution()))
                 {
-                    nyaaFansubGroup.getResolutions().add(rawEntry.resolution);
+                    nyaaFansubGroup.getResolutions().add(rawEntry.getResolution());
                 }
 
-                if (rawEntry.quality != null && !nyaaFansubGroup.getQualities().contains(rawEntry.quality))
+                if (rawEntry.getQuality() != null && !nyaaFansubGroup.getQualities().contains(rawEntry.getQuality()))
                 {
-                    nyaaFansubGroup.getQualities().add(rawEntry.quality);
+                    nyaaFansubGroup.getQualities().add(rawEntry.getQuality());
                 }
             }
         }
@@ -106,7 +106,7 @@ public class NyaaXMLParser
                     @Override
                     public int compare(NyaaEntry entry, NyaaEntry entry2)
                     {
-                        return entry.currentEpisode - entry2.currentEpisode; //ascending since when downloaded it goes 1 -> 5 and torrent dl-der can add based on that order (oldest first)
+                        return entry.getCurrentEpisode() - entry2.getCurrentEpisode(); //ascending since when downloaded it goes 1 -> 5 and torrent dl-der can add based on that order (oldest first)
                     }
                 });
             }
@@ -180,14 +180,14 @@ public class NyaaXMLParser
                             //Log.i("PARSER", "Title found: " + parsedtext);
                             entry = titleParser.parseTitle(parsedtext);
                         }
-                        else if (entry != null && !entry.failToParse)
+                        else if (entry != null && !entry.isFailToParse())
                         {
                             if (name.equals(link))
                             {
-                                entry.torrentLink = parsedtext;
+                                entry.setTorrentLink(parsedtext);
 
                                 //Also set id to nyaa torrentID (easier to find and download too)
-                                entry.id = idParser.parseID(parsedtext);
+                                entry.setId(idParser.parseID(parsedtext));
                             }
                             else if (name.equals(description)) //this actually get the strings inside CDATA
                             {
@@ -197,7 +197,7 @@ public class NyaaXMLParser
                             }
                             else if (name.equals(pubDate))
                             {
-                                entry.pubDate = parsedtext;
+                                entry.setPubDate(parsedtext);
                             }
                         }
 
@@ -210,7 +210,8 @@ public class NyaaXMLParser
                     {
                         if (entry != null)
                         {
-                            if (entry.rawTitle != null && !entry.failToParse) entries.add(entry);
+                            if (entry.getRawTitle() != null && !entry.isFailToParse())
+                                entries.add(entry);
                         }
                         insideItem = false;
                         //Log.i("Parser", "End item " + index);

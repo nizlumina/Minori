@@ -37,20 +37,20 @@ public final class NotificationFactory
 
         //if(largeIcon == null) largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_stat_noti);
 
-        Log.v("NotificationFactory", "Notification POSTED for [" + nyaaEntry.id + "]");
+        Log.v("NotificationFactory", "Notification POSTED for [" + nyaaEntry.getId() + "]");
 
-        String notificationText = String.format("[%s] %s - %s", nyaaEntry.fansub, nyaaEntry.title, nyaaEntry.episodeString);
-        String notificationTitle = String.format("Episode %s released", String.valueOf(nyaaEntry.currentEpisode));
+        String notificationText = String.format("[%s] %s - %s", nyaaEntry.getFansub(), nyaaEntry.getTitle(), nyaaEntry.getEpisodeString());
+        String notificationTitle = String.format("Episode %s released", String.valueOf(nyaaEntry.getCurrentEpisode()));
         builder.setContentTitle(notificationTitle)
                 //.setLargeIcon(largeIcon)
                 .setContentText(notificationText)
                         //.setSmallIcon(R.drawable.ic_stat_noti)
                 .setAutoCancel(true)
                 .setTicker(notificationText + " is released")
-                .setContentIntent(PendingIntent.getActivity(context, nyaaEntry.id, new Intent(Intent.ACTION_VIEW).setData(CoreQuery.Nyaa.viewID(nyaaEntry.id)), PendingIntent.FLAG_UPDATE_CURRENT));
+                .setContentIntent(PendingIntent.getActivity(context, nyaaEntry.getId(), new Intent(Intent.ACTION_VIEW).setData(CoreQuery.Nyaa.viewID(nyaaEntry.getId())), PendingIntent.FLAG_UPDATE_CURRENT));
 
         builder.setDefaults(NotificationCompat.DEFAULT_LIGHTS);
         //if (Global.NOTI_SOUND_URI != null) builder.setSound(Global.NOTI_SOUND_URI);
-        ntManager.notify(nyaaEntry.id, builder.build());
+        ntManager.notify(nyaaEntry.getId(), builder.build());
     }
 }

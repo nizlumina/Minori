@@ -124,15 +124,15 @@ public class GalleryFragment extends Fragment
         {
             if (image != null)
             {
-                Glide.with(context).load(source.getAnimeObject().imageUrl).into(image);
+                Glide.with(context).load(source.getAnimeObject().getImageUrl()).into(image);
             }
             if (title != null)
-                title.setText(source.getAnimeObject().title);
+                title.setText(source.getAnimeObject().getTitle());
             if (group != null)
-                group.setText(source.getNyaaEntry().fansub);
+                group.setText(source.getNyaaEntry().getFansub());
 
-            if (episode != null)
-                episode.setText(source.getNyaaEntry().episodeString);
+            if (episode != null && episode.getVisibility() == View.VISIBLE)
+                episode.setText(source.getNyaaEntry().getEpisodeString());
 
         }
     }

@@ -130,7 +130,7 @@ public class SetupFragment extends Fragment
                 public View getView(int position, View convertView, ViewGroup parent)
                 {
                     TextView textView = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.list_item_singletext, parent, false);
-                    textView.setText(getItem(position).title);
+                    textView.setText(getItem(position).getTitle());
                     return textView;
                 }
             };

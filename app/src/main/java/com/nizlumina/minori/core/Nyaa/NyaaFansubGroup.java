@@ -24,9 +24,9 @@ public final class NyaaFansubGroup
     {
         for (NyaaEntry entry : getNyaaEntries())
         {
-            if (entry.resolution == resolution)
+            if (entry.getResolution() == resolution)
             {
-                if (entry.currentEpisode == getLatestEpisode())
+                if (entry.getCurrentEpisode() == getLatestEpisode())
                 {
                     return entry;
                 }

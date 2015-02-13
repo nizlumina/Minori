@@ -118,7 +118,7 @@ public class HummingbirdNetworkController
                     List<AnimeObject> removalList = new ArrayList<>();
                     for (AnimeObject cachedAnimeObject : results)
                     {
-                        if (!slugs.contains(cachedAnimeObject.slug)) //check if cached slug is not included in the newer slugs
+                        if (!slugs.contains(cachedAnimeObject.getSlug())) //check if cached slug is not included in the newer slugs
                             removalList.add(cachedAnimeObject);
                     }
 
@@ -167,7 +167,7 @@ public class HummingbirdNetworkController
     {
         for (AnimeObject animeObject : animeObjects)
         {
-            String log = String.format("%s \n %s", animeObject.slug, animeObject.imageUrl);
+            String log = String.format("%s \n %s", animeObject.getSlug(), animeObject.getImageUrl());
             Log.v(getClass().getSimpleName(), log);
         }
     }

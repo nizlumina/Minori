@@ -56,7 +56,7 @@ public class NyaaTitleParser
                         {
                             rawTitleSet = true;
                             String rawTitle = entryString.substring(titleStartIndex, index);
-                            nyaaEntry.rawTitle = rawTitle.replace('_', ' ').trim();
+                            nyaaEntry.setRawTitle(rawTitle.replace('_', ' ').trim());
                             titleStart = false;
                         }
                     }
@@ -69,7 +69,7 @@ public class NyaaTitleParser
                         if (!groupSet)
                         {
                             groupSet = true;
-                            nyaaEntry.fansub = entryString.substring(cursorIndex, index);
+                            nyaaEntry.setFansub(entryString.substring(cursorIndex, index));
                         }
                         if (rawTitleSet)
                         {
@@ -103,7 +103,7 @@ public class NyaaTitleParser
                 {
                     if (entry[reverseIndex - i] == '.')
                     {
-                        nyaaEntry.fileType = entryString.substring(entryLength - i, entryLength);
+                        nyaaEntry.setFileType(entryString.substring(entryLength - i, entryLength));
                         break;
                     }
                 }
@@ -116,14 +116,14 @@ public class NyaaTitleParser
             //Get extras and sanitize rawTitle
             try
             {
-                String rawTitle = nyaaEntry.rawTitle;
+                String rawTitle = nyaaEntry.getRawTitle();
                 if (rawTitle != null)
                     for (String extra : EXTRAS)
                     {
                         if (rawTitle.contains(extra))
                         {
-                            nyaaEntry.extras = extra;
-                            nyaaEntry.rawTitle = rawTitle.replace(extra, "").trim();
+                            nyaaEntry.setExtras(extra);
+                            nyaaEntry.setRawTitle(rawTitle.replace(extra, "").trim());
                         }
                     }
             }
@@ -136,8 +136,8 @@ public class NyaaTitleParser
             //Get currentEpisode and finalize Title
             if (rawTitleSet)
             {
-                char[] titleChars = nyaaEntry.rawTitle.toCharArray();
-                int titleLength = nyaaEntry.rawTitle.length();
+                char[] titleChars = nyaaEntry.getRawTitle().toCharArray();
+                int titleLength = nyaaEntry.getRawTitle().length();
                 int numberStartIndex = -1;
                 boolean foundNumber = false, sanitizing = false;
                 for (int i = titleLength - 1, base = 0; i >= 0; i--)
@@ -147,13 +147,13 @@ public class NyaaTitleParser
                         if (titleChars[i] != ' ' && titleChars[i] != '_' && titleChars[i] != '-')
                         {
                             //Log.v("NyaaTitleParser", "Index = " + i + "Raw:"+ animeEntry.rawTitle);
-                            nyaaEntry.title = nyaaEntry.rawTitle.substring(0, i + 1);//since substring(z, k) => k denote length inclusively from z.
+                            nyaaEntry.setTitle(nyaaEntry.getRawTitle().substring(0, i + 1));//since substring(z, k) => k denote length inclusively from z.
 
-                            if (nyaaEntry.title == null || nyaaEntry.title.length() == 0)
+                            if (nyaaEntry.getTitle() == null || nyaaEntry.getTitle().length() == 0)
                                 return null;
                             //Log.v("NyaaTitleParser", "Output:"+animeEntry.title);
 
-                            nyaaEntry.episodeString = nyaaEntry.rawTitle.substring(numberStartIndex, titleLength);
+                            nyaaEntry.setEpisodeString(nyaaEntry.getRawTitle().substring(numberStartIndex, titleLength));
                             break;
                         }
                         continue;
@@ -177,17 +177,17 @@ public class NyaaTitleParser
                         {
                             if (!foundNumber)
                                 foundNumber = true;
-                            if (nyaaEntry.currentEpisode < 0)
-                                nyaaEntry.currentEpisode = 0;
+                            if (nyaaEntry.getCurrentEpisode() < 0)
+                                nyaaEntry.setCurrentEpisode(0);
 
                             int compoundDigit = digit * intPow(10, base);
-                            nyaaEntry.currentEpisode += compoundDigit;
+                            nyaaEntry.setCurrentEpisode(nyaaEntry.getCurrentEpisode() + compoundDigit);
                             base++;
                         }
                     }
                     else
                     {
-                        nyaaEntry.failToParse = true;
+                        nyaaEntry.setFailToParse(true);
                         break;
                     }
 
@@ -238,21 +238,21 @@ public class NyaaTitleParser
 
             if (compareType(tag, QUALITY_TYPE))
             {
-                entry.quality = tag;
+                entry.setQuality(tag);
             }
             else if (compareType(tag, RES_TYPE))
             {
-                entry.resolutionString = tag;
-                entry.resolution = NyaaEntry.Resolution.matchResolution(tag);
+                entry.setResolutionString(tag);
+                entry.setResolution(NyaaEntry.Resolution.matchResolution(tag));
             }
             else if (tag.length() == 8 && !tag.contains("x"))
             {
                 if (hashStringValidation(tag))
-                    entry.hash = tag; //and yer mom
+                    entry.setHash(tag); //and yer mom
             }
         }
 
-        if (entry.resolution == null) entry.resolution = NyaaEntry.Resolution.DEFAULT;
+        if (entry.getResolution() == null) entry.setResolution(NyaaEntry.Resolution.DEFAULT);
     }
 
     private boolean hashStringValidation(String input)

@@ -12,7 +12,9 @@
 
 package com.nizlumina.minori.android.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -22,19 +24,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.fragment.GalleryFragment;
-import com.nizlumina.minori.android.fragment.UpcomingFragment;
+import com.nizlumina.minori.android.fragment.SeasonFragment;
 import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity
 {
     private Toolbar toolbar;
+    private LinearLayout mFabContainer;
     private ImageButton mFabMain;
     private ImageButton mFabMini;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private float mDensity;
+    private Point mDisplaySize;
+    private float mFabContainerX = -10000;
 
     public ImageButton getFabMini()
     {
@@ -58,8 +65,14 @@ public class DrawerActivity extends ActionBarActivity
         setContentView(R.layout.activity_drawer_base);
 
         setupViews();
-
+        setupMetrics();
         getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+
+    }
+
+    private void setupMetrics()
+    {
+        mDensity = getResources().getDisplayMetrics().density;
     }
 
     private void setupViews()
@@ -73,11 +86,42 @@ public class DrawerActivity extends ActionBarActivity
         mFabMini = (ImageButton) findViewById(R.id.base_fabmini);
         //setupFab(mFabMini, R.color.accent_color_shade, R.color.accent_color);
 
+        mFabContainer = (LinearLayout) findViewById(R.id.base_fabgroup);
+
         //Set drawers
         mDrawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+    }
+
+    private void showFab()
+    {
+        if (mFabContainer != null)
+        {
+            if (mFabContainerX != -10000)
+                ObjectAnimator.ofFloat(mFabContainer, "x", mFabContainerX).start();
+        }
+    }
+
+    private void hideFab()
+    {
+        if (mFabContainer != null)
+        {
+            //lazy init
+            if (mDisplaySize == null)
+            {
+                mDisplaySize = new Point();
+                getWindowManager().getDefaultDisplay().getSize(mDisplaySize);
+            }
+
+            //another lazy init
+            if (mFabContainerX == -10000)
+            {
+                mFabContainerX = mFabContainer.getX();
+            }
+            ObjectAnimator.ofFloat(mFabContainer, "x", mDisplaySize.x).start();
+        }
     }
 
     //Utilize XML bindings
@@ -87,10 +131,11 @@ public class DrawerActivity extends ActionBarActivity
         {
             case R.id.drawer_watchlist:
                 getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+                showFab();
                 break;
             case R.id.drawer_season:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new UpcomingFragment()).commit();
-                mDrawerLayout.closeDrawers();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SeasonFragment()).commit();
+                hideFab();
                 break;
             case R.id.drawer_explore:
                 break;
@@ -101,6 +146,8 @@ public class DrawerActivity extends ActionBarActivity
             case R.id.drawer_about:
                 break;
         }
+
+        mDrawerLayout.closeDrawers();
     }
 
     /**
@@ -128,4 +175,6 @@ public class DrawerActivity extends ActionBarActivity
     {
         setupFab(fab, drawableID, R.color.accent_color_shade, R.color.accent_color);
     }
+
+
 }

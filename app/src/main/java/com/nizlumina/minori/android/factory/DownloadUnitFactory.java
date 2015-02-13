@@ -16,8 +16,8 @@ public class DownloadUnitFactory
 
     public static DownloadUnit fromNyaaEntry(NyaaEntry nyaaEntry)
     {
-        String outputFileName = String.format("[%s] %s - %d", nyaaEntry.fansub, nyaaEntry.title, nyaaEntry.currentEpisode);
-        String notificationTitle = String.format("[%s] %s - %d", nyaaEntry.fansub, nyaaEntry.title, nyaaEntry.currentEpisode);
-        return new DownloadUnit(nyaaEntry.id, nyaaEntry.torrentLink, outputFileName, notificationTitle);
+        String outputFileName = String.format("[%s] %s - %d", nyaaEntry.getFansub(), nyaaEntry.getTitle(), nyaaEntry.getCurrentEpisode());
+        String notificationTitle = String.format("[%s] %s - %d", nyaaEntry.getFansub(), nyaaEntry.getTitle(), nyaaEntry.getCurrentEpisode());
+        return new DownloadUnit(nyaaEntry.getId(), nyaaEntry.getTorrentLink(), outputFileName, notificationTitle);
     }
 }

@@ -121,9 +121,9 @@ public class WatchlistController
                     selectedMode.name());
             Log.v(getClass().getSimpleName(), debugString);
         }
-        selectedNyaaEntry.currentEpisode = Integer.parseInt(selectedEpisode); //sneakily set it as current episode.
+        selectedNyaaEntry.setCurrentEpisode(Integer.parseInt(selectedEpisode)); //sneakily set it as current episode.
 
-        Alarm alarm = new Alarm(selectedNyaaEntry.pubDate, selectedMode, null);
+        Alarm alarm = new Alarm(selectedNyaaEntry.getPubDate(), selectedMode, null);
 
         WatchData watchData = new WatchData(WatchlistSingleton.getInstance().getAvailableID(), selectedNyaaEntry, alarm, selectedAnimeObject);
         WatchlistSingleton.getInstance().getDataList().add(watchData);

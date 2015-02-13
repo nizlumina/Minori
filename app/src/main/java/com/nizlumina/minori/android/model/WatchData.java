@@ -71,7 +71,7 @@ public class WatchData
     {
         if (latestNyaaEntry != null)
         {
-            this.alarm = new Alarm(latestNyaaEntry.pubDate, this.alarm.originalMode, null);
+            this.alarm = new Alarm(latestNyaaEntry.getPubDate(), this.alarm.originalMode, null);
             this.updateAlarm(context);
         }
     }

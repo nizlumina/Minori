@@ -18,21 +18,21 @@ public class NyaaDescriptionParser
                 {
                     if (input.contains(NyaaEntry.Static.A))
                     {
-                        inputEntry.trustCategory = NyaaEntry.Trust.APLUS;
+                        inputEntry.setTrustCategory(NyaaEntry.Trust.APLUS);
                     }
 
                     else
                     {
-                        inputEntry.trustCategory = NyaaEntry.Trust.TRUSTED;
+                        inputEntry.setTrustCategory(NyaaEntry.Trust.TRUSTED);
                     }
                 }
                 else if (input.contains(NyaaEntry.Static.REMAKES))
                 {
-                    inputEntry.trustCategory = NyaaEntry.Trust.REMAKES;
+                    inputEntry.setTrustCategory(NyaaEntry.Trust.REMAKES);
                 }
                 else
                 {
-                    inputEntry.trustCategory = NyaaEntry.Trust.ALL;
+                    inputEntry.setTrustCategory(NyaaEntry.Trust.ALL);
                 }
             }
             catch (Exception e)

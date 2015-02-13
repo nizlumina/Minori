@@ -146,10 +146,10 @@ public class UpcomingFragment extends Fragment
         {
             if (image != null)
             {
-                Glide.with(context).load(source.imageUrl).into(image);
+                Glide.with(context).load(source.getImageUrl()).into(image);
             }
             if (title != null)
-                title.setText(source.title);
+                title.setText(source.getTitle());
             if (group != null)
                 group.setText("");
 

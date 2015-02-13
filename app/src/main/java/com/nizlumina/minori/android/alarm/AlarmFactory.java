@@ -44,7 +44,7 @@ public final class AlarmFactory
     public static void cancelAlarm(Context context, WatchData watchData)
     {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, watchData.getNyaaEntry().id, new Intent(context, AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, watchData.getNyaaEntry().getId(), new Intent(context, AlarmReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
     }
 

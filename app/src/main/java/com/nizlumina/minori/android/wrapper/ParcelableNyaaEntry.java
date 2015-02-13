@@ -35,28 +35,28 @@ public class ParcelableNyaaEntry implements Parcelable
     private ParcelableNyaaEntry(Parcel in)
     {
         mNyaaEntry = new NyaaEntry();
-        mNyaaEntry.id = in.readInt();
-        mNyaaEntry.currentEpisode = in.readInt();
-        mNyaaEntry.failToParse = in.readByte() != 0;
-        mNyaaEntry.title = in.readString();
-        mNyaaEntry.rawTitle = in.readString();
-        mNyaaEntry.fansub = in.readString();
-        mNyaaEntry.episodeString = in.readString();
-        mNyaaEntry.fileType = in.readString();
-        mNyaaEntry.resolutionString = in.readString();
-        mNyaaEntry.hash = in.readString();
-        mNyaaEntry.quality = in.readString();
-        mNyaaEntry.torrentLink = in.readString();
-        mNyaaEntry.description = in.readString();
-        mNyaaEntry.pubDate = in.readString();
-        mNyaaEntry.extras = in.readString();
+        mNyaaEntry.setId(in.readInt());
+        mNyaaEntry.setCurrentEpisode(in.readInt());
+        mNyaaEntry.setFailToParse(in.readByte() != 0);
+        mNyaaEntry.setTitle(in.readString());
+        mNyaaEntry.setRawTitle(in.readString());
+        mNyaaEntry.setFansub(in.readString());
+        mNyaaEntry.setEpisodeString(in.readString());
+        mNyaaEntry.setFileType(in.readString());
+        mNyaaEntry.setResolutionString(in.readString());
+        mNyaaEntry.setHash(in.readString());
+        mNyaaEntry.setQuality(in.readString());
+        mNyaaEntry.setTorrentLink(in.readString());
+        mNyaaEntry.setDescription(in.readString());
+        mNyaaEntry.setPubDate(in.readString());
+        mNyaaEntry.setExtras(in.readString());
         int tmpTrustCategory = in.readInt();
-        mNyaaEntry.trustCategory = tmpTrustCategory == -1 ? null : NyaaEntry.Trust.values()[tmpTrustCategory];
+        mNyaaEntry.setTrustCategory(tmpTrustCategory == -1 ? null : NyaaEntry.Trust.values()[tmpTrustCategory]);
         int tmpResolution = in.readInt();
-        mNyaaEntry.resolution = tmpResolution == -1 ? null : NyaaEntry.Resolution.values()[tmpResolution];
+        mNyaaEntry.setResolution(tmpResolution == -1 ? null : NyaaEntry.Resolution.values()[tmpResolution]);
         int tmpCategory = in.readInt();
-        mNyaaEntry.category = tmpCategory == -1 ? null : NyaaEntry.Category.values()[tmpCategory];
-        mNyaaEntry.markedForDownload = in.readByte() != 0;
+        mNyaaEntry.setCategory(tmpCategory == -1 ? null : NyaaEntry.Category.values()[tmpCategory]);
+        mNyaaEntry.setMarkedForDownload(in.readByte() != 0);
     }
 
     @Override
@@ -65,25 +65,25 @@ public class ParcelableNyaaEntry implements Parcelable
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeInt(mNyaaEntry.id);
-        dest.writeInt(mNyaaEntry.currentEpisode);
-        dest.writeByte(mNyaaEntry.failToParse ? (byte) 1 : (byte) 0);
-        dest.writeString(mNyaaEntry.title);
-        dest.writeString(mNyaaEntry.rawTitle);
-        dest.writeString(mNyaaEntry.fansub);
-        dest.writeString(mNyaaEntry.episodeString);
-        dest.writeString(mNyaaEntry.fileType);
-        dest.writeString(mNyaaEntry.resolutionString);
-        dest.writeString(mNyaaEntry.hash);
-        dest.writeString(mNyaaEntry.quality);
-        dest.writeString(mNyaaEntry.torrentLink);
-        dest.writeString(mNyaaEntry.description);
-        dest.writeString(mNyaaEntry.pubDate);
-        dest.writeString(mNyaaEntry.extras);
-        dest.writeInt(mNyaaEntry.trustCategory == null ? -1 : mNyaaEntry.trustCategory.ordinal());
-        dest.writeInt(mNyaaEntry.resolution == null ? -1 : mNyaaEntry.resolution.ordinal());
-        dest.writeInt(mNyaaEntry.category == null ? -1 : mNyaaEntry.category.ordinal());
-        dest.writeByte(mNyaaEntry.markedForDownload ? (byte) 1 : (byte) 0);
+        dest.writeInt(mNyaaEntry.getId());
+        dest.writeInt(mNyaaEntry.getCurrentEpisode());
+        dest.writeByte(mNyaaEntry.isFailToParse() ? (byte) 1 : (byte) 0);
+        dest.writeString(mNyaaEntry.getTitle());
+        dest.writeString(mNyaaEntry.getRawTitle());
+        dest.writeString(mNyaaEntry.getFansub());
+        dest.writeString(mNyaaEntry.getEpisodeString());
+        dest.writeString(mNyaaEntry.getFileType());
+        dest.writeString(mNyaaEntry.getResolutionString());
+        dest.writeString(mNyaaEntry.getHash());
+        dest.writeString(mNyaaEntry.getQuality());
+        dest.writeString(mNyaaEntry.getTorrentLink());
+        dest.writeString(mNyaaEntry.getDescription());
+        dest.writeString(mNyaaEntry.getPubDate());
+        dest.writeString(mNyaaEntry.getExtras());
+        dest.writeInt(mNyaaEntry.getTrustCategory() == null ? -1 : mNyaaEntry.getTrustCategory().ordinal());
+        dest.writeInt(mNyaaEntry.getResolution() == null ? -1 : mNyaaEntry.getResolution().ordinal());
+        dest.writeInt(mNyaaEntry.getCategory() == null ? -1 : mNyaaEntry.getCategory().ordinal());
+        dest.writeByte(mNyaaEntry.isMarkedForDownload() ? (byte) 1 : (byte) 0);
     }
 
     public NyaaEntry getNyaaEntry()

@@ -5,77 +5,77 @@ package com.nizlumina.minori.core.Nyaa;
  */
 public final class NyaaEntry
 {
-    public int id = -1; //you can use this for distinguishing alarms (especially for pendingIntents)
-    public int currentEpisode = -1;
-    public boolean failToParse = false;
-    public String title;
-    public String rawTitle;
-    public String fansub;
-    public String episodeString;
-    public String fileType;
-    public String resolutionString;
-    public String hash;
-    public String quality;
-    public String torrentLink;
-    public String description;
-    public String pubDate;
-    public String extras;
-    public Trust trustCategory;
-    public Resolution resolution;
-    public Category category;
+    private int id = -1; //you can use this for distinguishing alarms (especially for pendingIntents)
+    private int currentEpisode = -1;
+    private boolean failToParse = false;
+    private String title;
+    private String rawTitle;
+    private String fansub;
+    private String episodeString;
+    private String fileType;
+    private String resolutionString;
+    private String hash;
+    private String quality;
+    private String torrentLink;
+    private String description;
+    private String pubDate;
+    private String extras;
+    private Trust trustCategory;
+    private Resolution resolution;
+    private Category category;
 
     //Downloader section
-    public boolean markedForDownload = false;
+    private boolean markedForDownload = false;
 
     public NyaaEntry() {}
 
     public int nextEpisode()
     {
-        return this.currentEpisode + 1;
+        return this.getCurrentEpisode() + 1;
     }
 
     //Only for logging
     public String stringData()
     {
-        return "RawTitle [" + this.rawTitle + "]\n[" +
-                this.title + "]\n[ID: " +
-                this.id + "]\n[" +
-                this.fansub + "]\n[" +
-                this.fileType + "]\n[RESSTR: " +
-                this.resolutionString + "]\n[RES: " +
-                this.resolution + "]\n[CurrEP: " +
-                this.currentEpisode + "]\n[CurrEPString: " +
-                this.episodeString + "]\n[HASH: " +
-                this.hash + "]\n[Q: " +
-                this.quality + "]\n[" +
-                this.torrentLink + "]\n[DESC: " +
-                this.description + "]\n[EXTRA: " +
-                this.extras + "]\n[" +
-                this.pubDate + "]\n[TRUST: " +
-                this.trustCategory + "]\n[CAT: " +
-                this.category + "]";
+        return "RawTitle [" + this.getRawTitle() + "]\n[" +
+                this.getTitle() + "]\n[ID: " +
+                this.getId() + "]\n[" +
+                this.getFansub() + "]\n[" +
+                this.getFileType() + "]\n[RESSTR: " +
+                this.getResolutionString() + "]\n[RES: " +
+                this.getResolution() + "]\n[CurrEP: " +
+                this.getCurrentEpisode() + "]\n[CurrEPString: " +
+                this.getEpisodeString() + "]\n[HASH: " +
+                this.getHash() + "]\n[Q: " +
+                this.getQuality() + "]\n[" +
+                this.getTorrentLink() + "]\n[DESC: " +
+                this.getDescription() + "]\n[EXTRA: " +
+                this.getExtras() + "]\n[" +
+                this.getPubDate() + "]\n[TRUST: " +
+                this.getTrustCategory() + "]\n[CAT: " +
+                this.getCategory() + "]";
     }
 
     public String quickStringData()
     {
-        return String.format("[%s] [%s] [%s] [%s] [%s]", this.title, this.fansub, this.currentEpisode, this.resolutionString, this.trustCategory.name());
+        return String.format("[%s] [%s] [%s] [%s] [%s]", this.getTitle(), this.getFansub(), this.getCurrentEpisode(), this.getResolutionString(), this.getTrustCategory().name());
     }
 
     public final String buildQuery()
     {
-        String mQuality = quality, mResolutionString = resolutionString;
+        String mQuality = getQuality(), mResolutionString = getResolutionString();
         if (mQuality == null) mQuality = Static.UNDEFINED_STRING;
         if (mResolutionString == null) mResolutionString = Static.UNDEFINED_STRING;
-        return title + " " + fansub + " " + mResolutionString + " " + mQuality;
+        return getTitle() + " " + getFansub() + " " + mResolutionString + " " + mQuality;
     }
 
     public final NyaaEntry createSparseCopy()
     {
         NyaaEntry sparseCopy = new NyaaEntry();
-        sparseCopy.title = this.title;
-        sparseCopy.fansub = this.fansub;
-        sparseCopy.resolutionString = this.resolutionString;
-        sparseCopy.quality = this.quality;
+        sparseCopy.setTitle(this.getTitle());
+        sparseCopy.setFansub(this.getFansub());
+        sparseCopy.setResolutionString(this.getResolutionString());
+        sparseCopy.setQuality(this.getQuality());
         return sparseCopy;
     }
 
@@ -83,10 +83,10 @@ public final class NyaaEntry
     {
         try
         {
-            return sparseCopy.title.equals(this.title)
-                    && sparseCopy.fansub.equals(this.fansub)
-                    && sparseCopy.resolutionString.equals(this.resolutionString)
-                    && sparseCopy.quality.equals(this.quality);
+            return sparseCopy.getTitle().equals(this.getTitle())
+                    && sparseCopy.getFansub().equals(this.getFansub())
+                    && sparseCopy.getResolutionString().equals(this.getResolutionString())
+                    && sparseCopy.getQuality().equals(this.getQuality());
         }
         catch (NullPointerException e)
         {
@@ -96,11 +96,11 @@ public final class NyaaEntry
 
     public final boolean matchOriginalSignature(NyaaEntry original)
     {
-        if (trustCategory.equals(original.trustCategory))
+        if (getTrustCategory().equals(original.getTrustCategory()))
         {
-            if (title.equalsIgnoreCase(original.title) && fansub.equalsIgnoreCase(original.fansub))
+            if (getTitle().equalsIgnoreCase(original.getTitle()) && getFansub().equalsIgnoreCase(original.getFansub()))
             {
-                return resolution.equals(original.resolution);
+                return getResolution().equals(original.getResolution());
             }
         }
         return false;
@@ -117,7 +117,7 @@ public final class NyaaEntry
             {
                 if (selectedTitle.trim().length() > 0)
                 {
-                    this.title = selectedTitle;
+                    this.setTitle(selectedTitle);
                 }
             }
 
@@ -125,7 +125,7 @@ public final class NyaaEntry
             {
                 if (selectedGroup.trim().length() > 0)
                 {
-                    this.fansub = selectedGroup;
+                    this.setFansub(selectedGroup);
                 }
             }
 
@@ -133,10 +133,10 @@ public final class NyaaEntry
             {
                 if (episodeString.trim().length() > 0)
                 {
-                    this.episodeString = episodeString;
+                    this.setEpisodeString(episodeString);
                     int parsedEpisode = Integer.parseInt(episodeString);
-                    if (episodeStringIsCurrent) this.currentEpisode = parsedEpisode;
-                    else this.currentEpisode = --parsedEpisode;
+                    if (episodeStringIsCurrent) this.setCurrentEpisode(parsedEpisode);
+                    else this.setCurrentEpisode(--parsedEpisode);
                 }
             }
 
@@ -145,8 +145,8 @@ public final class NyaaEntry
             {
                 if (selectedResString.trim().length() > 0)
                 {
-                    this.resolutionString = selectedResString;
-                    this.resolution = Resolution.matchResolution(resolutionString);
+                    this.setResolutionString(selectedResString);
+                    this.setResolution(Resolution.matchResolution(getResolutionString()));
                 }
             }
             return true;
@@ -156,6 +156,196 @@ public final class NyaaEntry
             return false;
         }
 
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+
+    public int getCurrentEpisode()
+    {
+        return currentEpisode;
+    }
+
+    public void setCurrentEpisode(int currentEpisode)
+    {
+        this.currentEpisode = currentEpisode;
+    }
+
+    public boolean isFailToParse()
+    {
+        return failToParse;
+    }
+
+    public void setFailToParse(boolean failToParse)
+    {
+        this.failToParse = failToParse;
+    }
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public String getRawTitle()
+    {
+        return rawTitle;
+    }
+
+    public void setRawTitle(String rawTitle)
+    {
+        this.rawTitle = rawTitle;
+    }
+
+    public String getFansub()
+    {
+        return fansub;
+    }
+
+    public void setFansub(String fansub)
+    {
+        this.fansub = fansub;
+    }
+
+    public String getEpisodeString()
+    {
+        return episodeString;
+    }
+
+    public void setEpisodeString(String episodeString)
+    {
+        this.episodeString = episodeString;
+    }
+
+    public String getFileType()
+    {
+        return fileType;
+    }
+
+    public void setFileType(String fileType)
+    {
+        this.fileType = fileType;
+    }
+
+    public String getResolutionString()
+    {
+        return resolutionString;
+    }
+
+    public void setResolutionString(String resolutionString)
+    {
+        this.resolutionString = resolutionString;
+    }
+
+    public String getHash()
+    {
+        return hash;
+    }
+
+    public void setHash(String hash)
+    {
+        this.hash = hash;
+    }
+
+    public String getQuality()
+    {
+        return quality;
+    }
+
+    public void setQuality(String quality)
+    {
+        this.quality = quality;
+    }
+
+    public String getTorrentLink()
+    {
+        return torrentLink;
+    }
+
+    public void setTorrentLink(String torrentLink)
+    {
+        this.torrentLink = torrentLink;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public String getPubDate()
+    {
+        return pubDate;
+    }
+
+    public void setPubDate(String pubDate)
+    {
+        this.pubDate = pubDate;
+    }
+
+    public String getExtras()
+    {
+        return extras;
+    }
+
+    public void setExtras(String extras)
+    {
+        this.extras = extras;
+    }
+
+    public Trust getTrustCategory()
+    {
+        return trustCategory;
+    }
+
+    public void setTrustCategory(Trust trustCategory)
+    {
+        this.trustCategory = trustCategory;
+    }
+
+    public Resolution getResolution()
+    {
+        return resolution;
+    }
+
+    public void setResolution(Resolution resolution)
+    {
+        this.resolution = resolution;
+    }
+
+    public Category getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory(Category category)
+    {
+        this.category = category;
+    }
+
+    public boolean isMarkedForDownload()
+    {
+        return markedForDownload;
+    }
+
+    public void setMarkedForDownload(boolean markedForDownload)
+    {
+        this.markedForDownload = markedForDownload;
     }
 
     public enum Trust
@@ -193,7 +383,7 @@ public final class NyaaEntry
 
         public static String getResolutionDisplayString(NyaaEntry displayEntry, boolean displayDefaultForNonStandard)
         {
-            return getResolutionDisplayString(displayEntry.resolution, displayDefaultForNonStandard);
+            return getResolutionDisplayString(displayEntry.getResolution(), displayDefaultForNonStandard);
         }
 
         public static String getResolutionDisplayString(Resolution resolutionKey, boolean displayDefaultForNonStandard)
