@@ -27,6 +27,7 @@ import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
+import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 
 public class GalleryFragment extends Fragment
 {
@@ -69,7 +70,34 @@ public class GalleryFragment extends Fragment
     private void setupGridView(GridView gridView)
     {
         WatchlistController controller = new WatchlistController();
-        GenericAdapter<WatchData> watchDataAdapter = new GenericAdapter<>(getActivity(), controller.getWatchDataList(), new GalleryItemHolder());
+        GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryPresenter<WatchData>()
+        {
+            @Override
+            public String getImageURI(WatchData source)
+            {
+                return source.getAnimeObject().getImageUrl();
+            }
+
+            @Override
+            public String getTitle(WatchData source)
+            {
+                return source.getAnimeObject().getTitle();
+            }
+
+            @Override
+            public String getGroup(WatchData source)
+            {
+                return source.getNyaaEntry().getFansub();
+            }
+
+            @Override
+            public String getEpisode(WatchData source)
+            {
+                return source.getNyaaEntry().getEpisodeString();
+            }
+        });
+
+        GenericAdapter<WatchData> watchDataAdapter = new GenericAdapter<>(getActivity(), controller.getWatchDataList(), itemHolder);
         gridView.setAdapter(watchDataAdapter);
 
     }

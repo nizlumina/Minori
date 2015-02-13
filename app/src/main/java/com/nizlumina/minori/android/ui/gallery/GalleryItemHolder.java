@@ -19,15 +19,22 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 
-public class GalleryItemHolder implements GenericAdapter.ViewHolder<WatchData>
+public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
 {
-    private ImageView image;
-    private TextView title;
-    private TextView group;
-    private TextView episode;
+    private ImageView mImageView;
+    private TextView mTitleView;
+    private TextView mGroupView;
+    private TextView mEpisodeView;
+    private GalleryPresenter<T> mPresenter;
+
+    public GalleryItemHolder(final GalleryPresenter<T> galleryPresenter)
+    {
+        this.mPresenter = galleryPresenter;
+    }
+
+    private GalleryItemHolder() {}
 
     @Override
     public int getLayoutResource()
@@ -36,35 +43,58 @@ public class GalleryItemHolder implements GenericAdapter.ViewHolder<WatchData>
     }
 
     @Override
-    public GenericAdapter.ViewHolder<WatchData> getNewInstance()
+    public GenericAdapter.ViewHolder<T> getNewInstance()
     {
-        return new GalleryItemHolder();
+        return new GalleryItemHolder<T>();
     }
 
     @Override
-    public GenericAdapter.ViewHolder<WatchData> setupViewSource(View inflatedConvertView)
+    public GenericAdapter.ViewHolder<T> setupViewSource(final View inflatedConvertView)
     {
-        image = (ImageView) inflatedConvertView.findViewById(R.id.item_image);
-        title = (TextView) inflatedConvertView.findViewById(R.id.item_title);
-        group = (TextView) inflatedConvertView.findViewById(R.id.item_group);
-        episode = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
+        mImageView = (ImageView) inflatedConvertView.findViewById(R.id.item_image);
+        mTitleView = (TextView) inflatedConvertView.findViewById(R.id.item_title);
+        mGroupView = (TextView) inflatedConvertView.findViewById(R.id.item_group);
+        mEpisodeView = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
         return this;
     }
 
     @Override
-    public void applySource(Context context, WatchData source)
+    public void applySource(final Context context, final T source)
     {
-        if (image != null)
+        if (mImageView != null)
+            Glide.with(context).load(mPresenter.getImageURI(source)).into(mImageView);
+
+        setTextView(mTitleView, mPresenter.getTitle(source));
+
+        setTextView(mGroupView, mPresenter.getGroup(source));
+
+        setTextView(mEpisodeView, mPresenter.getEpisode(source));
+    }
+
+    private void setTextView(TextView view, String inputText)
+    {
+        if (view != null && view.getVisibility() == View.VISIBLE)
         {
-            Glide.with(context).load(source.getAnimeObject().getImageUrl()).into(image);
+            if (inputText != null)
+            {
+                view.setText(inputText);
+            }
         }
-        if (title != null)
-            title.setText(source.getAnimeObject().getTitle());
-        if (group != null)
-            group.setText(source.getNyaaEntry().getFansub());
+    }
 
-        if (episode != null && episode.getVisibility() == View.VISIBLE)
-            episode.setText(source.getNyaaEntry().getEpisodeString());
+    public void setVisibility(int imageVisibility, int titleVisibility, int groupVisibility, int episodeVisibility)
+    {
+        setVisibility(mImageView, imageVisibility);
 
+        setVisibility(mTitleView, titleVisibility);
+
+        setVisibility(mGroupView, groupVisibility);
+
+        setVisibility(mEpisodeView, episodeVisibility);
+    }
+
+    private void setVisibility(View view, int visibility)
+    {
+        if (view != null) view.setVisibility(visibility);
     }
 }

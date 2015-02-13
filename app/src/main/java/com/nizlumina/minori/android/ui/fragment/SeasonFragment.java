@@ -20,19 +20,37 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.controller.SeasonDataController;
+import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
+import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
+import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
+import com.nizlumina.syncmaru.model.CompositeData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SeasonFragment extends Fragment
 {
     Toolbar mToolbar;
+    private GridView mGridView;
+    private SeasonDataController mSeasonDataController;
+    private List<CompositeData> mCompositeDatas = new ArrayList<>();
 
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        //mToolbar = (Toolbar) activity.findViewById(R.id.base_toolbar);
-        //if (mToolbar != null) mToolbar.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        mSeasonDataController = new SeasonDataController();
     }
 
     @Nullable
@@ -40,10 +58,48 @@ public class SeasonFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_gridview, container, false);
-
+        mGridView = (GridView) inflater.inflate(R.layout.fragment_gridview, container, false);
         //load stuffs
-        return view;
+        return mGridView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (mGridView != null) setupGridView();
+    }
+
+    private void setupGridView()
+    {
+        GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<>(new GalleryPresenter<CompositeData>()
+        {
+            @Override
+            public String getImageURI(CompositeData source)
+            {
+                return null;
+            }
+
+            @Override
+            public String getTitle(CompositeData source)
+            {
+                return null;
+            }
+
+            @Override
+            public String getGroup(CompositeData source)
+            {
+                return null;
+            }
+
+            @Override
+            public String getEpisode(CompositeData source)
+            {
+                return null;
+            }
+        });
+        GenericAdapter<CompositeData> compositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
     }
 
     @Override

@@ -12,13 +12,13 @@
 
 package com.nizlumina.minori.android.ui.gallery;
 
-public interface GalleryPresenter
+public interface GalleryPresenter<T>
 {
-    String getImageURI();
+    String getImageURI(T source);
 
-    String getTitle();
+    String getTitle(T source);
 
-    String getGroup();
+    String getGroup(T source);
 
-    String getEpisode();
+    String getEpisode(T source);
 }
