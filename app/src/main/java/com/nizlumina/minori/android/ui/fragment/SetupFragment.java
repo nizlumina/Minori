@@ -10,7 +10,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.fragment;
+package com.nizlumina.minori.android.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -35,11 +35,11 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.activity.DrawerActivity;
 import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.wrapper.ParcelableNyaaFansubGroup;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;

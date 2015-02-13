@@ -10,7 +10,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.activity;
+package com.nizlumina.minori.android.ui.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
@@ -27,8 +27,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.fragment.GalleryFragment;
-import com.nizlumina.minori.android.fragment.SeasonFragment;
+import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
+import com.nizlumina.minori.android.ui.fragment.SeasonFragment;
 import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity

@@ -10,7 +10,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.fragment;
+package com.nizlumina.minori.android.ui.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,10 +28,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.activity.DrawerActivity;
-import com.nizlumina.minori.android.adapter.GenericAdapter;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.android.listener.NetworkListener;
+import com.nizlumina.minori.android.ui.activity.DrawerActivity;
+import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.core.Hummingbird.AnimeObject;
 
 import java.util.ArrayList;

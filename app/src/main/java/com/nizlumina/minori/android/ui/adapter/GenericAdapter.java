@@ -10,7 +10,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.adapter;
+package com.nizlumina.minori.android.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -42,7 +42,7 @@ public class GenericAdapter<T> extends BaseAdapter
     /**
      * @param context    Context where this adapter is used
      * @param list       The list that backs the T object. Passing an empty list and then populate the adapter later also works.
-     * @param viewHolder Pass a concrete {@link com.nizlumina.minori.android.adapter.GenericAdapter.ViewHolder} interface implementation. Anonymous interface do not work due to {@linkplain com.nizlumina.minori.android.adapter.GenericAdapter.ViewHolder#getNewInstance()} required for instantiation.
+     * @param viewHolder Pass a concrete {@link com.nizlumina.minori.android.ui.adapter.GenericAdapter.ViewHolder} interface implementation. Anonymous interface do not work due to {@linkplain com.nizlumina.minori.android.ui.adapter.GenericAdapter.ViewHolder#getNewInstance()} required for instantiation.
      */
     public GenericAdapter(Context context, @NonNull List<T> list, ViewHolder<T> viewHolder)
     {
