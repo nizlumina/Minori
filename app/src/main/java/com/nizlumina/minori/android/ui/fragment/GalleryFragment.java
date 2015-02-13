@@ -12,7 +12,6 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,15 +20,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
+import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 
 public class GalleryFragment extends Fragment
 {
@@ -89,51 +86,4 @@ public class GalleryFragment extends Fragment
         super.onPause();
     }
 
-    private static class GalleryItemHolder implements GenericAdapter.ViewHolder<WatchData>
-    {
-
-        private ImageView image;
-        private TextView title;
-        private TextView group;
-        private TextView episode;
-
-        @Override
-        public int getLayoutResource()
-        {
-            return R.layout.list_item_gallery_compact;
-        }
-
-        @Override
-        public GenericAdapter.ViewHolder<WatchData> getNewInstance()
-        {
-            return new GalleryItemHolder();
-        }
-
-        @Override
-        public GenericAdapter.ViewHolder<WatchData> setupViewSource(View inflatedConvertView)
-        {
-            image = (ImageView) inflatedConvertView.findViewById(R.id.item_image);
-            title = (TextView) inflatedConvertView.findViewById(R.id.item_title);
-            group = (TextView) inflatedConvertView.findViewById(R.id.item_group);
-            episode = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
-            return this;
-        }
-
-        @Override
-        public void applySource(Context context, WatchData source)
-        {
-            if (image != null)
-            {
-                Glide.with(context).load(source.getAnimeObject().getImageUrl()).into(image);
-            }
-            if (title != null)
-                title.setText(source.getAnimeObject().getTitle());
-            if (group != null)
-                group.setText(source.getNyaaEntry().getFansub());
-
-            if (episode != null && episode.getVisibility() == View.VISIBLE)
-                episode.setText(source.getNyaaEntry().getEpisodeString());
-
-        }
-    }
 }
