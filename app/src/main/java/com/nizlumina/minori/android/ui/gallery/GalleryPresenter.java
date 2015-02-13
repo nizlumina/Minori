@@ -12,9 +12,11 @@
 
 package com.nizlumina.minori.android.ui.gallery;
 
+import android.widget.ImageView;
+
 public interface GalleryPresenter<T>
 {
-    String getImageURI(T source);
+    void loadInto(ImageView imageView, T source);
 
     String getTitle(T source);
 

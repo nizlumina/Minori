@@ -17,17 +17,24 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataController;
+import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 import com.nizlumina.syncmaru.model.CompositeData;
+import com.nizlumina.syncmaru.model.MALObject;
+import com.nizlumina.syncmaru.model.SmallAnimeObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +43,9 @@ public class SeasonFragment extends Fragment
 {
     Toolbar mToolbar;
     private GridView mGridView;
-    private SeasonDataController mSeasonDataController;
+    private SeasonDataController mSeasonDataController = new SeasonDataController();
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
+    private GenericAdapter<CompositeData> mCompositeDataAdapter;
 
     @Override
     public void onAttach(Activity activity)
@@ -50,7 +58,6 @@ public class SeasonFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        mSeasonDataController = new SeasonDataController();
     }
 
     @Nullable
@@ -73,18 +80,18 @@ public class SeasonFragment extends Fragment
 
     private void setupGridView()
     {
-        GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<>(new GalleryPresenter<CompositeData>()
+        GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryPresenter<CompositeData>()
         {
             @Override
-            public String getImageURI(CompositeData source)
+            public void loadInto(ImageView imageView, CompositeData source)
             {
-                return null;
+                Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getMediumPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
             }
 
             @Override
             public String getTitle(CompositeData source)
             {
-                return null;
+                return source.getMalObject().getTitle();
             }
 
             @Override
@@ -98,8 +105,42 @@ public class SeasonFragment extends Fragment
             {
                 return null;
             }
+        };
+
+        GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter);
+
+        //compositeDataHolder.setVisibility(View.VISIBLE, View.VISIBLE, View.GONE, View.GONE);
+
+        mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
+        mCompositeDataAdapter.setNotifyOnChange(true);
+
+        MALObject malObject = new MALObject.Builder().setTitle("TESTA").createMALObject();
+        SmallAnimeObject smallAnimeObject = new SmallAnimeObject();
+        smallAnimeObject.setPosterImage("https://static.hummingbird.me/anime/poster_images/000/008/648/medium/6216aea6e16686f28bd684cb48d9495f1415261246_full.jpg?1416322467");
+        mCompositeDataAdapter.add(new CompositeData(10, malObject, smallAnimeObject, null));
+        mGridView.setAdapter(mCompositeDataAdapter);
+
+        Log.v(getClass().getSimpleName(), String.valueOf(mCompositeDataAdapter.getCount()));
+
+        boolean test = false;
+        if (test)
+            mSeasonDataController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
+            {
+                @Override
+                public void onFinish(final List<CompositeData> result)
+                {
+                    getActivity().runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            if (mCompositeDataAdapter.getCount() > 0) mCompositeDataAdapter.clear();
+                            mCompositeDataAdapter.addAll(result);
+                            Log.v(SeasonFragment.class.getSimpleName(), "Result size: " + result.size());
+                        }
+                    });
+                }
         });
-        GenericAdapter<CompositeData> compositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
     }
 
     @Override

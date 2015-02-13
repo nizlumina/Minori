@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 
@@ -29,7 +28,7 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
     private TextView mEpisodeView;
     private GalleryPresenter<T> mPresenter;
 
-    public GalleryItemHolder(final GalleryPresenter<T> galleryPresenter)
+    public GalleryItemHolder(GalleryPresenter<T> galleryPresenter)
     {
         this.mPresenter = galleryPresenter;
     }
@@ -62,7 +61,7 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
     public void applySource(final Context context, final T source)
     {
         if (mImageView != null)
-            Glide.with(context).load(mPresenter.getImageURI(source)).into(mImageView);
+            mPresenter.loadInto(mImageView, source);
 
         setTextView(mTitleView, mPresenter.getTitle(source));
 

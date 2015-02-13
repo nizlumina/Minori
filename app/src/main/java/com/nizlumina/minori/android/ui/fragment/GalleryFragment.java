@@ -20,7 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.model.WatchData;
@@ -73,9 +75,9 @@ public class GalleryFragment extends Fragment
         GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryPresenter<WatchData>()
         {
             @Override
-            public String getImageURI(WatchData source)
+            public void loadInto(ImageView imageView, WatchData source)
             {
-                return source.getAnimeObject().getImageUrl();
+                Glide.with(GalleryFragment.this).load(source.getAnimeObject().getImageUrl()).into(imageView);
             }
 
             @Override

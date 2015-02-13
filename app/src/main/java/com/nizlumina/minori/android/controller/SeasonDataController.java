@@ -15,7 +15,6 @@ package com.nizlumina.minori.android.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.nizlumina.minori.android.internal.Minori;
 import com.nizlumina.minori.android.internal.StringCache;
 import com.nizlumina.minori.android.internal.ThreadMaster;
 import com.nizlumina.minori.android.listener.OnFinishListener;
@@ -24,7 +23,6 @@ import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.Season;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,7 +46,6 @@ public class SeasonDataController
     private final TypeToken<List<CompositeData>> mCompositeDataListToken = new TypeToken<List<CompositeData>>() {};
 
     //For index
-    private final File mCacheDir;
     private final Map<String, Season> mSeasonHashIndex = new HashMap<String, Season>(0);
 
     //For season in view
@@ -58,10 +55,7 @@ public class SeasonDataController
     //Extras
     private List<Future> tasks = new ArrayList<Future>();
 
-    public SeasonDataController()
-    {
-        mCacheDir = new File(Minori.getAppContext().getCacheDir(), "season_cache");
-    }
+    public SeasonDataController() {}
 
     //The main method from UI
     public void getCompositeDatas(final OnFinishListener<List<CompositeData>> onFinishListener)
@@ -213,6 +207,6 @@ public class SeasonDataController
 
     private String getRelativeURL(Season input)
     {
-        return "/anime/" + input.getSeason() + "/" + input.getYear();
+        return "/anime/" + input.getSeason() + "/" + input.getYear() + ".json";
     }
 }
