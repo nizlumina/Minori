@@ -20,6 +20,7 @@ import com.nizlumina.minori.android.internal.ThreadMaster;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.network.WebUnit;
+import com.nizlumina.minori.android.utility.Loggy;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.Season;
 
@@ -39,21 +40,22 @@ public class SeasonDataController
     private static final String INDEX_ENDPOINT = FIREBASE_ENDPOINT + "/seasons.json";
     private static final String INDEX_CACHEFILE = "season_index";
     private static final int staleThreshold = 30;
+    private static final int staleTimeUnit = Calendar.DAY_OF_YEAR;
     private final WebUnit mFirebaseWebUnit = new WebUnit();
-
     //For GSON
     private final TypeToken<List<Season>> mSeasonHashListToken = new TypeToken<List<Season>>() {};
     private final TypeToken<List<CompositeData>> mCompositeDataListToken = new TypeToken<List<CompositeData>>() {};
-
     //For index
     private final Map<String, Season> mSeasonHashIndex = new HashMap<String, Season>(0);
-
+    //Test timers
+    Loggy loggySmall = new Loggy();
+    Loggy loggyMain = new Loggy();
     //For season in view
     private Season mCurrentSeason;
     private List<CompositeData> mCompositeDatas = new ArrayList<CompositeData>();
-
     //Extras
     private List<Future> tasks = new ArrayList<Future>();
+    private List<StringCache> mCacheList = new ArrayList<StringCache>();
 
     public SeasonDataController() {}
 
@@ -75,52 +77,89 @@ public class SeasonDataController
     //This is being done in background
     private List<CompositeData> processRequest()
     {
+        loggyMain.logTimedStart("MainTask start");
+
         ThreadMaster backgroundThreadMaster = new ThreadMaster();
         processIndex(backgroundThreadMaster);
         setCurrentSeason();
         processSeasonCache(mCurrentSeason);
+        delegateCacheWrite(backgroundThreadMaster);
 
+        loggyMain.logTimed("MainTask End");
         return mCompositeDatas;
+    }
+
+    //Delegate save cache task
+    private void delegateCacheWrite(ThreadMaster threadMaster)
+    {
+        threadMaster.enqueue(new Callable<Void>()
+        {
+            @Override
+            public Void call() throws Exception
+            {
+                loggySmall.logTimedStart("Saving Cache start");
+                for (StringCache stringCache : mCacheList)
+                {
+                    if (stringCache.isValid())
+                    {
+                        //if new cache or stale
+                        if (stringCache.getLastSavedTime() < 0 || stringCache.isStale(staleThreshold, staleTimeUnit))
+                            stringCache.saveCache();
+                    }
+                }
+
+                loggySmall.logTimed("Saving cache end");
+                return null;
+            }
+        }, new OnFinishListener<Void>()
+        {
+            @Override
+            public void onFinish(Void result)
+            {
+                mCacheList.clear();
+            }
+        });
     }
 
     //Index is initialized here
     private void processIndex(ThreadMaster threadMaster)
     {
+        loggySmall.logTimedStart("PROCESS: Index Start");
         StringCache indexCache = new StringCache(INDEX_CACHEFILE);
+        mCacheList.add(indexCache);
 
-        //Check cached index
-        boolean indexStringCacheExist = false;
-        if (indexCache.getCache() != null)
-        {
-            indexCache.loadCache();
-            if (indexCache.getCache() != null)
-                indexStringCacheExist = true;
-        }
-
-        //Validate cached index
-        boolean indexValid = false;
-        if (indexStringCacheExist)
-        {
-            indexValid = loadHashMapIndex(indexCache.getCache());
-        }
+        //Check intitial cached index
+        indexCache.loadCache();
+        loggySmall.logTimed("Index cache load ends");
 
         //Force HTTP GET if not valid or stale
-        if (!indexValid || indexCache.isStale(staleThreshold, Calendar.DAY_OF_YEAR))
+        if (!indexCache.isValid() || indexCache.isStale(staleThreshold, staleTimeUnit))
         {
             String indexJson = null;
             try
             {
                 indexJson = mFirebaseWebUnit.getString(INDEX_ENDPOINT);
+                indexCache.setCache(indexJson);
+                loggySmall.logTimed("Firebase get index");
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
 
-            if (indexJson != null) loadHashMapIndex(indexJson);
+            if (indexJson != null)
+            {
+                loadHashMapIndex(indexJson);
+                loggySmall.logTimed("GSON - Load index to mSeasonHashIndex");
+            }
+        }
+        else
+        {
+            loadHashMapIndex(indexCache.getCache());
         }
     }
 
+    //Load JSON into the a map of the index
     private boolean loadHashMapIndex(String indexJson)
     {
         if (indexJson != null)
@@ -146,6 +185,8 @@ public class SeasonDataController
             task.cancel(true);
     }
 
+
+    //This is only for initial fragment
     private void setCurrentSeason()
     {
         String currentSeasonName = SeasonType.getCurrentSeason().name().toLowerCase();
@@ -153,33 +194,29 @@ public class SeasonDataController
         mCurrentSeason = mSeasonHashIndex.get(Season.makeIndexKey(currentSeasonName, year));
     }
 
-//    private Season getNextSeason()
-//    {
-//        if (mCurrentSeason != null)
-//        {
-//            int nextLocation = mSeasonList.indexOf(mCurrentSeason) + 1;
-//            if (nextLocation < mSeasonList.size() - 1)
-//            {
-//                return mSeasonList.get(nextLocation);
-//            }
-//        }
-//        return null;
-//    }
 
+    //Process requested season
     private void processSeasonCache(Season season)
     {
+        loggySmall.logTimedStart("PROCESS: Season Cache");
         Gson gson = new GsonBuilder().serializeNulls().create();
 
-        StringCache stringCache = new StringCache(season.getIndexKey());
-        stringCache.loadCache();
+        StringCache seasonDataCache = new StringCache(season.getIndexKey());
+        mCacheList.add(seasonDataCache);
+
+        seasonDataCache.loadCache();
+        loggySmall.logTimed("Season cache load ends");
 
         List<CompositeData> gsonCompositeDatas = null;
-        if (!stringCache.isValid())
+        if (!seasonDataCache.isValid())
         {
             String seasonJSON = null;
             try
             {
+                loggySmall.logTimed("No cache for season. Firebase season GET started");
                 seasonJSON = mFirebaseWebUnit.getString(FIREBASE_ENDPOINT + getRelativeURL(season));
+                seasonDataCache.setCache(seasonJSON);
+                loggySmall.logTimed("Season data obtained from firebase");
             }
             catch (IOException e)
             {
@@ -189,11 +226,13 @@ public class SeasonDataController
             if (seasonJSON != null)
             {
                 gsonCompositeDatas = gson.fromJson(seasonJSON, mCompositeDataListToken.getType());
+                loggySmall.logTimed("GSON - Read season JSON from firebase");
             }
         }
         else
         {
-            gsonCompositeDatas = gson.fromJson(stringCache.getCache(), mCompositeDataListToken.getType());
+            gsonCompositeDatas = gson.fromJson(seasonDataCache.getCache(), mCompositeDataListToken.getType());
+            loggySmall.logTimed("Cache found. Gson read season JSON from cache");
         }
 
         //Finally set
@@ -203,7 +242,6 @@ public class SeasonDataController
             mCompositeDatas.addAll(gsonCompositeDatas);
         }
     }
-
 
     private String getRelativeURL(Season input)
     {
