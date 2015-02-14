@@ -44,7 +44,7 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
     @Override
     public GenericAdapter.ViewHolder<T> getNewInstance()
     {
-        return new GalleryItemHolder<T>();
+        return new GalleryItemHolder<T>(mPresenter);
     }
 
     @Override
