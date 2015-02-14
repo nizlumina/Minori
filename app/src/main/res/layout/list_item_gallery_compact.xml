@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/gallery_image_height"
         android:adjustViewBounds="true"
-        android:scaleType="centerInside"
-        android:src="@color/rbc_bg_grey_darkness" />
+        android:scaleType="fitXY"
+        tools:src="@color/rbc_bg_grey_darkness" />
 
     <TextView
         android:id="@+id/item_title"
