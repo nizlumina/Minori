@@ -42,6 +42,8 @@ public class DrawerActivity extends ActionBarActivity
     private float mDensity;
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
+    private SeasonFragment seasonFragment = new SeasonFragment();
+    private GalleryFragment galleryFragment = new GalleryFragment();
 
     public ImageButton getFabMini()
     {
@@ -130,11 +132,11 @@ public class DrawerActivity extends ActionBarActivity
         switch (view.getId())
         {
             case R.id.drawer_watchlist:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, galleryFragment).commit();
                 showFab();
                 break;
             case R.id.drawer_season:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SeasonFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, seasonFragment).commit();
                 hideFab();
                 break;
             case R.id.drawer_explore:
