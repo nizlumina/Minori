@@ -12,6 +12,8 @@
 
 package com.nizlumina.minori.android.internal;
 
+import android.util.Log;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -84,6 +86,7 @@ public class StringCache
                 }
             }
         }
+        else Log.w(getCacheFileName(), "File does not exist");
     }
 
     /**
@@ -108,6 +111,7 @@ public class StringCache
                 }
             }
         }
+        else Log.e(getCacheFileName(), "Cached string is null!");
     }
 
     /**
