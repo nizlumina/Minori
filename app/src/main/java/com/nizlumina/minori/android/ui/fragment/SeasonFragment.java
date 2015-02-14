@@ -39,6 +39,8 @@ import java.util.List;
 
 public class SeasonFragment extends Fragment
 {
+
+    public static final int FRAGMENT_ID = 2;
     Toolbar mToolbar;
     private GridView mGridView;
     private SeasonDataController mSeasonDataController = new SeasonDataController();
@@ -62,9 +64,7 @@ public class SeasonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         mGridView = (GridView) inflater.inflate(R.layout.fragment_gridview, container, false);
-        //load stuffs
         return mGridView;
     }
 
@@ -81,9 +81,9 @@ public class SeasonFragment extends Fragment
         GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryPresenter<CompositeData>()
         {
             @Override
-            public void loadInto(ImageView imageView, CompositeData source)
+            public void loadInto(final ImageView imageView, CompositeData source)
             {
-                Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getMediumPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
             }
 
             @Override
@@ -110,7 +110,9 @@ public class SeasonFragment extends Fragment
 
         mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
         mCompositeDataAdapter.setNotifyOnChange(true);
+
         mGridView.setAdapter(mCompositeDataAdapter);
+
         mSeasonDataController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
         {
             @Override
