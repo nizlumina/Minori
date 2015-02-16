@@ -159,6 +159,7 @@ public class StringCache
 
     /**
      * Deformat raw cache from storage
+     *
      * @param input The raw {@link #getCache()} from storage
      * @return The original string ({@link #getCache()}) before being saved.
      */
@@ -195,6 +196,20 @@ public class StringCache
         int lastUpdatedDay = indexCalendar.get(calendarUnit);
 
         return Calendar.getInstance().get(calendarUnit) - lastUpdatedDay > staleThreshold;
+    }
+
+    /**
+     * Helper method for cache writing logic.
+     * This returns true if the cache is not initialized, or stale, or forced to be written.
+     *
+     * @param staleThreshold The threshold value to determine staleness
+     * @param calendarUnit   Unit of the threshold value e.g {@link java.util.Calendar#DAY_OF_YEAR}
+     * @param forceWrite     Flag to force writing the cache
+     * @return
+     */
+    public boolean getWriteFlag(int staleThreshold, int calendarUnit, boolean forceWrite)
+    {
+        return this.getLastSavedTime() < 0 || this.isStale(staleThreshold, calendarUnit) || forceWrite;
     }
 
     /**
