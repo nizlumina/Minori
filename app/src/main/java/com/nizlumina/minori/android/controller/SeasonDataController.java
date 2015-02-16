@@ -18,7 +18,6 @@ import com.google.gson.reflect.TypeToken;
 import com.nizlumina.minori.android.internal.StringCache;
 import com.nizlumina.minori.android.internal.ThreadMaster;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.Loggy;
 import com.nizlumina.syncmaru.model.CompositeData;
@@ -59,6 +58,11 @@ public class SeasonDataController
 
     public SeasonDataController() {}
 
+    public SeasonDataController(Season season)
+    {
+        mCurrentSeason = season;
+    }
+
     //The main method from UI
     public void getCompositeDatas(final OnFinishListener<List<CompositeData>> onFinishListener)
     {
@@ -81,7 +85,6 @@ public class SeasonDataController
 
         ThreadMaster backgroundThreadMaster = new ThreadMaster();
         processIndex(backgroundThreadMaster);
-        setCurrentSeason();
         processSeasonCache(mCurrentSeason);
         delegateCacheWrite(backgroundThreadMaster);
 
@@ -186,13 +189,13 @@ public class SeasonDataController
     }
 
 
-    //This is only for initial fragment
-    private void setCurrentSeason()
-    {
-        String currentSeasonName = SeasonType.getCurrentSeason().name().toLowerCase();
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        mCurrentSeason = mSeasonHashIndex.get(Season.makeIndexKey(currentSeasonName, year));
-    }
+//    //This is only for initial fragment
+//    private void getCurrentSeason()
+//    {
+//        String currentSeasonName = SeasonType.getCurrentSeason().name().toLowerCase();
+//        int year = Calendar.getInstance().get(Calendar.YEAR);
+//        mCurrentSeason = mSeasonHashIndex.get(Season.makeIndexKey(currentSeasonName, year));
+//    }
 
 
     //Process requested season

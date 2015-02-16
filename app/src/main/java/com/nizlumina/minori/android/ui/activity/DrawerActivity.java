@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
 import com.nizlumina.minori.android.ui.fragment.SeasonFragment;
+import com.nizlumina.minori.android.ui.fragment.TabbedFragment;
 import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity
@@ -42,8 +43,9 @@ public class DrawerActivity extends ActionBarActivity
     private float mDensity;
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
-    private SeasonFragment seasonFragment = new SeasonFragment();
-    private GalleryFragment galleryFragment = new GalleryFragment();
+    private SeasonFragment seasonFragment;
+    private TabbedFragment tabbedFragment;
+    private GalleryFragment galleryFragment;
 
     public ImageButton getFabMini()
     {
@@ -65,11 +67,18 @@ public class DrawerActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_base);
-
+        initFragments();
         setupViews();
         setupMetrics();
         getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
 
+    }
+
+    private void initFragments()
+    {
+        seasonFragment = new SeasonFragment();
+        tabbedFragment = TabbedFragment.newInstance();
+        galleryFragment = new GalleryFragment();
     }
 
     private void setupMetrics()

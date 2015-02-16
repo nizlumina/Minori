@@ -43,7 +43,7 @@ public class UpcomingFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        mGridView = (GridView) inflater.inflate(R.layout.fragment_gridview, container, false);
+        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
 

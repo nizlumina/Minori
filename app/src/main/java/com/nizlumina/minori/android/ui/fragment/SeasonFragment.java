@@ -33,6 +33,7 @@ import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 import com.nizlumina.syncmaru.model.CompositeData;
+import com.nizlumina.syncmaru.model.Season;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +48,16 @@ public class SeasonFragment extends Fragment
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
 
+    public static SeasonFragment newInstance(Season seasonType)
+    {
+        SeasonFragment seasonFragment = new SeasonFragment();
+
+    }
+
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-
     }
 
     @Override
@@ -64,7 +70,7 @@ public class SeasonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        mGridView = (GridView) inflater.inflate(R.layout.fragment_gridview, container, false);
+        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
 

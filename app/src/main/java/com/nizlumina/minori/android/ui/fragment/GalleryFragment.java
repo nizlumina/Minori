@@ -42,7 +42,7 @@ public class GalleryFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        mGridView = (GridView) inflater.inflate(R.layout.fragment_gridview, container, false);
+        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
 
