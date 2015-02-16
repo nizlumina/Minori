@@ -200,16 +200,16 @@ public class StringCache
 
     /**
      * Helper method for cache writing logic.
-     * This returns true if the cache is not initialized, or stale, or forced to be written.
+     * This returns true if the cache stale, or forced to be written.
+     * this however returns false if the cache is not initialized correctly ({@link #getCache()} must not be null and empty)
      *
      * @param staleThreshold The threshold value to determine staleness
      * @param calendarUnit   Unit of the threshold value e.g {@link java.util.Calendar#DAY_OF_YEAR}
      * @param forceWrite     Flag to force writing the cache
-     * @return
      */
     public boolean getWriteFlag(int staleThreshold, int calendarUnit, boolean forceWrite)
     {
-        return this.getLastSavedTime() < 0 || this.isStale(staleThreshold, calendarUnit) || forceWrite;
+        return this.isValid() && (this.getLastSavedTime() < 0 || this.isStale(staleThreshold, calendarUnit) || forceWrite);
     }
 
     /**

@@ -41,7 +41,6 @@ public class Minori extends Application
     {
         super.onCreate();
         mContext = this;
-        Config.initLibraries(getAppContext());
     }
 
     public interface ActivityListener {}
