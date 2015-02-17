@@ -16,7 +16,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.ui.adapter.FragmentPagerAdapter;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
@@ -38,20 +38,20 @@ import com.nizlumina.syncmaru.model.Season;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonFragment extends Fragment
+public class SeasonFragment extends Fragment implements FragmentPagerAdapter.TitledFragment
 {
-
-    public static final int FRAGMENT_ID = 2;
-    Toolbar mToolbar;
+    boolean mInitialized = false;
     private GridView mGridView;
     private SeasonDataController mSeasonDataController = new SeasonDataController();
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
+    private Season mSeason;
 
-    public static SeasonFragment newInstance(Season seasonType)
+    public static SeasonFragment newInstance(Season season)
     {
         SeasonFragment seasonFragment = new SeasonFragment();
-
+        seasonFragment.mSeason = season;
+        return seasonFragment;
     }
 
     @Override
@@ -70,7 +70,8 @@ public class SeasonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
+        if (mGridView == null)
+            mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
 
@@ -78,47 +79,55 @@ public class SeasonFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
         if (mGridView != null) setupGridView();
     }
 
     private void setupGridView()
     {
-        GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryPresenter<CompositeData>()
+        if (!mInitialized)
         {
-            @Override
-            public void loadInto(final ImageView imageView, CompositeData source)
+
+            mInitialized = true;
+            GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryPresenter<CompositeData>()
             {
-                Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
-            }
+                @Override
+                public void loadInto(final ImageView imageView, CompositeData source)
+                {
+                    Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                }
 
-            @Override
-            public String getTitle(CompositeData source)
-            {
-                return source.getMalObject().getTitle();
-            }
+                @Override
+                public String getTitle(CompositeData source)
+                {
+                    return source.getMalObject().getTitle();
+                }
 
-            @Override
-            public String getGroup(CompositeData source)
-            {
-                return null;
-            }
+                @Override
+                public String getGroup(CompositeData source)
+                {
+                    return null;
+                }
 
-            @Override
-            public String getEpisode(CompositeData source)
-            {
-                return null;
-            }
-        };
+                @Override
+                public String getEpisode(CompositeData source)
+                {
+                    return null;
+                }
+            };
 
-        GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter);
-        compositeDataHolder.setVisibility(View.VISIBLE, View.VISIBLE, View.GONE, View.GONE);
+            GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter);
+            compositeDataHolder.setVisibility(View.VISIBLE, View.VISIBLE, View.GONE, View.GONE);
 
-        mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
-        mCompositeDataAdapter.setNotifyOnChange(true);
+            mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
+            mCompositeDataAdapter.setNotifyOnChange(true);
+            mGridView.setAdapter(mCompositeDataAdapter);
 
-        mGridView.setAdapter(mCompositeDataAdapter);
+            buildGridItems(false);
+        }
+    }
 
+    private void buildGridItems(boolean forceRefresh)
+    {
         mSeasonDataController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
         {
             @Override
@@ -135,19 +144,25 @@ public class SeasonFragment extends Fragment
                     }
                 });
             }
-        });
+        }, false);
     }
 
     @Override
     public void onDetach()
     {
         super.onDetach();
-        if (mToolbar != null) mToolbar.setVisibility(View.VISIBLE);
+        //if (mToolbar != null) mToolbar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
+    }
+
+    @Override
+    public CharSequence getTitle()
+    {
+        return mSeason.getSeason().toUpperCase() + " " + String.valueOf(mSeason.getYear()).substring(2);
     }
 }

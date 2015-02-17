@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.common.SlidingTabLayout;
+import com.nizlumina.minori.android.ui.adapter.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,12 +34,19 @@ public class TabbedFragment extends Fragment
     private static final int TABS_CONTAINER = R.id.fragment_tabs_layout;
     private static final int CONTENT_VIEWPAGER = R.id.fragment_tabs_content_viewpager;
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
+    private SlidingTabLayout mTabLayout;
+    private ViewPager mContentViewPager;
+    private FragmentPagerAdapter mFragmentPagerAdapter;
+    private boolean initialized = false;
 
-    public static TabbedFragment newInstance(Fragment... fragments)
+    public static TabbedFragment newInstance(Fragment... tabFragment)
     {
         TabbedFragment fragment = new TabbedFragment();
-        List<Fragment> fragmentsList = Arrays.asList(fragments);
-        fragment.getFragmentList().addAll(fragmentsList);
+        if (tabFragment != null && tabFragment.length > 0)
+        {
+            List<Fragment> fragmentsList = Arrays.asList(tabFragment);
+            fragment.getFragmentList().addAll(fragmentsList);
+        }
         return fragment;
     }
 
@@ -62,8 +70,21 @@ public class TabbedFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        initViews(view);
+    }
 
-        SlidingTabLayout tabLayout = (SlidingTabLayout) view.findViewById(TABS_CONTAINER);
-        ViewPager contentViewPager = (ViewPager) view.findViewById(CONTENT_VIEWPAGER);
+    private void initViews(View view)
+    {
+        if (!initialized || mTabLayout == null || mContentViewPager == null || mFragmentPagerAdapter == null)
+        {
+            mTabLayout = (SlidingTabLayout) view.findViewById(TABS_CONTAINER);
+            mContentViewPager = (ViewPager) view.findViewById(CONTENT_VIEWPAGER);
+            mFragmentPagerAdapter = new FragmentPagerAdapter(getFragmentManager(), mFragmentList);
+
+            mContentViewPager.setAdapter(mFragmentPagerAdapter);
+            mTabLayout.setViewPager(mContentViewPager);
+
+            initialized = true;
+        }
     }
 }
