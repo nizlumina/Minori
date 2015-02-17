@@ -16,7 +16,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.ui.adapter.FragmentPagerAdapter;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
@@ -38,20 +38,19 @@ import com.nizlumina.syncmaru.model.Season;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonFragment extends Fragment
+public class SeasonFragment extends Fragment implements FragmentPagerAdapter.TitledFragment
 {
-
-    public static final int FRAGMENT_ID = 2;
-    Toolbar mToolbar;
     private GridView mGridView;
     private SeasonDataController mSeasonDataController = new SeasonDataController();
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
+    private Season mSeason;
 
-    public static SeasonFragment newInstance(Season seasonType)
+    public static SeasonFragment newInstance(Season season)
     {
         SeasonFragment seasonFragment = new SeasonFragment();
-
+        seasonFragment.mSeason = season;
+        return seasonFragment;
     }
 
     @Override
@@ -135,19 +134,25 @@ public class SeasonFragment extends Fragment
                     }
                 });
             }
-        });
+        }, false);
     }
 
     @Override
     public void onDetach()
     {
         super.onDetach();
-        if (mToolbar != null) mToolbar.setVisibility(View.VISIBLE);
+        //if (mToolbar != null) mToolbar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
+    }
+
+    @Override
+    public CharSequence getTitle()
+    {
+        return mSeason.getSeason() + String.valueOf(mSeason.getYear()).substring(2);
     }
 }

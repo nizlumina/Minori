@@ -10,46 +10,53 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.controller;
+package com.nizlumina.minori.android.internal;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.nizlumina.minori.android.factory.CoreNetworkFactory;
-import com.nizlumina.minori.android.internal.ThreadWorker;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
-public class SearchController
+/**
+ * Main wrapper class for all threading task. Avoid double checked locking for now.
+ */
+public final class ThreadWorker<Result>
 {
-    ThreadWorker<List<NyaaEntry>> searchWorker = new ThreadWorker<>();
-    private AsyncTask searchFuture;
+    private AsyncTask<Result, Void, Result> mAsyncTask;
 
-    public void searchNyaa(final String terms, final OnFinishListener<List<NyaaEntry>> onFinishListener)
+    public boolean cancelRunningTask()
     {
-        searchWorker.cancelRunningTask(); //try to stop any search that is running
-        Callable<List<NyaaEntry>> backgroundTask = new Callable<List<NyaaEntry>>()
+        return mAsyncTask == null || mAsyncTask.cancel(true);
+    }
+
+    public void postAsyncTask(@NonNull final Callable<Result> callable, @Nullable final OnFinishListener<Result> onFinishListener)
+    {
+        @SuppressWarnings("unchecked") AsyncTask<Result, Void, Result> asyncTask = new AsyncTask<Result, Void, Result>()
         {
             @Override
-            public List<NyaaEntry> call() throws Exception
+            protected Result doInBackground(Result... params)
             {
-                final List<NyaaEntry> output = new ArrayList<>();
-                CoreNetworkFactory.getNyaaEntries(terms, output);
-                return output;
+                try
+                {
+                    return callable.call();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Result result)
+            {
+                if (onFinishListener != null) onFinishListener.onFinish(result);
             }
         };
 
-        searchWorker.postAsyncTask(backgroundTask, new OnFinishListener<List<NyaaEntry>>()
-        {
-            @Override
-            public void onFinish(List<NyaaEntry> result)
-            {
-                onFinishListener.onFinish(result);
-            }
-        });
+        this.mAsyncTask = asyncTask.execute(null, null, null);
     }
-
 }

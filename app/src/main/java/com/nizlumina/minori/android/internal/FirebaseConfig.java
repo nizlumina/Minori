@@ -10,47 +10,20 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.ui.adapter;
+package com.nizlumina.minori.android.internal;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import java.util.Calendar;
 
-import java.util.List;
-
-public class FragmentPagerAdapter extends FragmentStatePagerAdapter
+/**
+ * Basic config class for Minori Firebase endpoint
+ * Set up your own Firebase stuffs. Take a look at the Syncmaru repo to see the database creation process.
+ */
+public class FirebaseConfig
 {
-    private List<Fragment> mFragments;
-
-    public FragmentPagerAdapter(FragmentManager fm, List<Fragment> fragmentList)
-    {
-        super(fm);
-        this.mFragments = fragmentList;
-    }
-
-    @Override
-    public Fragment getItem(int position)
-    {
-        return mFragments.get(position);
-    }
-
-    @Override
-    public int getCount()
-    {
-        return mFragments.size();
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position)
-    {
-        Fragment fragment = mFragments.get(position);
-        if (fragment instanceof TitledFragment)
-            return ((TitledFragment) fragment).getTitle();
-        return null;
-    }
-
-    public interface TitledFragment
-    {
-        public CharSequence getTitle();
-    }
+    public static final String FIREBASE_ENDPOINT = "https://minori.firebaseio.com";
+    public static final String INDEX_ENDPOINT = FIREBASE_ENDPOINT + "/seasons.json";
+    public static final String SEASON_ENDPOINT = FIREBASE_ENDPOINT + "/anime";
+    public static final String INDEX_CACHEFILE = "season_index";
+    public static final int staleThreshold = 30;
+    public static final int staleTimeUnit = Calendar.DAY_OF_YEAR;
 }

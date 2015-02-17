@@ -17,7 +17,7 @@ import android.util.Log;
 import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.internal.Minori;
-import com.nizlumina.minori.android.internal.ThreadMaster;
+import com.nizlumina.minori.android.internal.ThreadWorker;
 import com.nizlumina.minori.android.listener.NetworkListener;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.listener.WebUnitListener;
@@ -48,7 +48,7 @@ public class HummingbirdNetworkController
 
     public synchronized void getUpcomingAnimeObjectAsync(final NetworkListener<AnimeObject> networkListener, final boolean refreshCache)
     {
-        final ThreadMaster master = new ThreadMaster();
+        final ThreadWorker<List<AnimeObject>> threadWorker = new ThreadWorker<>();
         final long startTime = System.nanoTime();
         Callable<List<AnimeObject>> backgroundTask = new Callable<List<AnimeObject>>()
         {
@@ -130,7 +130,7 @@ public class HummingbirdNetworkController
             }
         };
 
-        master.enqueue(backgroundTask, new OnFinishListener<List<AnimeObject>>()
+        threadWorker.postAsyncTask(backgroundTask, new OnFinishListener<List<AnimeObject>>()
         {
             @Override
             public void onFinish(List<AnimeObject> animeObjects)

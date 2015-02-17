@@ -6,7 +6,7 @@ import android.util.Log;
 import com.nizlumina.minori.android.alarm.Alarm;
 import com.nizlumina.minori.android.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
-import com.nizlumina.minori.android.internal.ThreadMaster;
+import com.nizlumina.minori.android.internal.ThreadWorker;
 import com.nizlumina.minori.android.internal.WatchlistSingleton;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.WatchData;
@@ -73,19 +73,20 @@ public class WatchlistController
     public synchronized void loadDataAsync(final Context context, final OnFinishListener<List<WatchData>> onFinishListener)
     {
         //Normal background task.
-        Callable backgroundTask = new Callable()
+        Callable<List<WatchData>> backgroundTask = new Callable<List<WatchData>>()
         {
             @Override
-            public Object call() throws Exception
+            public List<WatchData> call() throws Exception
             {
                 forceLoadData(context);
                 return null;
             }
         };
-        new ThreadMaster().enqueue(backgroundTask, new OnFinishListener()
+        new ThreadWorker<List<WatchData>>().postAsyncTask(backgroundTask, new OnFinishListener<List<WatchData>>()
         {
+
             @Override
-            public void onFinish(Object o) //no result since this is just a generic listener
+            public void onFinish(List<WatchData> result)
             {
                 if (onFinishListener != null)
                     onFinishListener.onFinish(WatchlistSingleton.getInstance().getDataList());
