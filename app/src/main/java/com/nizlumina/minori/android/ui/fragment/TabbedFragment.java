@@ -73,13 +73,4 @@ public abstract class TabbedFragment extends Fragment
         if (mLoadingPlaceHolder == null)
             mLoadingPlaceHolder = (FrameLayout) view.findViewById(LOADING_PLACEHOLDER);
     }
-
-    /**
-     * This is called during {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}
-     * after each views in the paramater has been set. This is where you set a custom adapter that links both of the parameters below
-     *
-     * @param tabLayout The {@link com.nizlumina.minori.android.common.SlidingTabLayout} found in the fragment
-     * @param viewPager The {@link android.support.v4.view.ViewPager} found in the fragment
-     */
-    //abstract void setup(SlidingTabLayout tabLayout, ViewPager viewPager);
 }

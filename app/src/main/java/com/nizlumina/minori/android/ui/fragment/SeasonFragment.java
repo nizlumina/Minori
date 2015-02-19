@@ -22,9 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.controller.SeasonDataController;
+import com.nizlumina.minori.android.controller.SeasonController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
@@ -39,7 +40,7 @@ public class SeasonFragment extends Fragment
 {
     boolean mInitialized = false;
     private GridView mGridView;
-    private SeasonDataController mSeasonDataController;
+    private SeasonController mSeasonController;
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
     private Season mSeason;
@@ -48,7 +49,7 @@ public class SeasonFragment extends Fragment
     {
         SeasonFragment seasonFragment = new SeasonFragment();
         seasonFragment.mSeason = season;
-        seasonFragment.mSeasonDataController = new SeasonDataController(season);
+        seasonFragment.mSeasonController = new SeasonController(season);
         return seasonFragment;
     }
 
@@ -68,11 +69,7 @@ public class SeasonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
-
-        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), container.getId() + " Parent child count: " + container.getChildCount());
         if (mGridView == null)
-            //TODO: Recheck container = null
             mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
@@ -88,7 +85,6 @@ public class SeasonFragment extends Fragment
     {
         if (!mInitialized)
         {
-
             mInitialized = true;
             GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryPresenter<CompositeData>()
             {
@@ -101,7 +97,7 @@ public class SeasonFragment extends Fragment
                 @Override
                 public String getTitle(CompositeData source)
                 {
-                    return source.getMalObject().getTitle();
+                    return source.getLiveChartObject().getTitle();
                 }
 
                 @Override
@@ -117,8 +113,19 @@ public class SeasonFragment extends Fragment
                 }
             };
 
-            GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter);
-            compositeDataHolder.setVisibility(View.VISIBLE, View.VISIBLE, View.GONE, View.GONE);
+            GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter)
+            {
+                @Override
+                protected void modifyViewProperties(TextView titleView, ImageView imageView, TextView groupView, TextView episodeView)
+                {
+//                    titleView.setSingleLine(false);
+//                    titleView.setMaxLines(2);
+//                    titleView.setEllipsize(TextUtils.TruncateAt.END);
+
+                    groupView.setVisibility(View.GONE);
+                    episodeView.setVisibility(View.GONE);
+                }
+            };
 
             mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
             mCompositeDataAdapter.setNotifyOnChange(true);
@@ -130,11 +137,13 @@ public class SeasonFragment extends Fragment
 
     private void buildGridItems(boolean forceRefresh)
     {
-        mSeasonDataController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
+        log("Composite data get initiated");
+        mSeasonController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
         {
             @Override
             public void onFinish(final List<CompositeData> result)
             {
+                log("Composite datas loaded: " + result.size());
                 getActivity().runOnUiThread(new Runnable()
                 {
                     @Override
@@ -142,7 +151,7 @@ public class SeasonFragment extends Fragment
                     {
                         if (mCompositeDataAdapter.getCount() > 0) mCompositeDataAdapter.clear();
                         mCompositeDataAdapter.addAll(result);
-                        Log.v(SeasonFragment.class.getSimpleName(), "Result size: " + result.size());
+                        log("Adapter set with new composite datas");
                     }
                 });
             }
@@ -153,7 +162,6 @@ public class SeasonFragment extends Fragment
     public void onDetach()
     {
         super.onDetach();
-        //if (mToolbar != null) mToolbar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -162,9 +170,9 @@ public class SeasonFragment extends Fragment
         super.onPause();
     }
 
-//    @Override
-//    public CharSequence getTitle()
-//    {
-//        return mSeason.getSeason().toUpperCase() + " " + String.valueOf(mSeason.getYear()).substring(2);
-//    }
+    private void log(String input)
+    {
+        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input);
+    }
+
 }

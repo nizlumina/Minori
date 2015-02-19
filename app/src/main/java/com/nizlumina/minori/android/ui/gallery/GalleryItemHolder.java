@@ -33,8 +33,6 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
         this.mPresenter = galleryPresenter;
     }
 
-    private GalleryItemHolder() {}
-
     @Override
     public int getLayoutResource()
     {
@@ -57,9 +55,16 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
         return this;
     }
 
+    protected void modifyViewProperties(TextView titleView, ImageView imageView, TextView groupView, TextView episodeView)
+    {
+
+    }
+
     @Override
     public void applySource(final Context context, final T source)
     {
+        modifyViewProperties(mTitleView, mImageView, mGroupView, mEpisodeView);
+
         if (mImageView != null)
             mPresenter.loadInto(mImageView, source);
 
@@ -79,21 +84,5 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
                 view.setText(inputText);
             }
         }
-    }
-
-    public void setVisibility(int imageVisibility, int titleVisibility, int groupVisibility, int episodeVisibility)
-    {
-        setVisibility(mImageView, imageVisibility);
-
-        setVisibility(mTitleView, titleVisibility);
-
-        setVisibility(mGroupView, groupVisibility);
-
-        setVisibility(mEpisodeView, episodeVisibility);
-    }
-
-    private void setVisibility(View view, int visibility)
-    {
-        if (view != null) view.setVisibility(visibility);
     }
 }

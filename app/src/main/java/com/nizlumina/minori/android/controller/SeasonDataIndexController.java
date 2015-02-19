@@ -37,7 +37,7 @@ import java.util.concurrent.Callable;
 public class SeasonDataIndexController
 {
     private final WebUnit mFirebaseIndexWebUnit = new WebUnit();
-    private final Loggy loggySmall = new Loggy();
+    private final Loggy loggy = new Loggy(this.getClass().getSimpleName());
     private final TypeToken<List<Season>> mSeasonHashListToken = new TypeToken<List<Season>>() {};
     private final Map<String, Season> mSeasonHashIndex = new HashMap<String, Season>(0);
 
@@ -66,12 +66,12 @@ public class SeasonDataIndexController
             @Override
             public Void call() throws Exception
             {
-                loggySmall.logTimedStart("PROCESS: Index Start");
+                loggy.logStartTime("PROCESS: Index Start");
                 StringCache indexCache = new StringCache(FirebaseConfig.INDEX_CACHEFILE);
 
                 //Check intitial cached index
                 indexCache.loadCache();
-                loggySmall.logTimed("Index initial cache load ends");
+                loggy.logTimeDelta("Index initial cache load ends");
 
                 //Force HTTP GET if not valid or stale
                 if (!indexCache.isValid() || indexCache.isStale(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit))
@@ -79,13 +79,13 @@ public class SeasonDataIndexController
                     String indexJson = null;
                     try
                     {
-                        loggySmall.logTimed("Firebase get index Starts");
+                        loggy.logTimeDelta("Firebase get index Starts");
                         String url = FirebaseConfig.INDEX_ENDPOINT;
                         Log.v("GETTING ", "[" + url + "]");
                         indexJson = mFirebaseIndexWebUnit.getString(url);
                         Log.v("Size " + indexJson.length(), indexJson);
                         indexCache.setCache(indexJson);
-                        loggySmall.logTimed("Firebase get index Ends");
+                        loggy.logTimeDelta("Firebase get index Ends");
                     }
                     catch (IOException e)
                     {
@@ -95,13 +95,13 @@ public class SeasonDataIndexController
                     if (indexJson != null)
                     {
                         loadHashMapIndex(indexJson);
-                        loggySmall.logTimed("GSON - Load index to mSeasonHashIndex");
+                        loggy.logTimeDelta("GSON - Load index to mSeasonHashIndex");
                     }
-                    else loggySmall.logTimed("GSON - Index JSON is null");
+                    else loggy.logTimeDelta("GSON - Index JSON is null");
                 }
                 else
                 {
-                    loggySmall.logTimed("Cache is valid");
+                    loggy.logTimeDelta("Cache is valid");
                     loadHashMapIndex(indexCache.getCache());
                 }
 

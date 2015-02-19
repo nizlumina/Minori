@@ -36,10 +36,8 @@ import java.util.List;
  */
 public class SeasonHostFragment extends TabbedFragment
 {
-
     private static final String FRAGMENT_TAG = "season_host_fragment";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
-    //private List<Fragment> mFragmentList = new ArrayList<>();
 
     public static String getFragmentTag()
     {
@@ -58,12 +56,6 @@ public class SeasonHostFragment extends TabbedFragment
         }
     }
 
-//    @Override
-//    void setup(SlidingTabLayout tabLayout, ViewPager viewPager)
-//    {
-//
-//    }
-
     private void onLoad(@NonNull final SlidingTabLayout tabLayout, @NonNull final ViewPager viewPager)
     {
         mIndexController.loadIndex(new OnFinishListener<Void>()
@@ -75,11 +67,6 @@ public class SeasonHostFragment extends TabbedFragment
                 //if (mFragmentList.size() > 0) mFragmentList.clear();
                 final List<Season> mSeasons = mIndexController.getSeasonList();
                 Collections.reverse(mSeasons);
-//                for (Season season : mSeasons)
-//                {
-//                    mFragmentList.add(SeasonFragment.newInstance(season));
-//                }
-//                log("FragmentSize: " + mFragmentList.size());
 
                 if (SeasonHostFragment.this.isVisible())
                 {
@@ -90,7 +77,6 @@ public class SeasonHostFragment extends TabbedFragment
                         {
                             if (getLoadingPlaceholder().getVisibility() != View.GONE)
                                 getLoadingPlaceholder().setVisibility(View.GONE);
-                            //SimplePagerAdapter pagerAdapter = new SimplePagerAdapter(getChildFragmentManager(), mFragmentList);
                             FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getChildFragmentManager())
                             {
                                 @Override

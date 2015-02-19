@@ -16,23 +16,26 @@ import android.util.Log;
 
 public class Loggy
 {
+    private String mTag;
     private long pastT = 0;
 
-    public void logTimedStart()
+    public Loggy(String tag) {mTag = tag;}
+
+    public void logStartTime()
     {
-        logTimedStart("New timed logging started");
+        logStartTime("New timed logging started");
     }
 
-    public void logTimedStart(String input)
+    public void logStartTime(String input)
     {
         pastT = System.currentTimeMillis();
-        Log.v(getClass().getSimpleName(), input);
+        Log.v(mTag, input);
     }
 
-    public void logTimed(String input)
+    public void logTimeDelta(String input)
     {
         long currentDelta = System.currentTimeMillis() - pastT;
-        Log.v(String.format("%s - %s", getClass().getSimpleName(), input), String.format("%d ms", currentDelta));
+        Log.v(String.format("%s - %s", mTag, input), String.format("%d ms", currentDelta));
         pastT = System.currentTimeMillis();
     }
 }
