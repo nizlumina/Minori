@@ -23,12 +23,9 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.android.ui.adapter.FragmentPagerAdapter;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
@@ -38,11 +35,11 @@ import com.nizlumina.syncmaru.model.Season;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonFragment extends Fragment implements FragmentPagerAdapter.TitledFragment
+public class SeasonFragment extends Fragment
 {
     boolean mInitialized = false;
     private GridView mGridView;
-    private SeasonDataController mSeasonDataController = new SeasonDataController();
+    private SeasonDataController mSeasonDataController;
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
     private Season mSeason;
@@ -51,6 +48,7 @@ public class SeasonFragment extends Fragment implements FragmentPagerAdapter.Tit
     {
         SeasonFragment seasonFragment = new SeasonFragment();
         seasonFragment.mSeason = season;
+        seasonFragment.mSeasonDataController = new SeasonDataController(season);
         return seasonFragment;
     }
 
@@ -70,7 +68,11 @@ public class SeasonFragment extends Fragment implements FragmentPagerAdapter.Tit
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
+
+        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), container.getId() + " Parent child count: " + container.getChildCount());
         if (mGridView == null)
+            //TODO: Recheck container = null
             mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
@@ -93,7 +95,7 @@ public class SeasonFragment extends Fragment implements FragmentPagerAdapter.Tit
                 @Override
                 public void loadInto(final ImageView imageView, CompositeData source)
                 {
-                    Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                    //Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
                 }
 
                 @Override
@@ -144,7 +146,7 @@ public class SeasonFragment extends Fragment implements FragmentPagerAdapter.Tit
                     }
                 });
             }
-        }, false);
+        }, forceRefresh);
     }
 
     @Override
@@ -160,9 +162,9 @@ public class SeasonFragment extends Fragment implements FragmentPagerAdapter.Tit
         super.onPause();
     }
 
-    @Override
-    public CharSequence getTitle()
-    {
-        return mSeason.getSeason().toUpperCase() + " " + String.valueOf(mSeason.getYear()).substring(2);
-    }
+//    @Override
+//    public CharSequence getTitle()
+//    {
+//        return mSeason.getSeason().toUpperCase() + " " + String.valueOf(mSeason.getYear()).substring(2);
+//    }
 }

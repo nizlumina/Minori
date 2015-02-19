@@ -16,48 +16,38 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.common.SlidingTabLayout;
-import com.nizlumina.minori.android.ui.adapter.FragmentPagerAdapter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class TabbedFragment extends Fragment
+public abstract class TabbedFragment extends Fragment
 {
     private static final int FRAGMENT_TAB_LAYOUT = R.layout.fragment_tabbed;
     private static final int TABS_CONTAINER = R.id.fragment_tabs_layout;
     private static final int CONTENT_VIEWPAGER = R.id.fragment_tabs_content_viewpager;
-    private List<Fragment> mFragmentList = new ArrayList<Fragment>();
+    private static final int LOADING_PLACEHOLDER = R.id.fragment_tabs_loading_placeholder;
     private SlidingTabLayout mTabLayout;
     private ViewPager mContentViewPager;
-    private FragmentPagerAdapter mFragmentPagerAdapter;
-    private boolean initialized = false;
+    private FrameLayout mLoadingPlaceHolder;
 
-    public static TabbedFragment newInstance(Fragment... tabFragment)
+    public SlidingTabLayout getTabLayout()
     {
-        TabbedFragment fragment = new TabbedFragment();
-        if (tabFragment != null && tabFragment.length > 0)
-        {
-            List<Fragment> fragmentsList = Arrays.asList(tabFragment);
-            fragment.getFragmentList().addAll(fragmentsList);
-        }
-        return fragment;
+        return mTabLayout;
     }
 
-    protected List<Fragment> getFragmentList()
+    public ViewPager getContentViewPager()
     {
-        return mFragmentList;
+        return mContentViewPager;
     }
 
-    protected void clearFragments()
+    public FrameLayout getLoadingPlaceholder()
     {
-        this.mFragmentList.clear();
+        return mLoadingPlaceHolder;
     }
 
     @Override
@@ -71,20 +61,25 @@ public class TabbedFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
+        Log.v(getClass().getSimpleName(), "ViewPager ID:" + mContentViewPager.getId());
     }
 
     private void initViews(View view)
     {
-        if (!initialized || mTabLayout == null || mContentViewPager == null || mFragmentPagerAdapter == null)
-        {
+        if (mTabLayout == null)
             mTabLayout = (SlidingTabLayout) view.findViewById(TABS_CONTAINER);
+        if (mContentViewPager == null)
             mContentViewPager = (ViewPager) view.findViewById(CONTENT_VIEWPAGER);
-            mFragmentPagerAdapter = new FragmentPagerAdapter(getFragmentManager(), mFragmentList);
-
-            mContentViewPager.setAdapter(mFragmentPagerAdapter);
-            mTabLayout.setViewPager(mContentViewPager);
-
-            initialized = true;
-        }
+        if (mLoadingPlaceHolder == null)
+            mLoadingPlaceHolder = (FrameLayout) view.findViewById(LOADING_PLACEHOLDER);
     }
+
+    /**
+     * This is called during {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}
+     * after each views in the paramater has been set. This is where you set a custom adapter that links both of the parameters below
+     *
+     * @param tabLayout The {@link com.nizlumina.minori.android.common.SlidingTabLayout} found in the fragment
+     * @param viewPager The {@link android.support.v4.view.ViewPager} found in the fragment
+     */
+    //abstract void setup(SlidingTabLayout tabLayout, ViewPager viewPager);
 }

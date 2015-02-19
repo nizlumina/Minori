@@ -48,8 +48,6 @@ public class SeasonDataController
     //Extras
     private List<Future> tasks = new ArrayList<Future>();
 
-    public SeasonDataController() {}
-
     public SeasonDataController(Season season)
     {
         mCurrentSeason = season;
@@ -63,7 +61,7 @@ public class SeasonDataController
             @Override
             public List<CompositeData> call() throws Exception
             {
-                loggyMain.logTimedStart("MainTask start");
+                loggyMain.logTimedStart("MainTask start - Season: " + mCurrentSeason.getIndexKey());
 
                 processSeasonCache(mCurrentSeason, userManualRefresh);
 
@@ -105,7 +103,9 @@ public class SeasonDataController
             try
             {
                 loggySmall.logTimed("No cache for season. Firebase season GET started");
-                seasonJSON = mFirebaseSeasonWebUnit.getString(FirebaseConfig.FIREBASE_ENDPOINT + getRelativeURL(season));
+                String url = FirebaseConfig.SEASON_ENDPOINT + getRelativeURL(season);
+                loggySmall.logTimed(url);
+                seasonJSON = mFirebaseSeasonWebUnit.getString(url);
                 seasonDataCache.setCache(seasonJSON);
                 loggySmall.logTimed("Season data obtained from firebase");
             }
@@ -119,6 +119,7 @@ public class SeasonDataController
                 gsonCompositeDatas = gson.fromJson(seasonJSON, mCompositeDataListToken.getType());
                 loggySmall.logTimed("GSON - Read season JSON from firebase");
             }
+            else loggySmall.logTimed("GSON - Error, season JSON is null");
         }
         else
         {
@@ -150,6 +151,6 @@ public class SeasonDataController
 
     private String getRelativeURL(Season input)
     {
-        return input.getSeason() + "/" + input.getYear() + ".json";
+        return "/" + input.getSeason() + "/" + input.getYear() + ".json";
     }
 }

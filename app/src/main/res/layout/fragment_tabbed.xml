@@ -22,10 +22,22 @@
         android:layout_height="wrap_content"
         tools:layout_height="56dp" />
 
+    <FrameLayout
+        android:id="@+id/fragment_tabs_loading_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Loading..." />
+    </FrameLayout>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/fragment_tabs_content_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 </LinearLayout>

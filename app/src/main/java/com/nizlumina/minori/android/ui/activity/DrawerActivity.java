@@ -28,8 +28,7 @@ import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
-import com.nizlumina.minori.android.ui.fragment.SeasonFragment;
-import com.nizlumina.minori.android.ui.fragment.TabbedFragment;
+import com.nizlumina.minori.android.ui.fragment.SeasonHostFragment;
 import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity
@@ -43,9 +42,8 @@ public class DrawerActivity extends ActionBarActivity
     private float mDensity;
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
-    private SeasonFragment seasonFragment;
-    private TabbedFragment tabbedFragment;
     private GalleryFragment galleryFragment;
+    private SeasonHostFragment seasonHostFragment;
 
     public ImageButton getFabMini()
     {
@@ -66,18 +64,22 @@ public class DrawerActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_drawer_base);
         initFragments();
         setupViews();
         setupMetrics();
-        getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+        if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
+            getSupportFragmentManager().beginTransaction().add(R.id.base_contentfragment, new GalleryFragment(), GalleryFragment.getFragmentTag()).commit();
 
     }
 
+
     private void initFragments()
     {
-        seasonFragment = new SeasonFragment();
-        tabbedFragment = TabbedFragment.newInstance();
+        seasonHostFragment = (SeasonHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonHostFragment.getFragmentTag());
+        if (seasonHostFragment == null) seasonHostFragment = new SeasonHostFragment();
+        //tabbedFragment = TabbedFragment.newInstance();
         galleryFragment = new GalleryFragment();
     }
 
@@ -145,7 +147,7 @@ public class DrawerActivity extends ActionBarActivity
                 showFab();
                 break;
             case R.id.drawer_season:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, seasonFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, seasonHostFragment).commit();
                 hideFab();
                 break;
             case R.id.drawer_explore:

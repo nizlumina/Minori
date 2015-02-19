@@ -12,68 +12,104 @@
 
 package com.nizlumina.minori.android.controller;
 
+import android.support.annotation.Nullable;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nizlumina.minori.android.internal.FirebaseConfig;
 import com.nizlumina.minori.android.internal.StringCache;
 import com.nizlumina.minori.android.internal.ThreadWorker;
+import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.Loggy;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class SeasonDataIndexController
 {
     private final WebUnit mFirebaseIndexWebUnit = new WebUnit();
-    //    //This is only for initial fragment
-//    private void getCurrentSeason()
-//    {
-//        String currentSeasonName = SeasonType.getCurrentSeason().name().toLowerCase();
-//        int year = Calendar.getInstance().get(Calendar.YEAR);
-//        mCurrentSeason = mSeasonHashIndex.get(Season.makeIndexKey(currentSeasonName, year));
-//    }
     private final Loggy loggySmall = new Loggy();
     private final TypeToken<List<Season>> mSeasonHashListToken = new TypeToken<List<Season>>() {};
     private final Map<String, Season> mSeasonHashIndex = new HashMap<String, Season>(0);
 
-    public void processIndex(ThreadWorker threadWorker)
+    public List<Season> getSeasonList()
     {
-        loggySmall.logTimedStart("PROCESS: Index Start");
-        StringCache indexCache = new StringCache(FirebaseConfig.INDEX_CACHEFILE);
+        return new ArrayList<>(mSeasonHashIndex.values());
+    }
 
-        //Check intitial cached index
-        indexCache.loadCache();
-        loggySmall.logTimed("Index cache load ends");
+    public Season getCurrentSeason()
+    {
+        String currentSeasonName = SeasonType.getCurrentSeason().name().toLowerCase();
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        return mSeasonHashIndex.get(Season.makeIndexKey(currentSeasonName, year));
+    }
 
-        //Force HTTP GET if not valid or stale
-        if (!indexCache.isValid() || indexCache.isStale(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit))
+    public void loadIndex(@Nullable final OnFinishListener<Void> onFinishListener, final boolean forceRefresh)
+    {
+        ThreadWorker<Void> soullessWorker = new ThreadWorker<>();
+        soullessWorker.postAsyncTask(processIndex(forceRefresh), onFinishListener);
+    }
+
+    private Callable<Void> processIndex(final boolean forceRefresh)
+    {
+        return new Callable<Void>()
         {
-            String indexJson = null;
-            try
+            @Override
+            public Void call() throws Exception
             {
-                indexJson = mFirebaseIndexWebUnit.getString(FirebaseConfig.INDEX_ENDPOINT);
-                indexCache.setCache(indexJson);
-                loggySmall.logTimed("Firebase get index");
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+                loggySmall.logTimedStart("PROCESS: Index Start");
+                StringCache indexCache = new StringCache(FirebaseConfig.INDEX_CACHEFILE);
 
-            if (indexJson != null)
-            {
-                loadHashMapIndex(indexJson);
-                loggySmall.logTimed("GSON - Load index to mSeasonHashIndex");
+                //Check intitial cached index
+                indexCache.loadCache();
+                loggySmall.logTimed("Index initial cache load ends");
+
+                //Force HTTP GET if not valid or stale
+                if (!indexCache.isValid() || indexCache.isStale(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit))
+                {
+                    String indexJson = null;
+                    try
+                    {
+                        loggySmall.logTimed("Firebase get index Starts");
+                        String url = FirebaseConfig.INDEX_ENDPOINT;
+                        Log.v("GETTING ", "[" + url + "]");
+                        indexJson = mFirebaseIndexWebUnit.getString(url);
+                        Log.v("Size " + indexJson.length(), indexJson);
+                        indexCache.setCache(indexJson);
+                        loggySmall.logTimed("Firebase get index Ends");
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    if (indexJson != null)
+                    {
+                        loadHashMapIndex(indexJson);
+                        loggySmall.logTimed("GSON - Load index to mSeasonHashIndex");
+                    }
+                    else loggySmall.logTimed("GSON - Index JSON is null");
+                }
+                else
+                {
+                    loggySmall.logTimed("Cache is valid");
+                    loadHashMapIndex(indexCache.getCache());
+                }
+
+                if (indexCache.getWriteFlag(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit, forceRefresh))
+                    indexCache.saveCache();
+                return null;
             }
-        }
-        else
-        {
-            loadHashMapIndex(indexCache.getCache());
-        }
+        };
     }
 
     //Load JSON into the a map of the index

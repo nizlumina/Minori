@@ -33,9 +33,22 @@ import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 
 public class GalleryFragment extends Fragment
 {
+    private static final String FRAGMENT_TAG = "gallery_fragment";
     private GridView mGridView;
 
     public GalleryFragment() {}
+
+    public static String getFragmentTag()
+    {
+        return FRAGMENT_TAG;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
