@@ -37,4 +37,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.2.0'
     compile 'org.jsoup:jsoup:1.7.2'
     compile 'com.google.code.gson:gson:2.3.1'
+
+    //noinspection GradleDynamicVersion
+    compile 'com.android.support:recyclerview-v7:21.0.+'
 }
