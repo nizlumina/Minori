@@ -34,6 +34,8 @@ import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SeasonFragment extends Fragment
@@ -144,12 +146,25 @@ public class SeasonFragment extends Fragment
             public void onFinish(final List<CompositeData> result)
             {
                 log("Composite datas loaded: " + result.size());
+
+                Collections.sort(result, new Comparator<CompositeData>()
+                {
+                    @Override
+                    public int compare(CompositeData lhs, CompositeData rhs)
+                    {
+                        int categoryComparer = lhs.getLiveChartObject().getCategory().compareTo(rhs.getLiveChartObject().getCategory());
+                        if (categoryComparer == 0)
+                            return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
+                        else return categoryComparer;
+                    }
+                });
                 getActivity().runOnUiThread(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        if (mCompositeDataAdapter.getCount() > 0) mCompositeDataAdapter.clear();
+                        if (mCompositeDataAdapter.getCount() > 0)
+                            mCompositeDataAdapter.clear();
                         mCompositeDataAdapter.addAll(result);
                         log("Adapter set with new composite datas");
                     }

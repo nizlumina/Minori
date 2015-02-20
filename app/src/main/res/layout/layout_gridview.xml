@@ -11,6 +11,7 @@
     android:horizontalSpacing="8dp"
     android:numColumns="auto_fit"
     android:padding="8dp"
+    android:scrollbarStyle="outsideOverlay"
     android:verticalSpacing="8dp">
 
 </GridView>

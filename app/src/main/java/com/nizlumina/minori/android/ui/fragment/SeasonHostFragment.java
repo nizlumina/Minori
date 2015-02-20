@@ -94,7 +94,9 @@ public class SeasonHostFragment extends TabbedFragment
                                 @Override
                                 public CharSequence getPageTitle(int position)
                                 {
-                                    return mSeasons.get(position).getIndexKey();
+                                    Season season = mSeasons.get(position);
+                                    String year = String.valueOf(season.getYear());
+                                    return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
                                 }
                             };
                             viewPager.setAdapter(pagerAdapter);
@@ -122,8 +124,4 @@ public class SeasonHostFragment extends TabbedFragment
         Log.v(getClass().getSimpleName(), input);
     }
 
-    private void test()
-    {
-
-    }
 }
