@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.common.SlidingTabLayout;
 import com.nizlumina.minori.android.controller.SeasonController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
@@ -120,10 +121,6 @@ public class SeasonFragment extends Fragment
                 @Override
                 protected void modifyViewProperties(TextView titleView, ImageView imageView, TextView groupView, TextView episodeView)
                 {
-//                    titleView.setSingleLine(false);
-//                    titleView.setMaxLines(2);
-//                    titleView.setEllipsize(TextUtils.TruncateAt.END);
-
                     groupView.setVisibility(View.GONE);
                     episodeView.setVisibility(View.GONE);
                 }
@@ -134,10 +131,12 @@ public class SeasonFragment extends Fragment
             mGridView.setAdapter(mCompositeDataAdapter);
 
             buildGridItems(false);
+
+            SlidingTabLayout layout;
         }
     }
 
-    private void buildGridItems(boolean forceRefresh)
+    private void buildGridItems(final boolean forceRefresh)
     {
         log("Composite data get initiated");
         mSeasonController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
