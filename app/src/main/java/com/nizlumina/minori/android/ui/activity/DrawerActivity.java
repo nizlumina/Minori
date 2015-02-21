@@ -42,8 +42,8 @@ public class DrawerActivity extends ActionBarActivity
     private float mDensity;
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
-    private GalleryFragment galleryFragment;
-    private SeasonHostFragment seasonHostFragment;
+//    private GalleryFragment galleryFragment;
+//    private SeasonHostFragment seasonHostFragment;
 
     public ImageButton getFabMini()
     {
@@ -66,7 +66,7 @@ public class DrawerActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_drawer_base);
-        initFragments();
+//        initFragments();
         setupViews();
         setupMetrics();
         if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
@@ -74,14 +74,14 @@ public class DrawerActivity extends ActionBarActivity
 
     }
 
-
-    private void initFragments()
-    {
-        seasonHostFragment = (SeasonHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonHostFragment.getFragmentTag());
-        if (seasonHostFragment == null) seasonHostFragment = new SeasonHostFragment();
-        //tabbedFragment = TabbedFragment.newInstance();
-        galleryFragment = new GalleryFragment();
-    }
+//
+//    private void initFragments()
+//    {
+//        seasonHostFragment = (SeasonHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonHostFragment.getFragmentTag());
+//        if (seasonHostFragment == null) seasonHostFragment = new SeasonHostFragment();
+//        //tabbedFragment = TabbedFragment.newInstance();
+//        galleryFragment = new GalleryFragment();
+//    }
 
     private void setupMetrics()
     {
@@ -143,11 +143,11 @@ public class DrawerActivity extends ActionBarActivity
         switch (view.getId())
         {
             case R.id.drawer_watchlist:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, galleryFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
                 showFab();
                 break;
             case R.id.drawer_season:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, seasonHostFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SeasonHostFragment()).commit();
                 hideFab();
                 break;
             case R.id.drawer_explore:

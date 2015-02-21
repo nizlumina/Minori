@@ -24,14 +24,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.common.SlidingTabLayout;
 import com.nizlumina.minori.android.controller.SeasonController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 import com.nizlumina.syncmaru.model.CompositeData;
+import com.nizlumina.syncmaru.model.LiveChartObject;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class SeasonFragment extends Fragment
     boolean mInitialized = false;
     private GridView mGridView;
     private SeasonController mSeasonController;
-    private List<CompositeData> mCompositeDatas = new ArrayList<>();
+    private List<CompositeData> mCompositeDatasForDisplay = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
     private Season mSeason;
 
@@ -94,7 +96,7 @@ public class SeasonFragment extends Fragment
                 @Override
                 public void loadInto(final ImageView imageView, CompositeData source)
                 {
-                    //Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                    Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
                 }
 
                 @Override
@@ -126,13 +128,11 @@ public class SeasonFragment extends Fragment
                 }
             };
 
-            mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatas, compositeDataHolder);
+            mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatasForDisplay, compositeDataHolder);
             mCompositeDataAdapter.setNotifyOnChange(true);
             mGridView.setAdapter(mCompositeDataAdapter);
 
             buildGridItems(false);
-
-            SlidingTabLayout layout;
         }
     }
 
@@ -146,28 +146,48 @@ public class SeasonFragment extends Fragment
             {
                 log("Composite datas loaded: " + result.size());
 
-                Collections.sort(result, new Comparator<CompositeData>()
+                //Even though the result is complete, we only display series for now (since that's what people will use it for anyway). Sectioning parts of the UI for complete results will be decided later in the future
+
+                List<CompositeData> filteredList = new ArrayList<CompositeData>();
+                for (CompositeData compositeData : result)
+                {
+                    if (compositeData.getLiveChartObject().getCategory() == LiveChartObject.Category.TV)
+                        filteredList.add(compositeData);
+                }
+
+                Collections.sort(filteredList, new Comparator<CompositeData>()
                 {
                     @Override
                     public int compare(CompositeData lhs, CompositeData rhs)
                     {
-                        int categoryComparer = lhs.getLiveChartObject().getCategory().compareTo(rhs.getLiveChartObject().getCategory());
-                        if (categoryComparer == 0)
-                            return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
-                        else return categoryComparer;
+                        return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
                     }
                 });
-                getActivity().runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (mCompositeDataAdapter.getCount() > 0)
-                            mCompositeDataAdapter.clear();
-                        mCompositeDataAdapter.addAll(result);
-                        log("Adapter set with new composite datas");
-                    }
-                });
+//                Collections.sort(result, new Comparator<CompositeData>()
+//                {
+//                    @Override
+//                    public int compare(CompositeData lhs, CompositeData rhs)
+//                    {
+//                        int categoryComparer = lhs.getLiveChartObject().getCategory().compareTo(rhs.getLiveChartObject().getCategory());
+//                        if (categoryComparer == 0)
+//                            return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
+//                        else return categoryComparer;
+//                    }
+//                });
+                if (mCompositeDataAdapter.getCount() > 0)
+                    mCompositeDataAdapter.clear();
+                mCompositeDataAdapter.addAll(filteredList);
+                log("Adapter set with new composite datas");
+
+//                if(getActivity() != null)
+//                    getActivity().runOnUiThread(new Runnable()
+//                {
+//                    @Override
+//                    public void run()
+//                    {
+//
+//                    }
+//                });
             }
         }, forceRefresh);
     }

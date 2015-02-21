@@ -26,9 +26,11 @@ import android.view.View;
 import com.nizlumina.minori.android.common.SlidingTabLayout;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -50,10 +52,17 @@ public class SeasonHostFragment extends TabbedFragment
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null)
         {
-            Log.v(getClass().getSimpleName() + " OnViewCreated", "Saved instance state is null");
+            Log.w(getClass().getSimpleName() + " OnViewCreated", "Saved instance state is null");
             log("Loading index.");
             onLoad(getTabLayout(), getContentViewPager());
         }
+//        else
+//        {
+//            Log.w(getClass().getSimpleName() + " OnViewCreated", "Index already loaded. RESUMING!");
+//            if(mIndexController.indexLoaded())
+//                buildViews(getSeasonsListFromController(), getContentViewPager(), getTabLayout());
+//            else onLoad(getTabLayout(), getContentViewPager());
+//        }
     }
 
     private void onLoad(@NonNull final SlidingTabLayout tabLayout, @NonNull final ViewPager viewPager)
@@ -64,52 +73,69 @@ public class SeasonHostFragment extends TabbedFragment
             public void onFinish(Void result)
             {
                 log("Index loaded");
-                //if (mFragmentList.size() > 0) mFragmentList.clear();
-                final List<Season> mSeasons = mIndexController.getSeasonList();
-                Collections.reverse(mSeasons);
+                final List<Season> mSeasons = getSeasonsListFromController();
 
-                if (SeasonHostFragment.this.isVisible())
-                {
+                if (getActivity() != null)
                     getActivity().runOnUiThread(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            if (getLoadingPlaceholder().getVisibility() != View.GONE)
-                                getLoadingPlaceholder().setVisibility(View.GONE);
-                            FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getChildFragmentManager())
-                            {
-                                @Override
-                                public Fragment getItem(int position)
-                                {
-                                    return SeasonFragment.newInstance(mSeasons.get(position));
-                                }
-
-                                @Override
-                                public int getCount()
-                                {
-                                    return mSeasons.size();
-                                }
-
-                                @Override
-                                public CharSequence getPageTitle(int position)
-                                {
-                                    Season season = mSeasons.get(position);
-                                    String year = String.valueOf(season.getYear());
-                                    return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
-                                }
-                            };
-                            viewPager.setAdapter(pagerAdapter);
-                            tabLayout.setViewPager(viewPager);
-                            log("Pager Adapter init - Size: " + pagerAdapter.getCount());
-                            viewPager.setVisibility(View.VISIBLE);
-                            viewPager.setCurrentItem(mSeasons.indexOf(mIndexController.getCurrentSeason()));
+                            buildViews(mSeasons, viewPager, tabLayout);
                         }
                     });
-                }
             }
         }, false);
 
+    }
+
+    private List<Season> getSeasonsListFromController()
+    {
+        final List<Season> mSeasons = mIndexController.getSeasonList();
+        Collections.sort(mSeasons, new Comparator<Season>()
+        {
+            @Override
+            public int compare(Season lhs, Season rhs)
+            {
+                if (lhs.getYear() == rhs.getYear())
+                    return SeasonType.fromString(lhs.getSeason()).compareTo(SeasonType.fromString(rhs.getSeason()));
+                return lhs.getYear() - rhs.getYear();
+            }
+        });
+        return mSeasons;
+    }
+
+    private void buildViews(final List<Season> mSeasons, ViewPager viewPager, SlidingTabLayout tabLayout)
+    {
+
+        getLoadingPlaceholder().setVisibility(View.GONE);
+        FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getFragmentManager())
+        {
+            @Override
+            public Fragment getItem(int position)
+            {
+                return SeasonFragment.newInstance(mSeasons.get(position));
+            }
+
+            @Override
+            public int getCount()
+            {
+                return mSeasons.size();
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position)
+            {
+                Season season = mSeasons.get(position);
+                String year = String.valueOf(season.getYear());
+                return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
+            }
+        };
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout.setViewPager(viewPager);
+        log("Pager Adapter init - Size: " + pagerAdapter.getCount());
+        viewPager.setVisibility(View.VISIBLE);
+        viewPager.setCurrentItem(mSeasons.indexOf(mIndexController.getCurrentSeason()));
     }
 
     @Override

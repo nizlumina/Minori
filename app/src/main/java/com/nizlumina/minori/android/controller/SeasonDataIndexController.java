@@ -40,6 +40,7 @@ public class SeasonDataIndexController
     private final Loggy loggy = new Loggy(this.getClass().getSimpleName());
     private final TypeToken<List<Season>> mSeasonHashListToken = new TypeToken<List<Season>>() {};
     private final Map<String, Season> mSeasonHashIndex = new HashMap<String, Season>(0);
+    private boolean mLoading = false;
 
     public List<Season> getSeasonList()
     {
@@ -55,9 +56,16 @@ public class SeasonDataIndexController
 
     public void loadIndex(@Nullable final OnFinishListener<Void> onFinishListener, final boolean forceRefresh)
     {
+        mLoading = true;
         ThreadWorker<Void> soullessWorker = new ThreadWorker<>();
         soullessWorker.postAsyncTask(processIndex(forceRefresh), onFinishListener);
     }
+
+    public boolean indexLoaded()
+    {
+        return mSeasonHashIndex.size() > 0 && !mLoading;
+    }
+
 
     private Callable<Void> processIndex(final boolean forceRefresh)
     {
@@ -103,6 +111,8 @@ public class SeasonDataIndexController
                 {
                     loggy.logTimeDelta("Cache is valid");
                     loadHashMapIndex(indexCache.getCache());
+                    loggy.logTimeDelta("Cache - Loaded index to mSeasonHashIndex");
+                    mLoading = false;
                 }
 
                 if (indexCache.getWriteFlag(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit, forceRefresh))
