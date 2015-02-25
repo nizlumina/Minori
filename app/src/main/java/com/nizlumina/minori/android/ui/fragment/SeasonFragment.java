@@ -68,14 +68,14 @@ public class SeasonFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (mGridView == null)
-            mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
+        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
 
@@ -206,7 +206,7 @@ public class SeasonFragment extends Fragment
 
     private void log(String input)
     {
-        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input);
+        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input); // lol NPE on rotate
     }
 
 }

@@ -56,13 +56,6 @@ public class SeasonHostFragment extends TabbedFragment
             log("Loading index.");
             onLoad(getTabLayout(), getContentViewPager());
         }
-//        else
-//        {
-//            Log.w(getClass().getSimpleName() + " OnViewCreated", "Index already loaded. RESUMING!");
-//            if(mIndexController.indexLoaded())
-//                buildViews(getSeasonsListFromController(), getContentViewPager(), getTabLayout());
-//            else onLoad(getTabLayout(), getContentViewPager());
-//        }
     }
 
     private void onLoad(@NonNull final SlidingTabLayout tabLayout, @NonNull final ViewPager viewPager)
