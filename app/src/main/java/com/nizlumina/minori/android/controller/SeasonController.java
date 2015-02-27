@@ -76,8 +76,6 @@ public class SeasonController
     //Index is initialized here
 
 
-
-
     public void cancelRunningTask()
     {
         for (Future task : tasks)
