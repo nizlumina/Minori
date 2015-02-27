@@ -27,7 +27,7 @@ import com.nizlumina.minori.android.common.SlidingTabLayout;
 public abstract class TabbedFragment extends Fragment
 {
     private static final int FRAGMENT_TAB_LAYOUT = R.layout.fragment_tabbed;
-    private static final int TABS_CONTAINER = R.id.fragment_tabs_layout;
+    private static final int TABS_LAYOUT = R.id.fragment_tabs_layout;
     private static final int CONTENT_VIEWPAGER = R.id.fragment_tabs_content_viewpager;
     private static final int LOADING_PLACEHOLDER = R.id.fragment_tabs_loading_placeholder;
     private SlidingTabLayout mTabLayout;
@@ -37,6 +37,11 @@ public abstract class TabbedFragment extends Fragment
     public SlidingTabLayout getTabLayout()
     {
         return mTabLayout;
+    }
+
+    private void setTabLayout(SlidingTabLayout mTabLayout)
+    {
+        this.mTabLayout = mTabLayout;
     }
 
     public ViewPager getContentViewPager()
@@ -65,7 +70,14 @@ public abstract class TabbedFragment extends Fragment
     private void initViews(View view)
     {
         if (mTabLayout == null)
-            mTabLayout = (SlidingTabLayout) view.findViewById(TABS_CONTAINER);
+        {
+
+            mTabLayout = (SlidingTabLayout) view.findViewById(TABS_LAYOUT);
+            if (mTabLayout != null)
+            {
+                mTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primary_color_dark));
+            }
+        }
         if (mContentViewPager == null)
             mContentViewPager = (ViewPager) view.findViewById(CONTENT_VIEWPAGER);
         if (mLoadingPlaceHolder == null)

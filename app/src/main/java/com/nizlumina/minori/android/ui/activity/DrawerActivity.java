@@ -23,6 +23,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -33,7 +34,8 @@ import com.nizlumina.minori.android.utility.Util;
 
 public class DrawerActivity extends ActionBarActivity
 {
-    private Toolbar toolbar;
+    private Toolbar mToolbar;
+    private ViewGroup mTopContainer;
     private LinearLayout mFabContainer;
     private ImageButton mFabMain;
     private ImageButton mFabMini;
@@ -42,8 +44,7 @@ public class DrawerActivity extends ActionBarActivity
     private float mDensity;
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
-//    private GalleryFragment galleryFragment;
-//    private SeasonHostFragment seasonHostFragment;
+    private boolean mContainerVisibility;
 
     public ImageButton getFabMini()
     {
@@ -57,7 +58,13 @@ public class DrawerActivity extends ActionBarActivity
 
     public Toolbar getToolbar()
     {
-        return toolbar;
+        return mToolbar;
+    }
+
+
+    public ViewGroup getToolbarContainer()
+    {
+        return (ViewGroup) mToolbar.getParent();
     }
 
     @Override
@@ -66,7 +73,6 @@ public class DrawerActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_drawer_base);
-//        initFragments();
         setupViews();
         setupMetrics();
         if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
@@ -74,14 +80,6 @@ public class DrawerActivity extends ActionBarActivity
 
     }
 
-//
-//    private void initFragments()
-//    {
-//        seasonHostFragment = (SeasonHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonHostFragment.getFragmentTag());
-//        if (seasonHostFragment == null) seasonHostFragment = new SeasonHostFragment();
-//        //tabbedFragment = TabbedFragment.newInstance();
-//        galleryFragment = new GalleryFragment();
-//    }
 
     private void setupMetrics()
     {
@@ -91,8 +89,8 @@ public class DrawerActivity extends ActionBarActivity
     private void setupViews()
     {
         //Set basics
-        toolbar = (Toolbar) findViewById(R.id.base_toolbar);
-
+        mToolbar = (Toolbar) findViewById(R.id.base_toolbar);
+        mTopContainer = (ViewGroup) findViewById(R.id.base_topcontainer);
         mFabMain = (ImageButton) findViewById(R.id.base_fabmain);
         //setupFab(mFabMain, R.color.accent_color_shade, R.color.accent_color);
 
@@ -103,7 +101,7 @@ public class DrawerActivity extends ActionBarActivity
 
         //Set drawers
         mDrawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
@@ -187,6 +185,32 @@ public class DrawerActivity extends ActionBarActivity
     public void setupFab(ImageButton fab, @DrawableRes int drawableID)
     {
         setupFab(fab, drawableID, R.color.accent_color_shade, R.color.accent_color);
+    }
+
+    public boolean getContainerVisibility()
+    {
+        return mContainerVisibility;
+    }
+
+    /**
+     * Hides the ViewGroup containing toolbar
+     */
+    public void hideTopContainer()
+    {
+        if (mTopContainer != null)
+        {
+            ObjectAnimator.ofFloat(mTopContainer, "y", mTopContainer.getHeight()).start();
+            mContainerVisibility = false;
+        }
+    }
+
+    public void showTopContainer()
+    {
+        if (mTopContainer != null)
+        {
+            ObjectAnimator.ofFloat(mTopContainer, "y", -mTopContainer.getHeight()).start();
+            mContainerVisibility = true;
+        }
     }
 
 

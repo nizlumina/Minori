@@ -110,6 +110,18 @@ public class GalleryFragment extends Fragment
             {
                 return source.getNyaaEntry().getEpisodeString();
             }
+
+            @Override
+            public String getSourceText(WatchData source)
+            {
+                return null;
+            }
+
+            @Override
+            public String getScore(WatchData source)
+            {
+                return null;
+            }
         });
 
         GenericAdapter<WatchData> watchDataAdapter = new GenericAdapter<>(getActivity(), controller.getWatchDataList(), itemHolder);

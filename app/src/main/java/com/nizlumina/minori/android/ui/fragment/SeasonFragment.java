@@ -12,7 +12,6 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,10 +31,12 @@ import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
+import com.nizlumina.minori.android.ui.view.CustomGridView;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.LiveChartObject;
 import com.nizlumina.syncmaru.model.Season;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,7 +45,7 @@ import java.util.List;
 public class SeasonFragment extends Fragment
 {
     boolean mInitialized = false;
-    private GridView mGridView;
+    private CustomGridView mGridView;
     private SeasonController mSeasonController;
     private List<CompositeData> mCompositeDatasForDisplay = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
@@ -59,12 +60,6 @@ public class SeasonFragment extends Fragment
     }
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -75,7 +70,7 @@ public class SeasonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
+        mGridView = (CustomGridView) inflater.inflate(R.layout.layout_gridview, container, false);
         return mGridView;
     }
 
@@ -96,7 +91,7 @@ public class SeasonFragment extends Fragment
                 @Override
                 public void loadInto(final ImageView imageView, CompositeData source)
                 {
-                    Glide.with(SeasonFragment.this).load(source.getSmallAnimeObject().getPosterImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                    Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
                 }
 
                 @Override
@@ -116,6 +111,21 @@ public class SeasonFragment extends Fragment
                 {
                     return null;
                 }
+
+
+                @Override
+                public String getSourceText(CompositeData source)
+                {
+                    return source.getLiveChartObject().getSource();
+                }
+
+                private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+                @Override
+                public String getScore(CompositeData source)
+                {
+                    return decimalFormat.format(source.getMalObject().getScore());
+                }
             };
 
             GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter)
@@ -132,6 +142,48 @@ public class SeasonFragment extends Fragment
             mCompositeDataAdapter.setNotifyOnChange(true);
             mGridView.setAdapter(mCompositeDataAdapter);
 
+            mGridView.setOnScrollListener(new AbsListView.OnScrollListener()
+            {
+                private int mInitialScroll = 0;
+
+                boolean scrolling = false;
+
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState)
+                {
+                    if (scrollState == SCROLL_STATE_IDLE)
+                        scrolling = false;
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+                {
+                    int scrollOffset = mGridView.getVerticalScrollOffset();
+                    boolean scrollUp = scrollOffset > mInitialScroll;
+                    mInitialScroll = scrollOffset;
+
+                    if (!scrolling)
+                    {
+//                        log("Hide container");
+//                        if(getActivity() instanceof DrawerActivity)
+//                            ((DrawerActivity) getActivity()).hideTopContainer();
+//                        if (!scrollUp)
+//                        {
+//
+//
+//                        }
+//                        scrolling = true;
+                    }
+//                    else if(scrollUp & !containerShown)
+//                    {
+//                        ((DrawerActivity) getActivity()).showTopContainer();
+//                        containerShown = true;
+//
+//                        log("Show container");
+//                    }
+                }
+            });
+
             buildGridItems(false);
         }
     }
@@ -146,8 +198,8 @@ public class SeasonFragment extends Fragment
             {
                 log("Composite datas loaded: " + result.size());
 
-                //Even though the result is complete, we only display series for now (since that's what people will use it for anyway). Sectioning parts of the UI for complete results will be decided later in the future
-
+                //Even though the result is complete, we only display series for now (since that's what people will use it for anyway).
+                //Sectioning parts of the UI for complete results will be decided later in the future
                 List<CompositeData> filteredList = new ArrayList<CompositeData>();
                 for (CompositeData compositeData : result)
                 {
@@ -160,34 +212,17 @@ public class SeasonFragment extends Fragment
                     @Override
                     public int compare(CompositeData lhs, CompositeData rhs)
                     {
-                        return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
+                        //return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
+                        //try by rating
+                        return Float.compare(rhs.getMalObject().getScore(), lhs.getMalObject().getScore());
                     }
                 });
-//                Collections.sort(result, new Comparator<CompositeData>()
-//                {
-//                    @Override
-//                    public int compare(CompositeData lhs, CompositeData rhs)
-//                    {
-//                        int categoryComparer = lhs.getLiveChartObject().getCategory().compareTo(rhs.getLiveChartObject().getCategory());
-//                        if (categoryComparer == 0)
-//                            return lhs.getLiveChartObject().getTitle().compareTo(rhs.getLiveChartObject().getTitle());
-//                        else return categoryComparer;
-//                    }
-//                });
+
                 if (mCompositeDataAdapter.getCount() > 0)
                     mCompositeDataAdapter.clear();
                 mCompositeDataAdapter.addAll(filteredList);
                 log("Adapter set with new composite datas");
 
-//                if(getActivity() != null)
-//                    getActivity().runOnUiThread(new Runnable()
-//                {
-//                    @Override
-//                    public void run()
-//                    {
-//
-//                    }
-//                });
             }
         }, forceRefresh);
     }
@@ -206,7 +241,7 @@ public class SeasonFragment extends Fragment
 
     private void log(String input)
     {
-        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input); // lol NPE on rotate
+        Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input);
     }
 
 }

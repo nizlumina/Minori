@@ -26,6 +26,9 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
     private TextView mTitleView;
     private TextView mGroupView;
     private TextView mEpisodeView;
+    private TextView mSourceView;
+    private TextView mScoreView;
+
     private GalleryPresenter<T> mPresenter;
 
     public GalleryItemHolder(GalleryPresenter<T> galleryPresenter)
@@ -50,8 +53,10 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
     {
         mImageView = (ImageView) inflatedConvertView.findViewById(R.id.item_image);
         mTitleView = (TextView) inflatedConvertView.findViewById(R.id.item_title);
-        mGroupView = (TextView) inflatedConvertView.findViewById(R.id.item_group);
-        mEpisodeView = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
+        mSourceView = (TextView) inflatedConvertView.findViewById(R.id.item_source);
+        mScoreView = (TextView) inflatedConvertView.findViewById(R.id.item_score);
+        //mGroupView = (TextView) inflatedConvertView.findViewById(R.id.item_group);
+        //mEpisodeView = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
         return this;
     }
 
@@ -70,9 +75,13 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
 
         setTextView(mTitleView, mPresenter.getTitle(source));
 
-        setTextView(mGroupView, mPresenter.getGroup(source));
+        setTextView(mSourceView, mPresenter.getSourceText(source));
 
-        setTextView(mEpisodeView, mPresenter.getEpisode(source));
+        setTextView(mScoreView, mPresenter.getScore(source));
+
+        //setTextView(mGroupView, mPresenter.getGroup(source));
+
+        //setTextView(mEpisodeView, mPresenter.getEpisode(source));
     }
 
     private void setTextView(TextView view, String inputText)

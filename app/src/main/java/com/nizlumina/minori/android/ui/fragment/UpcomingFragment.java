@@ -136,8 +136,8 @@ public class UpcomingFragment extends Fragment
         {
             image = (ImageView) inflatedConvertView.findViewById(R.id.item_image);
             title = (TextView) inflatedConvertView.findViewById(R.id.item_title);
-            group = (TextView) inflatedConvertView.findViewById(R.id.item_group);
-            episode = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
+            //group = (TextView) inflatedConvertView.findViewById(R.id.item_group);
+            //episode = (TextView) inflatedConvertView.findViewById(R.id.item_episode);
             return this;
         }
 

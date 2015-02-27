@@ -23,4 +23,8 @@ public interface GalleryPresenter<T>
     String getGroup(T source);
 
     String getEpisode(T source);
+
+    String getSourceText(T source);
+
+    String getScore(T source);
 }

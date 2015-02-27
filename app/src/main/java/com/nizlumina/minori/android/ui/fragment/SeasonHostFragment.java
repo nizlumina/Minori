@@ -22,11 +22,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.nizlumina.minori.android.common.SlidingTabLayout;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
+import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.Collections;
@@ -50,11 +52,30 @@ public class SeasonHostFragment extends TabbedFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        injectTabsToParent(view);
+
         if (savedInstanceState == null)
         {
             Log.w(getClass().getSimpleName() + " OnViewCreated", "Saved instance state is null");
             log("Loading index.");
             onLoad(getTabLayout(), getContentViewPager());
+        }
+    }
+
+    private void injectTabsToParent(View view)
+    {
+        if (view instanceof ViewGroup)
+        {
+            ViewGroup parent = (ViewGroup) getTabLayout().getParent();
+
+            parent.removeView(getTabLayout());
+
+            if (getActivity() instanceof DrawerActivity)
+            {
+                ViewGroup toolbarParent = ((DrawerActivity) getActivity()).getToolbarContainer();
+                toolbarParent.addView(getTabLayout());
+            }
         }
     }
 
@@ -80,6 +101,18 @@ public class SeasonHostFragment extends TabbedFragment
             }
         }, false);
 
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        if (getActivity() instanceof DrawerActivity)
+        {
+            ViewGroup toolbarParent = ((DrawerActivity) getActivity()).getToolbarContainer();
+            toolbarParent.removeView(getTabLayout());
+        }
+
+        super.onDestroyView();
     }
 
     private List<Season> getSeasonsListFromController()

@@ -20,6 +20,7 @@
         android:id="@+id/fragment_tabs_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primary_color"
         tools:layout_height="56dp" />
 
     <FrameLayout
