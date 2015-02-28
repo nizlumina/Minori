@@ -12,14 +12,23 @@
 
 package com.nizlumina.syncmaru.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * MAL Object as returned by MAL
  */
-public class MALObject
+public class MALObject implements Parcelable
 {
     //As returned by the search API
     public static final String IDENTIFIER = "anime";
     public static final String ENTRY_ARRAY_IDENTIFIER = "entry";
+    public static final Parcelable.Creator<MALObject> CREATOR = new Parcelable.Creator<MALObject>()
+    {
+        public MALObject createFromParcel(Parcel source) {return new MALObject(source);}
+
+        public MALObject[] newArray(int size) {return new MALObject[size];}
+    };
     private int id;
     private String endDate;
     private String title;
@@ -49,6 +58,22 @@ public class MALObject
         this.startDate = startDate;
         this.episodes = episodes;
         this.english = english;
+    }
+
+    private MALObject(Parcel in)
+    {
+        this.id = in.readInt();
+        this.endDate = in.readString();
+        this.title = in.readString();
+        this.status = in.readString();
+        this.score = in.readFloat();
+        this.image = in.readString();
+        this.synopsis = in.readString();
+        this.synonyms = in.readString();
+        this.type = in.readString();
+        this.startDate = in.readString();
+        this.episodes = in.readInt();
+        this.english = in.readString();
     }
 
     public int getId()
@@ -109,6 +134,26 @@ public class MALObject
     public String getEnglish()
     {
         return english;
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(this.id);
+        dest.writeString(this.endDate);
+        dest.writeString(this.title);
+        dest.writeString(this.status);
+        dest.writeFloat(this.score);
+        dest.writeString(this.image);
+        dest.writeString(this.synopsis);
+        dest.writeString(this.synonyms);
+        dest.writeString(this.type);
+        dest.writeString(this.startDate);
+        dest.writeInt(this.episodes);
+        dest.writeString(this.english);
     }
 
     public static class Builder

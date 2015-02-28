@@ -13,11 +13,20 @@
 package com.nizlumina.syncmaru.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Composite data that wraps each subclasses
  */
-public class CompositeData
+public class CompositeData implements Parcelable
 {
+    public static final Parcelable.Creator<CompositeData> CREATOR = new Parcelable.Creator<CompositeData>()
+    {
+        public CompositeData createFromParcel(Parcel source) {return new CompositeData(source);}
+
+        public CompositeData[] newArray(int size) {return new CompositeData[size];}
+    };
     private int id;
     private MALObject malObject;
     private SmallAnimeObject smallAnimeObject;
@@ -33,6 +42,14 @@ public class CompositeData
 
     public CompositeData()
     {
+    }
+
+    private CompositeData(Parcel in)
+    {
+        this.id = in.readInt();
+        this.malObject = in.readParcelable(MALObject.class.getClassLoader());
+        this.smallAnimeObject = in.readParcelable(SmallAnimeObject.class.getClassLoader());
+        this.liveChartObject = in.readParcelable(LiveChartObject.class.getClassLoader());
     }
 
     public int getId()
@@ -73,5 +90,17 @@ public class CompositeData
     public void setLiveChartObject(LiveChartObject liveChartObject)
     {
         this.liveChartObject = liveChartObject;
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(this.id);
+        dest.writeParcelable(this.malObject, 0);
+        dest.writeParcelable(this.smallAnimeObject, 0);
+        dest.writeParcelable(this.liveChartObject, 0);
     }
 }

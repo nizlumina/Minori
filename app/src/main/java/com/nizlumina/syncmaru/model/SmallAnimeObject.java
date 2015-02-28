@@ -12,12 +12,31 @@
 
 package com.nizlumina.syncmaru.model;
 
-public class SmallAnimeObject
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SmallAnimeObject implements Parcelable
 {
+    public static final Parcelable.Creator<SmallAnimeObject> CREATOR = new Parcelable.Creator<SmallAnimeObject>()
+    {
+        public SmallAnimeObject createFromParcel(Parcel source) {return new SmallAnimeObject(source);}
+
+        public SmallAnimeObject[] newArray(int size) {return new SmallAnimeObject[size];}
+    };
     private int id;
     private String slug;
     private String showType;
     private String posterImage;
+
+    public SmallAnimeObject() {}
+
+    private SmallAnimeObject(Parcel in)
+    {
+        this.id = in.readInt();
+        this.slug = in.readString();
+        this.showType = in.readString();
+        this.posterImage = in.readString();
+    }
 
     public int getId()
     {
@@ -62,5 +81,17 @@ public class SmallAnimeObject
     public String getMediumPosterImage()
     {
         return posterImage.replace("/large/", "/medium/");
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(this.id);
+        dest.writeString(this.slug);
+        dest.writeString(this.showType);
+        dest.writeString(this.posterImage);
     }
 }

@@ -21,7 +21,7 @@ import com.nizlumina.minori.core.Nyaa.NyaaFansubGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParcelableNyaaFansubGroup implements Parcelable
+public final class ParcelableNyaaFansubGroup implements Parcelable
 {
     public static final Parcelable.Creator<ParcelableNyaaFansubGroup> CREATOR = new Parcelable.Creator<ParcelableNyaaFansubGroup>()
     {

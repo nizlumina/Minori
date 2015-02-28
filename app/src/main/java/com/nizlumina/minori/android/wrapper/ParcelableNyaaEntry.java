@@ -17,7 +17,7 @@ import android.os.Parcelable;
 
 import com.nizlumina.minori.core.Nyaa.NyaaEntry;
 
-public class ParcelableNyaaEntry implements Parcelable
+public final class ParcelableNyaaEntry implements Parcelable
 {
     public static final Parcelable.Creator<ParcelableNyaaEntry> CREATOR = new Parcelable.Creator<ParcelableNyaaEntry>()
     {

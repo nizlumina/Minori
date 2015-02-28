@@ -12,11 +12,20 @@
 
 package com.nizlumina.syncmaru.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 
-public class LiveChartObject
+public class LiveChartObject implements Parcelable
 {
+    public static final Parcelable.Creator<LiveChartObject> CREATOR = new Parcelable.Creator<LiveChartObject>()
+    {
+        public LiveChartObject createFromParcel(Parcel source) {return new LiveChartObject(source);}
+
+        public LiveChartObject[] newArray(int size) {return new LiveChartObject[size];}
+    };
     String title;
     String studio;
     Category category; //1: TV series, 2: Movies 3: Specials (OVA/ONA)
@@ -39,6 +48,22 @@ public class LiveChartObject
     }
 
     public LiveChartObject() {}
+
+    private LiveChartObject(Parcel in)
+    {
+        this.title = in.readString();
+        this.studio = in.readString();
+        int tmpCategory = in.readInt();
+        this.category = tmpCategory == -1 ? null : Category.values()[tmpCategory];
+        this.source = in.readString();
+        this.type = in.readString();
+        this.malLink = in.readString();
+        this.malID = in.readString();
+        this.hummingbirdLink = in.readString();
+        this.hummingbirdSlug = in.readString();
+        this.crunchyrollLink = in.readString();
+        this.website = in.readString();
+    }
 
     public String getMalLink()
     {
@@ -125,14 +150,14 @@ public class LiveChartObject
         return category;
     }
 
-    public void setCategory(Category category)
-    {
-        this.category = category;
-    }
-
     public void setCategory(String categoryOrdinals)
     {
         this.category = Category.getCategory(Integer.parseInt(categoryOrdinals));
+    }
+
+    public void setCategory(Category category)
+    {
+        this.category = category;
     }
 
     public String getSource()
@@ -155,6 +180,25 @@ public class LiveChartObject
         this.type = type;
     }
 
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(this.title);
+        dest.writeString(this.studio);
+        dest.writeInt(this.category == null ? -1 : this.category.ordinal());
+        dest.writeString(this.source);
+        dest.writeString(this.type);
+        dest.writeString(this.malLink);
+        dest.writeString(this.malID);
+        dest.writeString(this.hummingbirdLink);
+        dest.writeString(this.hummingbirdSlug);
+        dest.writeString(this.crunchyrollLink);
+        dest.writeString(this.website);
+    }
+
     public enum Category
     {
         TV, MOVIE, SPECIAL;
@@ -167,6 +211,4 @@ public class LiveChartObject
             return null;
         }
     }
-
-
 }
