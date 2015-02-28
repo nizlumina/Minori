@@ -151,36 +151,36 @@ public class SeasonFragment extends Fragment
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState)
                 {
-                    if (scrollState == SCROLL_STATE_IDLE)
-                        scrolling = false;
+//                    if (scrollState == SCROLL_STATE_IDLE)
+//                        scrolling = false;
                 }
 
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
                 {
-                    int scrollOffset = mGridView.getVerticalScrollOffset();
-                    boolean scrollUp = scrollOffset > mInitialScroll;
-                    mInitialScroll = scrollOffset;
-
-                    if (!scrolling)
-                    {
-//                        log("Hide container");
-//                        if(getActivity() instanceof DrawerActivity)
-//                            ((DrawerActivity) getActivity()).hideTopContainer();
-//                        if (!scrollUp)
-//                        {
+//                    int scrollOffset = mGridView.getVerticalScrollOffset();
+//                    boolean scrollUp = scrollOffset > mInitialScroll;
+//                    mInitialScroll = scrollOffset;
 //
-//
-//                        }
-//                        scrolling = true;
-                    }
-//                    else if(scrollUp & !containerShown)
+//                    if (!scrolling)
 //                    {
-//                        ((DrawerActivity) getActivity()).showTopContainer();
-//                        containerShown = true;
-//
-//                        log("Show container");
+////                        log("Hide container");
+////                        if(getActivity() instanceof DrawerActivity)
+////                            ((DrawerActivity) getActivity()).hideTopContainer();
+////                        if (!scrollUp)
+////                        {
+////
+////
+////                        }
+////                        scrolling = true;
 //                    }
+////                    else if(scrollUp & !containerShown)
+////                    {
+////                        ((DrawerActivity) getActivity()).showTopContainer();
+////                        containerShown = true;
+////
+////                        log("Show container");
+////                    }
                 }
             });
 

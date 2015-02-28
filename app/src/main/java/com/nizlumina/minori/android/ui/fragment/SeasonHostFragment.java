@@ -73,8 +73,7 @@ public class SeasonHostFragment extends TabbedFragment
 
             if (getActivity() instanceof DrawerActivity)
             {
-                ViewGroup toolbarParent = ((DrawerActivity) getActivity()).getToolbarContainer();
-                toolbarParent.addView(getTabLayout());
+                ((DrawerActivity) getActivity()).addToolbarSibling(getTabLayout());
             }
         }
     }
@@ -108,8 +107,7 @@ public class SeasonHostFragment extends TabbedFragment
     {
         if (getActivity() instanceof DrawerActivity)
         {
-            ViewGroup toolbarParent = ((DrawerActivity) getActivity()).getToolbarContainer();
-            toolbarParent.removeView(getTabLayout());
+            ((DrawerActivity) getActivity()).removeToolbarSibling(getTabLayout());
         }
 
         super.onDestroyView();

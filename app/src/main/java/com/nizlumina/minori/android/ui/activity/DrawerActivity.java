@@ -213,5 +213,15 @@ public class DrawerActivity extends ActionBarActivity
         }
     }
 
+    public void addToolbarSibling(View view)
+    {
+        getToolbarContainer().addView(view);
+    }
+
+
+    public void removeToolbarSibling(View view)
+    {
+        getToolbarContainer().removeView(view);
+    }
 
 }
