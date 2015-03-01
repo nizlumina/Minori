@@ -3,15 +3,15 @@ package com.nizlumina.minori.android.controller;
 import android.content.Context;
 import android.util.Log;
 
-import com.nizlumina.minori.android.alarm.Alarm;
-import com.nizlumina.minori.android.factory.JSONStorageFactory;
-import com.nizlumina.minori.android.factory.WatchDataJSONFactory;
 import com.nizlumina.minori.android.internal.ThreadWorker;
 import com.nizlumina.minori.android.internal.WatchlistSingleton;
+import com.nizlumina.minori.android.internal.factory.JSONStorageFactory;
+import com.nizlumina.minori.android.internal.factory.WatchDataJSONFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.WatchData;
-import com.nizlumina.minori.core.Hummingbird.AnimeObject;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
+import com.nizlumina.minori.android.model.alarm.Alarm;
+import com.nizlumina.minori.common.Hummingbird.AnimeObject;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
 
 import org.json.JSONArray;
 

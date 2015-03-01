@@ -16,7 +16,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.nizlumina.minori.android.common.SlidingTabLayout
+    <com.nizlumina.minori.android.ui.common.SlidingTabLayout
         android:id="@+id/fragment_tabs_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

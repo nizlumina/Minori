@@ -1,12 +1,12 @@
-package com.nizlumina.minori.android.factory;
+package com.nizlumina.minori.android.internal.factory;
 
+import com.nizlumina.minori.android.internal.network.CoreQuery;
+import com.nizlumina.minori.android.internal.network.WebUnit;
 import com.nizlumina.minori.android.listener.WebUnitListener;
-import com.nizlumina.minori.android.network.CoreQuery;
-import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.Util;
-import com.nizlumina.minori.core.Hummingbird.AnimeObject;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
-import com.nizlumina.minori.core.Nyaa.Parser.NyaaXMLParser;
+import com.nizlumina.minori.common.Hummingbird.AnimeObject;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
+import com.nizlumina.minori.common.Nyaa.Parser.NyaaXMLParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

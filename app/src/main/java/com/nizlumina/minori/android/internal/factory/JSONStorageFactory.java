@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.factory;
+package com.nizlumina.minori.android.internal.factory;
 
 import org.json.JSONArray;
 import org.json.JSONException;

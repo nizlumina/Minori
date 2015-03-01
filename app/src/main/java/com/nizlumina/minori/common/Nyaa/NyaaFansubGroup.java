@@ -1,4 +1,4 @@
-package com.nizlumina.minori.core.Nyaa;
+package com.nizlumina.minori.common.Nyaa;
 
 import java.util.ArrayList;
 import java.util.List;

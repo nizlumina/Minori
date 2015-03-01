@@ -1,8 +1,8 @@
-package com.nizlumina.minori.android.network;
+package com.nizlumina.minori.android.internal.network;
 
 import android.net.Uri;
 
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
 
 /**
  * Basic CoreQuery object

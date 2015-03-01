@@ -24,11 +24,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nizlumina.minori.android.common.SlidingTabLayout;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.ui.activity.DrawerActivity;
+import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.Collections;

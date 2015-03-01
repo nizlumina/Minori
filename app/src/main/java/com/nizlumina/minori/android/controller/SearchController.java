@@ -14,10 +14,10 @@ package com.nizlumina.minori.android.controller;
 
 import android.os.AsyncTask;
 
-import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.internal.ThreadWorker;
+import com.nizlumina.minori.android.internal.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
 
 import java.util.ArrayList;
 import java.util.List;

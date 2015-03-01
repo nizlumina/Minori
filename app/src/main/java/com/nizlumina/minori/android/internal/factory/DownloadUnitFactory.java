@@ -1,8 +1,8 @@
-package com.nizlumina.minori.android.factory;
+package com.nizlumina.minori.android.internal.factory;
 
+import com.nizlumina.minori.android.internal.network.DownloadUnit;
 import com.nizlumina.minori.android.model.WatchData;
-import com.nizlumina.minori.android.network.DownloadUnit;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
 
 /**
  * Simple factory for DownloadUnit

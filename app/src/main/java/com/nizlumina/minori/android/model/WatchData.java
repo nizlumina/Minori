@@ -2,10 +2,10 @@ package com.nizlumina.minori.android.model;
 
 import android.content.Context;
 
-import com.nizlumina.minori.android.alarm.Alarm;
-import com.nizlumina.minori.android.alarm.AlarmFactory;
-import com.nizlumina.minori.core.Hummingbird.AnimeObject;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
+import com.nizlumina.minori.android.model.alarm.Alarm;
+import com.nizlumina.minori.android.model.alarm.AlarmFactory;
+import com.nizlumina.minori.common.Hummingbird.AnimeObject;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
 
 /**
  * Base Minori data. Access this class to do stuffs.

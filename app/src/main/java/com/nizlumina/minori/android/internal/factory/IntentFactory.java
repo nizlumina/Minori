@@ -1,10 +1,10 @@
-package com.nizlumina.minori.android.factory;
+package com.nizlumina.minori.android.internal.factory;
 
 import android.content.Context;
 import android.content.Intent;
 
+import com.nizlumina.minori.android.internal.network.DownloadUnit;
 import com.nizlumina.minori.android.model.WatchData;
-import com.nizlumina.minori.android.network.DownloadUnit;
 import com.nizlumina.minori.android.receiver.DownloadReceiver;
 import com.nizlumina.minori.android.receiver.ScanReceiver;
 import com.nizlumina.minori.android.service.DownloadService;

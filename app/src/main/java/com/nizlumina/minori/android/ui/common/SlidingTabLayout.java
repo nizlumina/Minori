@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nizlumina.minori.android.common;
+package com.nizlumina.minori.android.ui.common;
 
 import android.content.Context;
 import android.graphics.Typeface;

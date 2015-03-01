@@ -14,11 +14,11 @@ package com.nizlumina.minori.android.internal;
 
 import android.content.Context;
 
-import com.nizlumina.minori.android.factory.CoreJSONFactory;
-import com.nizlumina.minori.android.factory.JSONStorageFactory;
+import com.nizlumina.minori.android.internal.factory.CoreJSONFactory;
+import com.nizlumina.minori.android.internal.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.utility.Util;
-import com.nizlumina.minori.core.Hummingbird.AnimeObject;
+import com.nizlumina.minori.common.Hummingbird.AnimeObject;
 
 import java.io.File;
 import java.io.FileInputStream;

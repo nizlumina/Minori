@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.alarm;
+package com.nizlumina.minori.android.model.alarm;
 
 import android.content.Context;
 import android.content.Intent;

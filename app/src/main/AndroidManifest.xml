@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/MinoriDark">
         <receiver
-            android:name=".android.alarm.AlarmReceiver"
+            android:name=".android.model.alarm.AlarmReceiver"
             android:enabled="true"
             android:exported="true" />
 

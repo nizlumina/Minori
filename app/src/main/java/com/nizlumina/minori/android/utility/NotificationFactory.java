@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.nizlumina.minori.android.network.CoreQuery;
-import com.nizlumina.minori.core.Nyaa.NyaaEntry;
+import com.nizlumina.minori.android.internal.network.CoreQuery;
+import com.nizlumina.minori.common.Nyaa.NyaaEntry;
 
 
 /**

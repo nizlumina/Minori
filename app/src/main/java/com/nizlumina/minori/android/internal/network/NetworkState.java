@@ -1,4 +1,4 @@
-package com.nizlumina.minori.android.network;
+package com.nizlumina.minori.android.internal.network;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

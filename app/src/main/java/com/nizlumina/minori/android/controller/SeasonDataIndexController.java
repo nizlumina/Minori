@@ -20,9 +20,9 @@ import com.google.gson.reflect.TypeToken;
 import com.nizlumina.minori.android.internal.FirebaseConfig;
 import com.nizlumina.minori.android.internal.StringCache;
 import com.nizlumina.minori.android.internal.ThreadWorker;
+import com.nizlumina.minori.android.internal.network.WebUnit;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
-import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.Loggy;
 import com.nizlumina.syncmaru.model.Season;
 

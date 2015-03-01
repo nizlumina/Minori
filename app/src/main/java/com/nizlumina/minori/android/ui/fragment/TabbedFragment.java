@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.common.SlidingTabLayout;
+import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
 
 public abstract class TabbedFragment extends Fragment
 {

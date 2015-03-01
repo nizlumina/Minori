@@ -14,17 +14,17 @@ package com.nizlumina.minori.android.controller;
 
 import android.util.Log;
 
-import com.nizlumina.minori.android.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.internal.HummingbirdInternalCache;
 import com.nizlumina.minori.android.internal.Minori;
 import com.nizlumina.minori.android.internal.ThreadWorker;
+import com.nizlumina.minori.android.internal.factory.CoreNetworkFactory;
+import com.nizlumina.minori.android.internal.network.WebUnit;
 import com.nizlumina.minori.android.listener.NetworkListener;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.listener.WebUnitListener;
-import com.nizlumina.minori.android.network.WebUnit;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.android.utility.Util;
-import com.nizlumina.minori.core.Hummingbird.AnimeObject;
+import com.nizlumina.minori.common.Hummingbird.AnimeObject;
 
 import java.util.ArrayList;
 import java.util.List;
