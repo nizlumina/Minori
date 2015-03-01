@@ -29,6 +29,11 @@ public class DetailFragment extends Fragment
     public static final String PARCELKEY_COMPOSITEDATA = "pk_df_composite_data";
     private CompositeData mCompositeData;
 
+    public static DetailFragment newInstance()
+    {
+        return new DetailFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -52,7 +57,7 @@ public class DetailFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        mCompositeData = (CompositeData) getArguments().getParcelable(PARCELKEY_COMPOSITEDATA);
+        mCompositeData = getArguments().getParcelable(PARCELKEY_COMPOSITEDATA);
 
     }
 }

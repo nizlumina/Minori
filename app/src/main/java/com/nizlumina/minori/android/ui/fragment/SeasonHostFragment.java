@@ -131,7 +131,7 @@ public class SeasonHostFragment extends TabbedFragment
 
     private void buildViews(final List<Season> mSeasons, ViewPager viewPager, SlidingTabLayout tabLayout)
     {
-
+        viewPager.setOffscreenPageLimit(1);
         getLoadingPlaceholder().setVisibility(View.GONE);
         FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getFragmentManager())
         {

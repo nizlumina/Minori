@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -184,6 +185,21 @@ public class SeasonFragment extends Fragment
                 }
             });
 
+
+            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    CompositeData detailData = mCompositeDataAdapter.getItem(position);
+
+                    DetailFragment detailFragment = DetailFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DetailFragment.PARCELKEY_COMPOSITEDATA, detailData);
+                    detailFragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction().addToBackStack(SeasonFragment.class.getSimpleName()).replace(getId(), detailFragment).commit();
+                }
+            });
             buildGridItems(false);
         }
     }
