@@ -29,7 +29,6 @@ import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
-import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 
 public class GalleryFragment extends Fragment
 {
@@ -85,7 +84,7 @@ public class GalleryFragment extends Fragment
     private void setupGridView(GridView gridView)
     {
         WatchlistController controller = new WatchlistController();
-        GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryPresenter<WatchData>()
+        GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryItemHolder.GalleryPresenter<WatchData>()
         {
             @Override
             public void loadInto(ImageView imageView, WatchData source)

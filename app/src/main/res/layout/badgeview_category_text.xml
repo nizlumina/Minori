@@ -18,20 +18,20 @@
     <!--We prefer that the inner circle is 56dp with 2dp outer stroke-->
 
     <TextView
-        android:id="@+id/detail_badge_text"
+        android:id="@+id/badgeview_text"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:background="@drawable/circle_inline_white"
+        android:background="@drawable/badgeview_circle_inline_white"
         android:gravity="center"
         android:minWidth="60dp"
         android:padding="4dp"
         android:textSize="14sp"
         tools:text="Special"
-        tools:textColor="@color/rb_white" />
+        tools:textColor="@android:color/white" />
 
     <include
-        android:id="@id/detail_badge_subhead"
-        layout="@layout/view_category_tag" />
+        android:id="@id/badgeview_category"
+        layout="@layout/badgeview_category_tag" />
 
 </LinearLayout>

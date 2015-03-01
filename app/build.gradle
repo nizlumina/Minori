@@ -33,8 +33,9 @@ dependencies {
 
     //Glide requires that old support lib.
     compile 'com.github.bumptech.glide:glide:3.5.1'
-    //compile 'com.android.support:support-v4:19.1.0' //whteher its really needed is untested yet
+    //compile 'com.android.support:support-v4:19.1.0' //whteher its really needed is untested yet. So far works fine.
     compile 'com.github.bumptech.glide:okhttp-integration:1.2.1' //for okhttp
+
 
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
@@ -43,4 +44,5 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     compile 'com.android.support:recyclerview-v7:21.0.+'
+    compile 'com.android.support:palette-v7:21.0.0'
 }

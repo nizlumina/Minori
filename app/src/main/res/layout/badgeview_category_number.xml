@@ -9,21 +9,26 @@
   ~
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-<TextView
-    android:id="@+id/detail_badge_subhead"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="20dp"
-    android:layout_gravity="center"
-    android:layout_marginTop="-14dp"
-    android:background="@drawable/round_rect_white"
-    android:gravity="center"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:textAllCaps="true"
-    android:textSize="10sp"
-    tools:ignore="SmallSp"
-    tools:showIn="@layout/view_category_text"
-    tools:text="CATEGORY"
-    tools:textColor="@color/rb_black" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <!--We prefer that the inner circle is 56dp with 2dp outer stroke-->
+    <TextView
+        android:id="@+id/badgeview_text"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:background="@drawable/badgeview_circle_inline_white"
+        android:gravity="center"
+        android:textSize="20sp"
+        tools:text="56"
+        tools:textColor="@color/black" />
+
+    <include
+        android:id="@+id/badgeview_category"
+        layout="@layout/badgeview_category_tag" />
+
+</LinearLayout>

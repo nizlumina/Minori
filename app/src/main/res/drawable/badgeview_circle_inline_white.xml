@@ -10,28 +10,15 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <!--We prefer that the inner circle is 56dp with 2dp outer stroke-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadius="28dp"
+    android:shape="ring"
+    android:thickness="2dp"
+    android:useLevel="false">
+    <size
+        android:width="60dp"
+        android:height="60dp" />
+    <solid android:color="@android:color/white" />
 
-    <TextView
-        android:id="@+id/detail_badge_text"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:maxWidth="80dp"
-        android:minWidth="60dp"
-        android:paddingBottom="6dp"
-        android:textSize="14sp"
-        tools:text="Production IG"
-        tools:textColor="@color/rb_white" />
 
-    <include
-        android:id="@id/detail_badge_subhead"
-        layout="@layout/view_category_tag" />
-
-</LinearLayout>
+</shape>

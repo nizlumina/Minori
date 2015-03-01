@@ -31,12 +31,12 @@ import com.nizlumina.minori.android.controller.SeasonController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
-import com.nizlumina.minori.android.ui.gallery.GalleryPresenter;
 import com.nizlumina.minori.android.ui.view.CustomGridView;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.LiveChartObject;
 import com.nizlumina.syncmaru.model.Season;
 
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,12 +51,14 @@ public class SeasonFragment extends Fragment
     private List<CompositeData> mCompositeDatasForDisplay = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
     private Season mSeason;
+    private WeakReference<Listener> mFragmentListenerRef;
 
-    public static SeasonFragment newInstance(Season season)
+    public static SeasonFragment newInstance(Season season, Listener fragmentListener)
     {
         SeasonFragment seasonFragment = new SeasonFragment();
         seasonFragment.mSeason = season;
         seasonFragment.mSeasonController = new SeasonController(season);
+        seasonFragment.mFragmentListenerRef = new WeakReference<Listener>(fragmentListener);
         return seasonFragment;
     }
 
@@ -87,12 +89,12 @@ public class SeasonFragment extends Fragment
         if (!mInitialized)
         {
             mInitialized = true;
-            GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryPresenter<CompositeData>()
+            GalleryItemHolder.GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryItemHolder.GalleryPresenter<CompositeData>()
             {
                 @Override
                 public void loadInto(final ImageView imageView, CompositeData source)
                 {
-                    Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                    Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).placeholder(R.drawable.ic_star_white_48dp).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
                 }
 
                 @Override
@@ -185,19 +187,27 @@ public class SeasonFragment extends Fragment
                 }
             });
 
-
             mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    CompositeData detailData = mCompositeDataAdapter.getItem(position);
+                    if (mFragmentListenerRef != null)
+                    {
+                        Listener fragmentListener = mFragmentListenerRef.get();
+                        if (fragmentListener != null)
+                        {
+                            CompositeData detailData = mCompositeDataAdapter.getItem(position);
 
-                    DetailFragment detailFragment = DetailFragment.newInstance();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(DetailFragment.PARCELKEY_COMPOSITEDATA, detailData);
-                    detailFragment.setArguments(bundle);
-                    getFragmentManager().beginTransaction().addToBackStack(SeasonFragment.class.getSimpleName()).replace(getId(), detailFragment).commit();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(CompositeData.PARCELKEY_COMPOSITEDATA, detailData);
+
+                            fragmentListener.displayDetailFragment(bundle);
+                        }
+                        else
+                            Log.e(SeasonFragment.class.getSimpleName(), "FragmentListener for this fragment is null!");
+                    }
+
                 }
             });
             buildGridItems(false);
@@ -260,4 +270,8 @@ public class SeasonFragment extends Fragment
         Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input);
     }
 
+    public static interface Listener
+    {
+        public void displayDetailFragment(Bundle args);
+    }
 }

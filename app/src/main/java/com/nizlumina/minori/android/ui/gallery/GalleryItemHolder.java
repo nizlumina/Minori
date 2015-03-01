@@ -94,4 +94,19 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
             }
         }
     }
+
+    public static interface GalleryPresenter<T>
+    {
+        void loadInto(ImageView imageView, T source);
+
+        String getTitle(T source);
+
+        String getGroup(T source);
+
+        String getEpisode(T source);
+
+        String getSourceText(T source);
+
+        String getScore(T source);
+    }
 }

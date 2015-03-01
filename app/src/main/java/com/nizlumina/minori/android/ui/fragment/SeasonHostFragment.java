@@ -27,10 +27,10 @@ import android.view.ViewGroup;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
-import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
 import com.nizlumina.syncmaru.model.Season;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -43,9 +43,18 @@ public class SeasonHostFragment extends TabbedFragment
     private static final String FRAGMENT_TAG = "season_host_fragment";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
 
+    private WeakReference<Listener> mFragmentListenerRef;
+
     public static String getFragmentTag()
     {
         return FRAGMENT_TAG;
+    }
+
+    public static SeasonHostFragment newInstance(Listener fragmentListener)
+    {
+        SeasonHostFragment seasonHostFragment = new SeasonHostFragment();
+        seasonHostFragment.mFragmentListenerRef = new WeakReference<Listener>(fragmentListener);
+        return seasonHostFragment;
     }
 
     @Override
@@ -71,9 +80,10 @@ public class SeasonHostFragment extends TabbedFragment
 
             parent.removeView(getTabLayout());
 
-            if (getActivity() instanceof DrawerActivity)
+            Listener fragmentListener = mFragmentListenerRef.get();
+            if (fragmentListener != null)
             {
-                ((DrawerActivity) getActivity()).addToolbarSibling(getTabLayout());
+                fragmentListener.addTabLayout(getTabLayout());
             }
         }
     }
@@ -105,10 +115,8 @@ public class SeasonHostFragment extends TabbedFragment
     @Override
     public void onDestroyView()
     {
-        if (getActivity() instanceof DrawerActivity)
-        {
-            ((DrawerActivity) getActivity()).removeToolbarSibling(getTabLayout());
-        }
+        Listener fragmentListener = mFragmentListenerRef.get();
+        if (fragmentListener != null) fragmentListener.removeTabLayout(getTabLayout());
 
         super.onDestroyView();
     }
@@ -138,7 +146,7 @@ public class SeasonHostFragment extends TabbedFragment
             @Override
             public Fragment getItem(int position)
             {
-                return SeasonFragment.newInstance(mSeasons.get(position));
+                return SeasonFragment.newInstance(mSeasons.get(position), (SeasonFragment.Listener) getActivity());
             }
 
             @Override
@@ -174,4 +182,10 @@ public class SeasonHostFragment extends TabbedFragment
         Log.v(getClass().getSimpleName(), input);
     }
 
+    public static interface Listener
+    {
+        public void addTabLayout(View tabLayout);
+
+        public void removeTabLayout(View tabLayout);
+    }
 }

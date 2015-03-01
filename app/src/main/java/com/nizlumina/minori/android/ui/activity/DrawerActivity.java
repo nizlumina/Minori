@@ -28,11 +28,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.ui.fragment.DetailFragment;
 import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
+import com.nizlumina.minori.android.ui.fragment.SeasonFragment;
 import com.nizlumina.minori.android.ui.fragment.SeasonHostFragment;
 import com.nizlumina.minori.android.utility.Util;
 
-public class DrawerActivity extends ActionBarActivity
+public class DrawerActivity extends ActionBarActivity implements SeasonFragment.Listener, SeasonHostFragment.Listener, DetailFragment.Listener
 {
     private Toolbar mToolbar;
     private ViewGroup mTopContainer;
@@ -145,7 +147,7 @@ public class DrawerActivity extends ActionBarActivity
                 showFab();
                 break;
             case R.id.drawer_season:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SeasonHostFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, SeasonHostFragment.newInstance(this)).commit();
                 hideFab();
                 break;
             case R.id.drawer_explore:
@@ -213,15 +215,30 @@ public class DrawerActivity extends ActionBarActivity
         }
     }
 
-    public void addToolbarSibling(View view)
+    @Override
+    public void addTabLayout(View tabLayout)
     {
-        getToolbarContainer().addView(view);
+        getToolbarContainer().addView(tabLayout);
     }
 
-
-    public void removeToolbarSibling(View view)
+    @Override
+    public void removeTabLayout(View tabLayout)
     {
-        getToolbarContainer().removeView(view);
+        getToolbarContainer().removeView(tabLayout);
     }
 
+    @Override
+    public void displayDetailFragment(Bundle args)
+    {
+        DetailFragment detailFragment = DetailFragment.newInstance(this);
+        detailFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, detailFragment).addToBackStack(null).commit();
+
+    }
+
+    @Override
+    public void setToolbarTitle(String title)
+    {
+        getToolbar().setTitle(title);
+    }
 }

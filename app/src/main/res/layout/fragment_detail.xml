@@ -14,19 +14,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/detail_title"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:maxLines="2"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:textSize="@dimen/abc_text_size_title_material"
-        tools:text="My mental choice is totally not interfering the romance of my teen romantic comedy" />
+    <!--<TextView-->
+    <!--android:id="@+id/detail_title"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="56dp"-->
+    <!--android:layout_marginBottom="8dp"-->
+    <!--android:gravity="center"-->
+    <!--android:maxLines="2"-->
+    <!--android:paddingLeft="8dp"-->
+    <!--android:paddingRight="8dp"-->
+    <!--android:textSize="@dimen/abc_text_size_title_material"-->
+    <!--tools:text="My mental choice is totally not interfering the romance of my teen romantic comedy" />-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,11 +37,12 @@
             android:id="@+id/detail_image"
             android:layout_width="@dimen/gallery_image_width"
             android:layout_height="@dimen/gallery_image_height"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="16dp"
             tools:src="@drawable/ic_launcher" />
 
         <TextView
-            android:id="@+id/detail_stub_synopsis"
+            android:id="@+id/detail_header_synopsis"
+            style="@style/TextColorSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -51,8 +53,9 @@
             android:id="@+id/detail_synopsis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/detail_stub_synopsis"
+            android:layout_below="@id/detail_header_synopsis"
             android:layout_toRightOf="@id/detail_image"
+            android:autoLink="web"
             tools:text="Jugem Jugem Unko Nage Ki Ototoi no Shin-chan no Pantsu Shinpachi no Jinsei Balmunk Fezarion Isaac Schneider San Bun no Ichi Junjyou na Kanjyou no Nokotta San Bun no Ni wa Sakamuke ga Kininaru Kanjyou Uragiri wa Boku no Namae wo Shitteiruyou de Shinranai no wo Boku wa Shitteiru Rusu Surume Medaka Kazuno Kokoedame Medaka….Kono Medaka wa saki no to wa Chigau Yatsu Dakara﻿ Ikeno Medaka no Hou Dakara Raa-yuu yuuteimiouki Mukou Pepepepepepepepepepepepe Bichiguso Maru" />
     </RelativeLayout>
 
@@ -64,29 +67,29 @@
         android:orientation="horizontal">
 
         <include
-            android:id="@+id/detail_rating"
-            layout="@layout/view_category_number"
+            android:id="@+id/detail_badge_rating"
+            layout="@layout/badgeview_category_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp" />
 
         <include
-            android:id="@+id/detail_studio"
-            layout="@layout/view_category_text_nobg"
+            android:id="@+id/detail_badge_studio"
+            layout="@layout/badgeview_category_text_nobg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp" />
 
         <include
-            android:id="@+id/detail_source"
-            layout="@layout/view_category_text"
+            android:id="@+id/detail_badge_source"
+            layout="@layout/badgeview_category_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp" />
 
         <include
-            android:id="@+id/detail_episodes"
-            layout="@layout/view_category_number"
+            android:id="@+id/detail_badge_episodecount"
+            layout="@layout/badgeview_category_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp" />

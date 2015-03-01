@@ -16,18 +16,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <!--We prefer that the inner circle is 56dp with 2dp outer stroke-->
+
     <TextView
-        android:id="@+id/detail_badge_text"
-        android:layout_width="60dp"
+        android:id="@+id/badgeview_text"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:background="@drawable/circle_inline_white"
         android:gravity="center"
-        android:textSize="@dimen/abc_text_size_title_material"
-        tools:text="56" />
+        android:maxWidth="80dp"
+        android:minWidth="60dp"
+        android:textSize="14sp"
+        tools:text="Production IG"
+        tools:textColor="@android:color/white" />
 
     <include
-        android:id="@+id/detail_badge_subhead"
-        layout="@layout/view_category_tag" />
+        android:id="@id/badgeview_category"
+        layout="@layout/badgeview_category_tag" />
 
 </LinearLayout>

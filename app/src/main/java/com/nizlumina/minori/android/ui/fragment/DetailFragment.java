@@ -15,23 +15,37 @@ package com.nizlumina.minori.android.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.ui.activity.DrawerActivity;
+import com.nizlumina.minori.android.ui.presenter.CompositeDataPresenter;
+import com.nizlumina.minori.android.ui.view.BadgeView;
 import com.nizlumina.syncmaru.model.CompositeData;
+
+import java.lang.ref.WeakReference;
 
 public class DetailFragment extends Fragment
 {
+    private static final String SCORE_CATEGORY = "score";
+    private static final String STUDIO_CATEGORY = "studio";
+    private static final String SOURCE_CATEGORY = "source";
+    private static final String EPISODECOUNT_CATEGORY = "episodes";
 
-    public static final String PARCELKEY_COMPOSITEDATA = "pk_df_composite_data";
     private CompositeData mCompositeData;
+    private WeakReference<Listener> mFragmentListener;
 
-    public static DetailFragment newInstance()
+    public static DetailFragment newInstance(Listener fragmentListener)
     {
-        return new DetailFragment();
+        DetailFragment detailFragment = new DetailFragment();
+        detailFragment.mFragmentListener = new WeakReference<Listener>(fragmentListener);
+        return detailFragment;
     }
 
     @Override
@@ -44,20 +58,53 @@ public class DetailFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getActivity() instanceof DrawerActivity)
-        {
-            ((DrawerActivity) getActivity()).getToolbar().setTitle(mCompositeData.getLiveChartObject().getTitle());
-        }
+        setupViews(view);
     }
+
+    private void setupViews(View inflatedView)
+    {
+        final CompositeDataPresenter presenter = new CompositeDataPresenter(mCompositeData);
+
+        final ImageView detailImageView = (ImageView) inflatedView.findViewById(R.id.detail_image);
+        Glide.with(DetailFragment.this).load(presenter.getImageURL()).diskCacheStrategy(DiskCacheStrategy.ALL).into(detailImageView);
+
+        final TextView synopsisView = (TextView) inflatedView.findViewById(R.id.detail_synopsis);
+        synopsisView.setText(Html.fromHtml(presenter.getSynopsis()));
+
+        final BadgeView ratingBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_rating, SCORE_CATEGORY, presenter.getScore());
+        ratingBadge.quickTint(R.color.yellow_300);
+        ratingBadge.quickColorCategoryText(R.color.rb_black_half);
+
+        final BadgeView studioBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_studio, STUDIO_CATEGORY, presenter.getStudio());
+        studioBadge.quickTint(R.color.blue_300);
+
+        final BadgeView sourceBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_source, SOURCE_CATEGORY, presenter.getSource());
+        sourceBadge.quickTint(R.color.pink_300);
+
+        final BadgeView episodeCountBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_episodecount, EPISODECOUNT_CATEGORY, presenter.getEpisodesCount());
+        episodeCountBadge.quickTint(R.color.green_300);
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mCompositeData = getArguments().getParcelable(CompositeData.PARCELKEY_COMPOSITEDATA);
 
-        mCompositeData = getArguments().getParcelable(PARCELKEY_COMPOSITEDATA);
+        //Defensive coding. Sigh..
+        if (mFragmentListener != null)
+        {
+            Listener fragmentListener = mFragmentListener.get();
+            if (fragmentListener != null)
+                fragmentListener.setToolbarTitle(mCompositeData.getLiveChartObject().getTitle());
+        }
 
+    }
+
+    public static interface Listener
+    {
+        void setToolbarTitle(final String title);
     }
 }

@@ -10,21 +10,12 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.ui.gallery;
+package com.nizlumina.minori.android.ui.presenter;
 
-import android.widget.ImageView;
-
-public interface GalleryPresenter<T>
+/**
+ * A presenter class that expose formatted values for a wrapped {@link com.nizlumina.minori.android.model.WatchData}
+ */
+public class WatchDataPresenter
 {
-    void loadInto(ImageView imageView, T source);
 
-    String getTitle(T source);
-
-    String getGroup(T source);
-
-    String getEpisode(T source);
-
-    String getSourceText(T source);
-
-    String getScore(T source);
 }

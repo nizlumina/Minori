@@ -21,6 +21,8 @@ import android.os.Parcelable;
  */
 public class CompositeData implements Parcelable
 {
+    public static final String PARCELKEY_COMPOSITEDATA = "parcel_composite_data";
+
     public static final Parcelable.Creator<CompositeData> CREATOR = new Parcelable.Creator<CompositeData>()
     {
         public CompositeData createFromParcel(Parcel source) {return new CompositeData(source);}
