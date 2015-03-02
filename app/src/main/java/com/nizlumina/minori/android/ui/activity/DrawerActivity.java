@@ -12,7 +12,9 @@
 
 package com.nizlumina.minori.android.ui.activity;
 
+import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -47,6 +49,7 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
     private boolean mContainerVisibility;
+    private int mTopContainerBaseHeight = -1;
 
     public ImageButton getFabMini()
     {
@@ -62,7 +65,6 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     {
         return mToolbar;
     }
-
 
     public ViewGroup getToolbarContainer()
     {
@@ -82,7 +84,6 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
 
     }
 
-
     private void setupMetrics()
     {
         mDensity = getResources().getDisplayMetrics().density;
@@ -93,6 +94,9 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         //Set basics
         mToolbar = (Toolbar) findViewById(R.id.base_toolbar);
         mTopContainer = (ViewGroup) findViewById(R.id.base_topcontainer);
+        LayoutTransition containerTransition = mTopContainer.getLayoutTransition();
+        containerTransition.enableTransitionType(LayoutTransition.CHANGING);
+
         mFabMain = (ImageButton) findViewById(R.id.base_fabmain);
         //setupFab(mFabMain, R.color.accent_color_shade, R.color.accent_color);
 
@@ -216,15 +220,87 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     }
 
     @Override
-    public void addTabLayout(View tabLayout)
+    public void addTabLayout(final View tabLayout)
     {
         getToolbarContainer().addView(tabLayout);
+//        if (mTopContainerBaseHeight < 0)
+//            mTopContainerBaseHeight = getToolbarContainer().getHeight();
+//
+//        tabLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
+//
+//        final int endHeight = mTopContainerBaseHeight + tabLayout.getHeight();
+//
+//        Log.v(getClass().getSimpleName(),"Container Height: " + mTopContainerBaseHeight + "\nTarget height: " + endHeight + "\nTabHeight: " +  tabLayout.getMeasuredHeight() + "|" + tabLayout.getHeight());
+//
+//        getToolbarContainer().addView(tabLayout);
+//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), endHeight);
+//        expandAnimator.addListener(new Animator.AnimatorListener()
+//        {
+//            @Override
+//            public void onAnimationStart(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation)
+//            {
+//
+//            }
+//        });
+//
+//        expandAnimator.start();
+
+
     }
 
     @Override
-    public void removeTabLayout(View tabLayout)
+    public void removeTabLayout(final View tabLayout)
     {
+
         getToolbarContainer().removeView(tabLayout);
+//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), mTopContainerBaseHeight);
+//        expandAnimator.addListener(new Animator.AnimatorListener()
+//        {
+//            @Override
+//            public void onAnimationStart(Animator animation)
+//            {
+//                getToolbarContainer().removeView(tabLayout);
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation)
+//            {
+//
+//            }
+//        });
+//
+//        expandAnimator.start();
+
     }
 
     @Override
@@ -232,7 +308,7 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     {
         DetailFragment detailFragment = DetailFragment.newInstance(this);
         detailFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, detailFragment).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, detailFragment).commit();
 
     }
 
@@ -240,5 +316,31 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     public void setToolbarTitle(String title)
     {
         getToolbar().setTitle(title);
+    }
+
+    /**
+     * Short util method for simple expand/collapse height for layouts
+     *
+     * @param viewGroup The layout to be expand/collapsed
+     * @param endHeight Target height
+     * @return
+     */
+    private ValueAnimator layoutHeightAnimator(final ViewGroup viewGroup, int endHeight)
+    {
+        final ValueAnimator valueAnimator = ValueAnimator.ofInt(viewGroup.getHeight(), endHeight);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
+                int val = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams params = viewGroup.getLayoutParams();
+                params.height = val;
+                viewGroup.setLayoutParams(params);
+            }
+        });
+
+        return valueAnimator;
     }
 }
