@@ -2,7 +2,6 @@ package com.nizlumina.minori.android.utility;
 
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -15,15 +14,15 @@ import android.widget.ImageButton;
  */
 public class Util
 {
-    public static int dpToPx(int dp)
+    public static int dpToPx(Context context, int dp)
     {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 
-    public static int pxToDp(int px)
+    public static int pxToDp(Context context, int px)
     {
         // Get the screen's density scale
-        final float scale = Resources.getSystem().getDisplayMetrics().density;
+        final float scale = context.getResources().getDisplayMetrics().density;
 
         // Convert the dps to pixels, based on density scale
         return (int) (px * scale + 0.5f);
