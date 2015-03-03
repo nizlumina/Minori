@@ -14,6 +14,7 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +31,6 @@ import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
-import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.lang.ref.WeakReference;
@@ -78,9 +78,11 @@ public class SeasonHostFragment extends TabbedFragment
             mTabContainer = fragmentListener.getContainerForTabs();
 
             SlidingTabLayout tabLayout = new SlidingTabLayout(getActivity());
-            tabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Util.dpToPx(getActivity(), 48)));
-            tabLayout.setBackgroundColor(getResources().getColor(R.color.primary_color));
-            tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primary_color_dark));
+            tabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            Resources resourcesInstance = getResources();
+            tabLayout.setBackgroundColor(resourcesInstance.getColor(R.color.primary_color));
+            tabLayout.setSelectedIndicatorColors(resourcesInstance.getColor(R.color.primary_color_dark_complement));
+            tabLayout.setTextColor(resourcesInstance.getColorStateList(R.color.selector_tab_text));
             mTabContainer.addView(tabLayout);
 
             mTabLayout = tabLayout;
@@ -157,8 +159,9 @@ public class SeasonHostFragment extends TabbedFragment
 
     private void buildViews(final List<Season> mSeasons, ViewPager viewPager, SlidingTabLayout tabLayout)
     {
-        viewPager.setOffscreenPageLimit(1);
-        getLoadingPlaceholder().setVisibility(View.GONE);
+        viewPager.setOffscreenPageLimit(0);
+        if (getLoadingPlaceholder().getVisibility() != View.GONE)
+            getLoadingPlaceholder().setVisibility(View.GONE);
         FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getFragmentManager())
         {
             @Override
@@ -181,11 +184,14 @@ public class SeasonHostFragment extends TabbedFragment
                 return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
             }
         };
+
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setViewPager(viewPager);
         log("Pager Adapter init - Size: " + pagerAdapter.getCount());
         viewPager.setVisibility(View.VISIBLE);
-        viewPager.setCurrentItem(mSeasons.indexOf(mIndexController.getCurrentSeason()));
+        int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
+        viewPager.setCurrentItem(position);
+        //mTabLayout.explicitScrollTo(position);
     }
 
     @Override
