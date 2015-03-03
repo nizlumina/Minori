@@ -159,7 +159,7 @@ public class SeasonHostFragment extends TabbedFragment
 
     private void buildViews(final List<Season> mSeasons, ViewPager viewPager, SlidingTabLayout tabLayout)
     {
-        viewPager.setOffscreenPageLimit(0);
+        viewPager.setOffscreenPageLimit(1);
         if (getLoadingPlaceholder().getVisibility() != View.GONE)
             getLoadingPlaceholder().setVisibility(View.GONE);
         FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getFragmentManager())
@@ -191,7 +191,7 @@ public class SeasonHostFragment extends TabbedFragment
         viewPager.setVisibility(View.VISIBLE);
         int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
         viewPager.setCurrentItem(position);
-        //mTabLayout.explicitScrollTo(position);
+        mTabLayout.explicitScrollTo(position);
     }
 
     @Override
