@@ -28,30 +28,6 @@
         android:paddingRight="4dp"
         tools:text="Watashi Wakaranai Desu Dekinai ga Warau Don Don Sasquatch Oboeteru" />
 
-    <!--<TextView-->
-    <!--android:id="@+id/item_group"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/item_title"-->
-    <!--android:gravity="center"-->
-    <!--android:paddingBottom="4dp"-->
-    <!--android:singleLine="true"-->
-    <!--android:visibility="gone"-->
-    <!--tools:text="Doki Doki Sub" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/item_episode"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="40dp"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:gravity="center"-->
-    <!--android:minWidth="40dp"-->
-    <!--android:textSize="18sp"-->
-    <!--android:visibility="gone"-->
-    <!--tools:text="20" />-->
-
-
     <TextView
         android:id="@+id/item_score"
         style="@style/TextColorBase"
