@@ -30,6 +30,7 @@ import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
+import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.lang.ref.WeakReference;
@@ -77,7 +78,7 @@ public class SeasonHostFragment extends TabbedFragment
             mTabContainer = fragmentListener.getContainerForTabs();
 
             SlidingTabLayout tabLayout = new SlidingTabLayout(getActivity());
-            tabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            tabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Util.dpToPx(getActivity(), 48)));
             tabLayout.setBackgroundColor(getResources().getColor(R.color.primary_color));
             tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primary_color_dark));
             mTabContainer.addView(tabLayout);
