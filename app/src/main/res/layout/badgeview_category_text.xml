@@ -18,8 +18,8 @@
     <!--We prefer that the inner circle is 56dp with 2dp outer stroke-->
 
     <TextView
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="@dimen/badge_width"
+        android:layout_height="@dimen/badge_height"
         android:layout_gravity="center"
         android:background="@drawable/badgeview_circle_inline_white"
         android:gravity="center"

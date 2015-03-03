@@ -23,7 +23,9 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
@@ -44,6 +46,8 @@ public class SeasonHostFragment extends TabbedFragment
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
 
     private WeakReference<Listener> mFragmentListenerRef;
+    private ViewGroup mTabContainer;
+    private SlidingTabLayout mTabLayout;
 
     public static String getFragmentTag()
     {
@@ -57,36 +61,49 @@ public class SeasonHostFragment extends TabbedFragment
         return seasonHostFragment;
     }
 
+    public SlidingTabLayout getChildTabLayout()
+    {
+        return mTabLayout;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
-        injectTabsToParent(view);
+        Listener fragmentListener = mFragmentListenerRef.get();
+        if (fragmentListener != null)
+        {
+            mTabContainer = fragmentListener.getContainerForTabs();
+
+            SlidingTabLayout tabLayout = new SlidingTabLayout(getActivity());
+            tabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            tabLayout.setBackgroundColor(getResources().getColor(R.color.primary_color));
+            tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.primary_color_dark));
+            mTabContainer.addView(tabLayout);
+
+            mTabLayout = tabLayout;
+        }
+
+        //injectTabsToParent(view);
 
         if (savedInstanceState == null)
         {
             Log.w(getClass().getSimpleName() + " OnViewCreated", "Saved instance state is null");
             log("Loading index.");
-            onLoad(getTabLayout(), getContentViewPager());
+            onLoad(getChildTabLayout(), getContentViewPager());
         }
     }
 
-    private void injectTabsToParent(View view)
-    {
-        if (view instanceof ViewGroup)
-        {
-            ViewGroup parent = (ViewGroup) getTabLayout().getParent();
-
-            parent.removeView(getTabLayout());
-
-            Listener fragmentListener = mFragmentListenerRef.get();
-            if (fragmentListener != null)
-            {
-                fragmentListener.addTabLayout(getTabLayout());
-            }
-        }
-    }
+//    private void removeParentTab(View view)
+//    {
+//        if (view instanceof ViewGroup)
+//        {
+//            ViewGroup parent = (ViewGroup) getTabLayout().getParent();
+//
+//            parent.removeView(getTabLayout());
+//        }
+//    }
 
     private void onLoad(@NonNull final SlidingTabLayout tabLayout, @NonNull final ViewPager viewPager)
     {
@@ -115,8 +132,8 @@ public class SeasonHostFragment extends TabbedFragment
     @Override
     public void onDestroyView()
     {
-        Listener fragmentListener = mFragmentListenerRef.get();
-        if (fragmentListener != null) fragmentListener.removeTabLayout(getTabLayout());
+//        Listener fragmentListener = mFragmentListenerRef.get();
+//        if (fragmentListener != null) fragmentListener.removeTabLayout(getTabLayout());
 
         super.onDestroyView();
     }
@@ -182,10 +199,100 @@ public class SeasonHostFragment extends TabbedFragment
         Log.v(getClass().getSimpleName(), input);
     }
 
+    public void addTabLayout(final View tabLayout)
+    {
+        mTabContainer.addView(tabLayout);
+//        if (mTopContainerBaseHeight < 0)
+//            mTopContainerBaseHeight = getToolbarContainer().getHeight();
+//
+//        tabLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
+//
+//        final int endHeight = mTopContainerBaseHeight + tabLayout.getHeight();
+//
+//        Log.v(getClass().getSimpleName(),"Container Height: " + mTopContainerBaseHeight + "\nTarget height: " + endHeight + "\nTabHeight: " +  tabLayout.getMeasuredHeight() + "|" + tabLayout.getHeight());
+//
+//        getToolbarContainer().addView(tabLayout);
+//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), endHeight);
+//        expandAnimator.addListener(new Animator.AnimatorListener()
+//        {
+//            @Override
+//            public void onAnimationStart(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation)
+//            {
+//
+//            }
+//        });
+//
+//        expandAnimator.start();
+
+
+    }
+
+    public void removeTabLayout(final View tabLayout)
+    {
+        mTabContainer.removeView(tabLayout);
+//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), mTopContainerBaseHeight);
+//        expandAnimator.addListener(new Animator.AnimatorListener()
+//        {
+//            @Override
+//            public void onAnimationStart(Animator animation)
+//            {
+//                getToolbarContainer().removeView(tabLayout);
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation)
+//            {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation)
+//            {
+//
+//            }
+//        });
+//
+//        expandAnimator.start();
+
+    }
+
+    /**
+     * Called when the fragment is no longer in use.  This is called
+     * after {@link #onStop()} and before {@link #onDetach()}.
+     */
+    @Override
+    public void onDestroy()
+    {
+        removeTabLayout(mTabLayout);
+        super.onDestroy();
+    }
+
     public static interface Listener
     {
-        public void addTabLayout(View tabLayout);
-
-        public void removeTabLayout(View tabLayout);
+        ViewGroup getContainerForTabs();
     }
 }

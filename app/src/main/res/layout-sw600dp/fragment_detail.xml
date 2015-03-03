@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2014 Nizlumina Studio (Malaysia)
+  ~
+  ~ Unless specified, permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/detail_image"
+            android:layout_width="@dimen/gallery_image_width"
+            android:layout_height="@dimen/gallery_image_height"
+            android:layout_marginRight="16dp"
+            tools:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/detail_header_synopsis"
+            style="@style/TextColorSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_toRightOf="@id/detail_image"
+            android:text="Synopsis" />
+        <!--This will use Html.from(string) for display since it use MAL as base source-->
+        <TextView
+            android:id="@+id/detail_synopsis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_header_synopsis"
+            android:layout_toRightOf="@id/detail_image"
+            android:autoLink="web"
+            tools:text="Jugem Jugem Unko Nage Ki Ototoi no Shin-chan no Pantsu Shinpachi no Jinsei Balmunk Fezarion Isaac Schneider San Bun no Ichi Junjyou na Kanjyou no Nokotta San Bun no Ni wa Sakamuke ga Kininaru Kanjyou Uragiri wa Boku no Namae wo Shitteiruyou de Shinranai no wo Boku wa Shitteiru Rusu Surume Medaka Kazuno Kokoedame Medaka….Kono Medaka wa saki no to wa Chigau Yatsu Dakara﻿ Ikeno Medaka no Hou Dakara Raa-yuu yuuteimiouki Mukou Pepepepepepepepepepepepe Bichiguso Maru" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp">
+
+        <include
+            android:id="@+id/detail_badge_rating"
+            layout="@layout/badgeview_category_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+
+        <include
+            android:id="@+id/detail_badge_studio"
+            layout="@layout/badgeview_category_text_nobg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+
+        <include
+            android:id="@+id/detail_badge_source"
+            layout="@layout/badgeview_category_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+
+        <include
+            android:id="@+id/detail_badge_episodecount"
+            layout="@layout/badgeview_category_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+    </LinearLayout>
+</LinearLayout>

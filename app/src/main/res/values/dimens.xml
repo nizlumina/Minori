@@ -5,11 +5,16 @@
     <!--Old values-->
     <dimen name="gallery_image_width">140dp</dimen>
     <dimen name="gallery_image_height">200dp</dimen>
+    <dimen name="gallery_image_width_small">112dp</dimen>
+    <dimen name="gallery_image_height_small">160dp</dimen>
+
     <!--<dimen name="gallery_image_width">100dp</dimen>-->
     <!--<dimen name="gallery_image_height">150dp</dimen>-->
     <!--<dimen name="gallery_image_width_medium">100dp</dimen>-->
     <!--<dimen name="gallery_image_height_medium">150dp</dimen>-->
     <dimen name="round_rect_corner_small">4dp</dimen>
     <dimen name="round_rect_stroke">2dp</dimen>
+    <dimen name="badge_width">72dp</dimen>
+    <dimen name="badge_height">72dp</dimen>
 </resources>
 

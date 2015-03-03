@@ -220,90 +220,6 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     }
 
     @Override
-    public void addTabLayout(final View tabLayout)
-    {
-        getToolbarContainer().addView(tabLayout);
-//        if (mTopContainerBaseHeight < 0)
-//            mTopContainerBaseHeight = getToolbarContainer().getHeight();
-//
-//        tabLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
-//
-//        final int endHeight = mTopContainerBaseHeight + tabLayout.getHeight();
-//
-//        Log.v(getClass().getSimpleName(),"Container Height: " + mTopContainerBaseHeight + "\nTarget height: " + endHeight + "\nTabHeight: " +  tabLayout.getMeasuredHeight() + "|" + tabLayout.getHeight());
-//
-//        getToolbarContainer().addView(tabLayout);
-//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), endHeight);
-//        expandAnimator.addListener(new Animator.AnimatorListener()
-//        {
-//            @Override
-//            public void onAnimationStart(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation)
-//            {
-//
-//            }
-//        });
-//
-//        expandAnimator.start();
-
-
-    }
-
-    @Override
-    public void removeTabLayout(final View tabLayout)
-    {
-
-        getToolbarContainer().removeView(tabLayout);
-//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), mTopContainerBaseHeight);
-//        expandAnimator.addListener(new Animator.AnimatorListener()
-//        {
-//            @Override
-//            public void onAnimationStart(Animator animation)
-//            {
-//                getToolbarContainer().removeView(tabLayout);
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation)
-//            {
-//
-//            }
-//        });
-//
-//        expandAnimator.start();
-
-    }
-
-    @Override
     public void displayDetailFragment(Bundle args)
     {
         DetailFragment detailFragment = DetailFragment.newInstance(this);
@@ -342,5 +258,11 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         });
 
         return valueAnimator;
+    }
+
+    @Override
+    public ViewGroup getContainerForTabs()
+    {
+        return getToolbarContainer();
     }
 }

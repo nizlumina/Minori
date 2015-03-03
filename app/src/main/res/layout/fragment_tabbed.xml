@@ -11,17 +11,16 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.nizlumina.minori.android.ui.common.SlidingTabLayout
-        android:id="@+id/fragment_tabs_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/primary_color"
-        tools:layout_height="56dp" />
+    <!--<com.nizlumina.minori.android.ui.common.SlidingTabLayout-->
+    <!--android:id="@+id/fragment_tabs_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@color/bg_secondary"-->
+    <!--tools:layout_height="56dp" />-->
 
     <FrameLayout
         android:id="@+id/fragment_tabs_loading_placeholder"
