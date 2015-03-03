@@ -18,20 +18,16 @@
     <!--We prefer that the inner circle is 56dp with 2dp outer stroke-->
 
     <TextView
-        android:id="@+id/badgeview_text"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:layout_gravity="center"
         android:background="@drawable/badgeview_circle_inline_white"
         android:gravity="center"
-        android:minWidth="60dp"
         android:padding="4dp"
         android:textSize="14sp"
-        tools:text="Special"
+        tools:text="Special Old Timer"
         tools:textColor="@android:color/white" />
 
-    <include
-        android:id="@id/badgeview_category"
-        layout="@layout/badgeview_category_tag" />
+    <include layout="@layout/badgeview_category_tag" />
 
 </LinearLayout>

@@ -72,17 +72,16 @@ public class DetailFragment extends Fragment
         synopsisView.setText(Html.fromHtml(presenter.getSynopsis()));
 
         final BadgeView ratingBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_rating, SCORE_CATEGORY, presenter.getScore());
-        ratingBadge.quickTint(R.color.yellow_300);
-        ratingBadge.quickColorCategoryText(R.color.rb_black_half);
+        ratingBadge.quickTint(R.color.orange_800);
 
         final BadgeView studioBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_studio, STUDIO_CATEGORY, presenter.getStudio());
-        studioBadge.quickTint(R.color.blue_300);
+        studioBadge.quickTint(R.color.blue_800);
 
         final BadgeView sourceBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_source, SOURCE_CATEGORY, presenter.getSource());
-        sourceBadge.quickTint(R.color.pink_300);
+        sourceBadge.quickTint(R.color.purple_800);
 
         final BadgeView episodeCountBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_episodecount, EPISODECOUNT_CATEGORY, presenter.getEpisodesCount());
-        episodeCountBadge.quickTint(R.color.green_300);
+        episodeCountBadge.quickTint(R.color.green_800);
     }
 
 

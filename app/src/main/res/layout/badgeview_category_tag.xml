@@ -9,19 +9,16 @@
   ~
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-<TextView
-    android:id="@+id/badgeview_category"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="16dp"
+    android:layout_height="20dp"
     android:layout_gravity="center"
-    android:layout_marginTop="-11dp"
+    android:layout_marginTop="-18dp"
     android:background="@drawable/badgeview_category_rect"
-    android:fontFamily="sans-serif-condensed"
     android:gravity="center"
-    android:paddingLeft="6dp"
-    android:paddingRight="6dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:textAllCaps="true"
     android:textSize="10sp"
     tools:ignore="SmallSp"
