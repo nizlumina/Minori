@@ -14,7 +14,6 @@ package com.nizlumina.minori.android.ui.activity;
 
 import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -151,7 +150,10 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
                 showFab();
                 break;
             case R.id.drawer_season:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, SeasonHostFragment.newInstance(this)).commit();
+                SeasonHostFragment seasonHostFragment = (SeasonHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonHostFragment.class.getSimpleName());
+                if (seasonHostFragment == null)
+                    getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, SeasonHostFragment.newInstance(this), SeasonHostFragment.class.getSimpleName()).commit();
+
                 hideFab();
                 break;
             case R.id.drawer_explore:
@@ -232,32 +234,6 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     public void setToolbarTitle(String title)
     {
         getToolbar().setTitle(title);
-    }
-
-    /**
-     * Short util method for simple expand/collapse height for layouts
-     *
-     * @param viewGroup The layout to be expand/collapsed
-     * @param endHeight Target height
-     * @return
-     */
-    private ValueAnimator layoutHeightAnimator(final ViewGroup viewGroup, int endHeight)
-    {
-        final ValueAnimator valueAnimator = ValueAnimator.ofInt(viewGroup.getHeight(), endHeight);
-
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation)
-            {
-                int val = (Integer) animation.getAnimatedValue();
-                ViewGroup.LayoutParams params = viewGroup.getLayoutParams();
-                params.height = val;
-                viewGroup.setLayoutParams(params);
-            }
-        });
-
-        return valueAnimator;
     }
 
     @Override

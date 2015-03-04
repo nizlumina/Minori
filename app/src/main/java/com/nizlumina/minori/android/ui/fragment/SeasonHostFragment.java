@@ -14,6 +14,8 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,13 +26,13 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
+import com.nizlumina.minori.android.utility.Util;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.lang.ref.WeakReference;
@@ -47,8 +49,8 @@ public class SeasonHostFragment extends TabbedFragment
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
 
     private WeakReference<Listener> mFragmentListenerRef;
-    private ViewGroup mTabContainer;
     private SlidingTabLayout mTabLayout;
+    private int mTabContainerOriginalHeight;
 
     public static String getFragmentTag()
     {
@@ -72,26 +74,16 @@ public class SeasonHostFragment extends TabbedFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        Listener fragmentListener = mFragmentListenerRef.get();
-        if (fragmentListener != null)
-        {
-            mTabContainer = fragmentListener.getContainerForTabs();
-
-            SlidingTabLayout tabLayout = new SlidingTabLayout(getActivity());
-            tabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            Resources resourcesInstance = getResources();
-            tabLayout.setBackgroundColor(resourcesInstance.getColor(R.color.primary_color));
-            tabLayout.setSelectedIndicatorColors(resourcesInstance.getColor(R.color.primary_color_dark_complement));
-            tabLayout.setTextColor(resourcesInstance.getColorStateList(R.color.selector_tab_text));
-            mTabContainer.addView(tabLayout);
-
-            mTabLayout = tabLayout;
-        }
-
         //injectTabsToParent(view);
 
         if (savedInstanceState == null)
         {
+            Listener fragmentListener = mFragmentListenerRef.get();
+            if (fragmentListener != null)
+            {
+                addTabLayout(fragmentListener.getContainerForTabs());
+            }
+
             Log.w(getClass().getSimpleName() + " OnViewCreated", "Saved instance state is null");
             log("Loading index.");
             onLoad(getChildTabLayout(), getContentViewPager());
@@ -135,8 +127,13 @@ public class SeasonHostFragment extends TabbedFragment
     @Override
     public void onDestroyView()
     {
-//        Listener fragmentListener = mFragmentListenerRef.get();
-//        if (fragmentListener != null) fragmentListener.removeTabLayout(getTabLayout());
+        Listener fragmentListener = mFragmentListenerRef.get();
+        if (fragmentListener != null)
+        {
+            removeTabLayout(fragmentListener.getContainerForTabs());
+
+
+        }
 
         super.onDestroyView();
     }
@@ -206,84 +203,53 @@ public class SeasonHostFragment extends TabbedFragment
         Log.v(getClass().getSimpleName(), input);
     }
 
-    public void addTabLayout(final View tabLayout)
+    public void addTabLayout(final ViewGroup tabContainer)
     {
-        mTabContainer.addView(tabLayout);
-//        if (mTopContainerBaseHeight < 0)
-//            mTopContainerBaseHeight = getToolbarContainer().getHeight();
-//
-//        tabLayout.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.EXACTLY);
-//
-//        final int endHeight = mTopContainerBaseHeight + tabLayout.getHeight();
-//
-//        Log.v(getClass().getSimpleName(),"Container Height: " + mTopContainerBaseHeight + "\nTarget height: " + endHeight + "\nTabHeight: " +  tabLayout.getMeasuredHeight() + "|" + tabLayout.getHeight());
-//
-//        getToolbarContainer().addView(tabLayout);
-//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), endHeight);
-//        expandAnimator.addListener(new Animator.AnimatorListener()
-//        {
-//            @Override
-//            public void onAnimationStart(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation)
-//            {
-//
-//            }
-//        });
-//
-//        expandAnimator.start();
+        log("Tab added");
+        mTabLayout = (SlidingTabLayout) View.inflate(getActivity(), R.layout.view_slidingtab, null);
+        Resources resourcesInstance = getResources();
+        mTabLayout.setSelectedIndicatorColors(resourcesInstance.getColor(R.color.primary_color_dark_complement));
+        mTabLayout.setTextColor(resourcesInstance.getColorStateList(R.color.selector_tab_text));
 
+        mTabLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
+        mTabContainerOriginalHeight = tabContainer.getHeight();
+
+        Util.makeLayoutHeightAnimator(tabContainer, mTabLayout.getMeasuredHeight() + mTabContainerOriginalHeight).start();
+        tabContainer.addView(mTabLayout);
     }
 
-    public void removeTabLayout(final View tabLayout)
+    public void removeTabLayout(final ViewGroup tabContainer)
     {
-        mTabContainer.removeView(tabLayout);
-//        final ValueAnimator expandAnimator = layoutHeightAnimator(getToolbarContainer(), mTopContainerBaseHeight);
-//        expandAnimator.addListener(new Animator.AnimatorListener()
-//        {
-//            @Override
-//            public void onAnimationStart(Animator animation)
-//            {
-//                getToolbarContainer().removeView(tabLayout);
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation)
-//            {
-//
-//            }
-//        });
-//
-//        expandAnimator.start();
+        ValueAnimator animator = Util.makeLayoutHeightAnimator(tabContainer, mTabContainerOriginalHeight);
+        animator.addListener(new Animator.AnimatorListener()
+        {
+            @Override
+            public void onAnimationStart(Animator animation)
+            {
+                tabContainer.removeView(mTabLayout);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation)
+            {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation)
+            {
+
+            }
+        });
+
+        animator.start();
 
     }
 

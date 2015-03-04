@@ -1,12 +1,14 @@
 package com.nizlumina.minori.android.utility;
 
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 /**
@@ -87,6 +89,32 @@ public class Util
         else
             Log.v(Util.class.getSimpleName(), String.format("Time taken: %d ms, %s", d / (1000 * 1000), extras));
         return s;
+    }
+
+    /**
+     * Short util method for simple expand/collapse height for layouts
+     *
+     * @param viewGroup The layout to be expand/collapsed
+     * @param endHeight Target height
+     * @return
+     */
+    public static ValueAnimator makeLayoutHeightAnimator(final ViewGroup viewGroup, int endHeight)
+    {
+        final ValueAnimator valueAnimator = ValueAnimator.ofInt(viewGroup.getHeight(), endHeight);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
+                int val = (Integer) animation.getAnimatedValue();
+                ViewGroup.LayoutParams params = viewGroup.getLayoutParams();
+                params.height = val;
+                viewGroup.setLayoutParams(params);
+            }
+        });
+
+        return valueAnimator;
     }
 // Unused
 //
