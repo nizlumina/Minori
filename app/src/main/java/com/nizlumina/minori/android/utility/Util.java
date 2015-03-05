@@ -116,31 +116,4 @@ public class Util
 
         return valueAnimator;
     }
-// Unused
-//
-//    public static int firstDigit(int integer)
-//    {
-//        while (integer > 9) //Example for number 123 => 123/10, 12.3 => 12.3/10, 1.23 => 1
-//            integer /= 10;
-//        return integer;
-//    }
-//
-
-
-//    public static void animateBack(ActionBarActivity currentActivity)
-//    {
-//        currentActivity.overridePendingTransition(R.anim.act_slide_from_left, R.anim.act_slide_to_right);
-//    }
-//
-//    public static void animateIn(ActionBarActivity currentActivity)
-//    {
-//        currentActivity.overridePendingTransition(R.anim.act_slide_from_right, R.anim.act_slide_to_left);
-//    }
-
-// Just some fun stuffs
-//
-//    public <T> T callMethod(Callable<T> callable) throws Exception
-//    {
-//        return callable.call();
-//    }
 }
