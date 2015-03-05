@@ -195,7 +195,7 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         setupFab(fab, drawableID, R.color.accent_color_shade, R.color.accent_color);
     }
 
-    public boolean getContainerVisibility()
+    public boolean containerIsVisible()
     {
         return mContainerVisibility;
     }
@@ -205,18 +205,21 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
      */
     public void hideTopContainer()
     {
-        if (mTopContainer != null)
+        if (mTopContainer != null && containerIsVisible())
         {
-            ObjectAnimator.ofFloat(mTopContainer, "y", mTopContainer.getHeight()).start();
+//            mTopContainer.setVisibility(View.GONE);
+//            ObjectAnimator animator = ObjectAnimator.ofFloat(mTopContainer, "y", mTopContainer.getHeight());
+//            animator.start();
             mContainerVisibility = false;
         }
     }
 
     public void showTopContainer()
     {
-        if (mTopContainer != null)
+        if (mTopContainer != null && !containerIsVisible())
         {
-            ObjectAnimator.ofFloat(mTopContainer, "y", -mTopContainer.getHeight()).start();
+//            mTopContainer.setVisibility(View.VISIBLE);
+            //ObjectAnimator.ofFloat(mTopContainer, "translationY", -mTopContainer.getHeight()).start();
             mContainerVisibility = true;
         }
     }
@@ -228,6 +231,18 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         detailFragment.setArguments(args);
         getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, detailFragment).commit();
 
+    }
+
+    @Override
+    public void onScrollUp()
+    {
+        showTopContainer();
+    }
+
+    @Override
+    public void onScrollDown()
+    {
+        hideTopContainer();
     }
 
     @Override

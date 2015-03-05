@@ -164,43 +164,15 @@ public class SeasonFragment extends Fragment
 
             mGridView.setOnScrollListener(new AbsListView.OnScrollListener()
             {
-                private int mInitialScroll = 0;
-
-                boolean scrolling = false;
-
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState)
                 {
-//                    if (scrollState == SCROLL_STATE_IDLE)
-//                        scrolling = false;
                 }
 
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
                 {
-//                    int scrollOffset = mGridView.getVerticalScrollOffset();
-//                    boolean scrollUp = scrollOffset > mInitialScroll;
-//                    mInitialScroll = scrollOffset;
-//
-//                    if (!scrolling)
-//                    {
-////                        log("Hide container");
-////                        if(getActivity() instanceof DrawerActivity)
-////                            ((DrawerActivity) getActivity()).hideTopContainer();
-////                        if (!scrollUp)
-////                        {
-////
-////
-////                        }
-////                        scrolling = true;
-//                    }
-////                    else if(scrollUp & !containerShown)
-////                    {
-////                        ((DrawerActivity) getActivity()).showTopContainer();
-////                        containerShown = true;
-////
-////                        log("Show container");
-////                    }
+
                 }
             });
 
@@ -224,7 +196,6 @@ public class SeasonFragment extends Fragment
                         else
                             Log.e(SeasonFragment.class.getSimpleName(), "FragmentListener for this fragment is null!");
                     }
-
                 }
             });
             buildGridItems(false);
@@ -290,5 +261,9 @@ public class SeasonFragment extends Fragment
     public static interface Listener
     {
         public void displayDetailFragment(Bundle args);
+
+        public void onScrollUp();
+
+        public void onScrollDown();
     }
 }
