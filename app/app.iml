@@ -99,6 +99,7 @@
     <orderEntry type="library" exported="" name="commons-io-2.4" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="material-dialogs-0.6.2.1" level="project" />
+    <orderEntry type="module" module-name="bitlet" exported="" />
   </component>
 </module>
 
