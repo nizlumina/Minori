@@ -10,38 +10,59 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.torrent;
+package com.nizlumina.minori.android.torrent.bitlet;
 
-import java.io.InputStream;
+import com.nizlumina.minori.android.torrent.EngineConfig;
+import com.nizlumina.minori.android.torrent.TorrentEngine;
+import com.nizlumina.minori.android.torrent.TorrentObject;
+
+import java.util.List;
 
 /**
- * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.android.torrent.TorrentEngine}
+ * A wrapper for bitlet Torrent pseudo thread-based implementation. Each {@link org.bitlet.wetorrent.Torrent} extended from a Thread, so we might as well utilize that.
  */
-public class TorrentObject
+public class BitletEngine implements TorrentEngine
 {
-    final String name;
-    final InputStream metafile;
-    final String status;
 
-    public TorrentObject(String name, InputStream metafile, String status)
+    @Override
+    public void download(String id)
     {
-        this.name = name;
-        this.metafile = metafile;
-        this.status = status;
+
     }
 
-    public InputStream getMetafile()
+    @Override
+    public void pause(String id)
     {
-        return metafile;
+
     }
 
-    public String getName()
+    @Override
+    public void remove(String id)
     {
-        return name;
+
     }
 
-    public String getStatus()
+    @Override
+    public List<TorrentObject> getTorrents()
     {
-        return status;
+        return null;
+    }
+
+    @Override
+    public void startEngine()
+    {
+
+    }
+
+    @Override
+    public void stopEngine()
+    {
+
+    }
+
+    @Override
+    public void initializeSettings(EngineConfig engineConfig)
+    {
+
     }
 }

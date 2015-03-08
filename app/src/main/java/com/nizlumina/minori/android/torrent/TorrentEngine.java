@@ -12,36 +12,26 @@
 
 package com.nizlumina.minori.android.torrent;
 
-import java.io.InputStream;
+import java.util.List;
 
 /**
- * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.android.torrent.TorrentEngine}
+ * An interface for implementating a generic TorrentEngine.
+ * Each method is called from the main thread hence concrete implementation
+ * must delegate method calls into its own thread managers.
  */
-public class TorrentObject
+public interface TorrentEngine
 {
-    final String name;
-    final InputStream metafile;
-    final String status;
+    public void download(String id);
 
-    public TorrentObject(String name, InputStream metafile, String status)
-    {
-        this.name = name;
-        this.metafile = metafile;
-        this.status = status;
-    }
+    public void pause(String id);
 
-    public InputStream getMetafile()
-    {
-        return metafile;
-    }
+    public void remove(String id);
 
-    public String getName()
-    {
-        return name;
-    }
+    public List<TorrentObject> getTorrents();
 
-    public String getStatus()
-    {
-        return status;
-    }
+    public void startEngine();
+
+    public void stopEngine();
+
+    void initializeSettings(EngineConfig engineConfig);
 }

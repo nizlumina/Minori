@@ -12,36 +12,30 @@
 
 package com.nizlumina.minori.android.torrent;
 
-import java.io.InputStream;
+import java.io.File;
 
 /**
- * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.android.torrent.TorrentEngine}
+ * A Config class to be use by {@link com.nizlumina.minori.android.torrent.TorrentEngine}.
+ * This class is initialized in a Service (and utilize SharedPrefs) and passed as parameter for {@link com.nizlumina.minori.android.torrent.TorrentEngine} initialization.
  */
-public class TorrentObject
+public final class EngineConfig
 {
-    final String name;
-    final InputStream metafile;
-    final String status;
+    private File saveDirectory;
+    private int port;
 
-    public TorrentObject(String name, InputStream metafile, String status)
+    public EngineConfig(File saveDirectory, int port)
     {
-        this.name = name;
-        this.metafile = metafile;
-        this.status = status;
+        this.saveDirectory = saveDirectory;
+        this.port = port;
     }
 
-    public InputStream getMetafile()
+    public File getSaveDirectory()
     {
-        return metafile;
+        return saveDirectory;
     }
 
-    public String getName()
+    public int getPort()
     {
-        return name;
-    }
-
-    public String getStatus()
-    {
-        return status;
+        return port;
     }
 }
