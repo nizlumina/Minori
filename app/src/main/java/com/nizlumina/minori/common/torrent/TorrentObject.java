@@ -10,28 +10,38 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.torrent;
+package com.nizlumina.minori.common.torrent;
 
-import java.util.List;
+import java.io.InputStream;
 
 /**
- * An interface for implementating a generic TorrentEngine.
- * Each method is called from the main thread hence concrete implementation
- * must delegate method calls into its own thread managers.
+ * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.common.torrent.TorrentEngine}
  */
-public interface TorrentEngine
+public class TorrentObject
 {
-    public void download(String id);
+    final String name;
+    final InputStream metafile;
+    final String status;
 
-    public void pause(String id);
+    public TorrentObject(String name, InputStream metafile, String status)
+    {
+        this.name = name;
+        this.metafile = metafile;
+        this.status = status;
+    }
 
-    public void remove(String id);
+    public InputStream getMetafile()
+    {
+        return metafile;
+    }
 
-    public List<TorrentObject> getTorrents();
+    public String getName()
+    {
+        return name;
+    }
 
-    public void startEngine();
-
-    public void stopEngine();
-
-    void initializeSettings(EngineConfig engineConfig);
+    public String getStatus()
+    {
+        return status;
+    }
 }

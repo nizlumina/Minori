@@ -34,9 +34,9 @@ import com.nizlumina.minori.android.controller.SearchController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.wrapper.ParcelableNyaaFansubGroup;
-import com.nizlumina.minori.common.Nyaa.NyaaEntry;
-import com.nizlumina.minori.common.Nyaa.NyaaFansubGroup;
-import com.nizlumina.minori.common.Nyaa.Parser.NyaaXMLParser;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.nyaa.NyaaFansubGroup;
+import com.nizlumina.minori.common.nyaa.Parser.NyaaXMLParser;
 
 import java.util.ArrayList;
 import java.util.List;

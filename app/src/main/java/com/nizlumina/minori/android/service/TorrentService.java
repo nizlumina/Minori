@@ -14,11 +14,12 @@ package com.nizlumina.minori.android.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 
-import com.nizlumina.minori.android.torrent.EngineConfig;
-import com.nizlumina.minori.android.torrent.TorrentEngine;
-import com.nizlumina.minori.android.torrent.bitlet.BitletEngine;
+import com.nizlumina.minori.common.torrent.EngineConfig;
+import com.nizlumina.minori.common.torrent.TorrentEngine;
+import com.nizlumina.minori.common.torrent.bitlet.BitletEngine;
 
 /**
  * Handles Torrent downloads.
@@ -26,19 +27,20 @@ import com.nizlumina.minori.android.torrent.bitlet.BitletEngine;
  * <p/>
  * Intent must specifies metafile location and name.
  * <p/>
- * Each {@link com.nizlumina.minori.android.torrent.TorrentEngine} concrete implementation must handle its own threading task.
+ * Each {@link com.nizlumina.minori.common.torrent.TorrentEngine} concrete implementation must handle its own threading task.
  * Contrary to popular Service implementations in Android, since we are highly likely to use different torrent library in the future, we delegate threading implementation within the libraries itself and controls any thread management from a TorrentEngine concrete interface.
  * <p/>
  * Hence each calls to the service must be strictly from the main thread.
  */
 public class TorrentService extends Service
 {
+    private final IBinder mServiceBinder = new TorrentServiceBinder();
     private TorrentEngine mTorrentEngine;
 
     @Override
     public IBinder onBind(Intent intent)
     {
-        return null;
+        return mServiceBinder;
     }
 
     @Override
@@ -65,7 +67,10 @@ public class TorrentService extends Service
     {
         //Load config
         //Todo:Replace with SharedPrefs
-        EngineConfig engineConfig = new EngineConfig(getFilesDir(), 6868);
+        EngineConfig engineConfig = new EngineConfig.Builder()
+                .setSaveDirectory(getFilesDir())
+                .setPort(6868)
+                .build();
 
         //Concrete implementations. Enums for choosing engine might be implementated later as well.
         mTorrentEngine = new BitletEngine();
@@ -73,5 +78,13 @@ public class TorrentService extends Service
 
         //Start as soon as possible
         mTorrentEngine.startEngine();
+    }
+
+    /**
+     * A Binder class following Android docs
+     */
+    public static class TorrentServiceBinder extends Binder
+    {
+
     }
 }

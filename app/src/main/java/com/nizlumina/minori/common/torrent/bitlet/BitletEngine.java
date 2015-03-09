@@ -10,12 +10,15 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.torrent.bitlet;
+package com.nizlumina.minori.common.torrent.bitlet;
 
-import com.nizlumina.minori.android.torrent.EngineConfig;
-import com.nizlumina.minori.android.torrent.TorrentEngine;
-import com.nizlumina.minori.android.torrent.TorrentObject;
+import com.nizlumina.minori.common.torrent.EngineConfig;
+import com.nizlumina.minori.common.torrent.TorrentEngine;
+import com.nizlumina.minori.common.torrent.TorrentObject;
 
+import org.bitlet.wetorrent.Torrent;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +26,7 @@ import java.util.List;
  */
 public class BitletEngine implements TorrentEngine
 {
+    private final List<Torrent> mTorrentList = new ArrayList<>();
 
     @Override
     public void download(String id)
@@ -63,6 +67,6 @@ public class BitletEngine implements TorrentEngine
     @Override
     public void initializeSettings(EngineConfig engineConfig)
     {
-
+        engineConfig.getConnectionCountLimit();
     }
 }

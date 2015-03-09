@@ -4,9 +4,9 @@ import com.nizlumina.minori.android.internal.network.CoreQuery;
 import com.nizlumina.minori.android.internal.network.WebUnit;
 import com.nizlumina.minori.android.listener.WebUnitListener;
 import com.nizlumina.minori.android.utility.Util;
-import com.nizlumina.minori.common.Hummingbird.AnimeObject;
-import com.nizlumina.minori.common.Nyaa.NyaaEntry;
-import com.nizlumina.minori.common.Nyaa.Parser.NyaaXMLParser;
+import com.nizlumina.minori.common.hummingbird.AnimeObject;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.nyaa.Parser.NyaaXMLParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -32,7 +32,7 @@ import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.android.listener.NetworkListener;
 import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
-import com.nizlumina.minori.common.Hummingbird.AnimeObject;
+import com.nizlumina.minori.common.hummingbird.AnimeObject;
 
 import java.util.ArrayList;
 

@@ -41,9 +41,9 @@ import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.alarm.Alarm;
 import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.wrapper.ParcelableNyaaFansubGroup;
-import com.nizlumina.minori.common.Hummingbird.AnimeObject;
-import com.nizlumina.minori.common.Nyaa.NyaaEntry;
-import com.nizlumina.minori.common.Nyaa.NyaaFansubGroup;
+import com.nizlumina.minori.common.hummingbird.AnimeObject;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.nyaa.NyaaFansubGroup;
 
 import java.util.Hashtable;
 import java.util.List;

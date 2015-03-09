@@ -10,32 +10,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.android.torrent;
+package com.nizlumina.minori.common.torrent;
 
-import java.io.File;
+import java.util.List;
 
 /**
- * A Config class to be use by {@link com.nizlumina.minori.android.torrent.TorrentEngine}.
- * This class is initialized in a Service (and utilize SharedPrefs) and passed as parameter for {@link com.nizlumina.minori.android.torrent.TorrentEngine} initialization.
+ * An interface for implementating a generic TorrentEngine.
+ * Each method is called from the main thread hence concrete implementation
+ * must delegate method calls into its own thread managers.
  */
-public final class EngineConfig
+public interface TorrentEngine
 {
-    private File saveDirectory;
-    private int port;
+    public void download(String id);
 
-    public EngineConfig(File saveDirectory, int port)
-    {
-        this.saveDirectory = saveDirectory;
-        this.port = port;
-    }
+    public void pause(String id);
 
-    public File getSaveDirectory()
-    {
-        return saveDirectory;
-    }
+    public void remove(String id);
 
-    public int getPort()
-    {
-        return port;
-    }
+    public List<TorrentObject> getTorrents();
+
+    public void startEngine();
+
+    public void stopEngine();
+
+    void initializeSettings(EngineConfig engineConfig);
 }
