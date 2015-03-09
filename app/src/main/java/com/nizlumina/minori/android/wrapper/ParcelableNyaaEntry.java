@@ -15,7 +15,7 @@ package com.nizlumina.minori.android.wrapper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.nizlumina.minori.common.nyaac.NyaaEntry;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
 
 public final class ParcelableNyaaEntry implements Parcelable
 {

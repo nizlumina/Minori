@@ -1,7 +1,7 @@
-package com.nizlumina.minori.common.nyaac.Parser;
+package com.nizlumina.minori.common.nyaa.Parser;
 
 
-import com.nizlumina.minori.common.nyaac.NyaaEntry;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
 
 /**
  * Description parser. May handle extra method for checking seeds number and size yadda yadda in the future

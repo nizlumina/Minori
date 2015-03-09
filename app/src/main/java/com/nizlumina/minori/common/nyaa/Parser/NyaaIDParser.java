@@ -1,4 +1,4 @@
-package com.nizlumina.minori.common.nyaac.Parser;
+package com.nizlumina.minori.common.nyaa.Parser;
 
 /**
  * Similar to parsing fileType in NyaaXMLParser

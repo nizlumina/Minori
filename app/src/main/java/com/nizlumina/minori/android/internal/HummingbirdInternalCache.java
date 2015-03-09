@@ -18,7 +18,7 @@ import com.nizlumina.minori.android.internal.factory.CoreJSONFactory;
 import com.nizlumina.minori.android.internal.factory.JSONStorageFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.utility.Util;
-import com.nizlumina.minori.common.hummingbirdc.AnimeObject;
+import com.nizlumina.minori.common.hummingbird.AnimeObject;
 
 import java.io.File;
 import java.io.FileInputStream;

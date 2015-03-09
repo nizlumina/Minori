@@ -1,8 +1,8 @@
 package com.nizlumina.minori.android.internal.factory;
 
 import com.nizlumina.minori.android.model.alarm.Alarm;
-import com.nizlumina.minori.common.hummingbirdc.AnimeObject;
-import com.nizlumina.minori.common.nyaac.NyaaEntry;
+import com.nizlumina.minori.common.hummingbird.AnimeObject;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;

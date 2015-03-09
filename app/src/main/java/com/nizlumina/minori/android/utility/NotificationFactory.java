@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.nizlumina.minori.android.internal.network.CoreQuery;
-import com.nizlumina.minori.common.nyaac.NyaaEntry;
+import com.nizlumina.minori.common.nyaa.NyaaEntry;
 
 
 /**
