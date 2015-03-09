@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.nizlumina.minori.android.model.alarm.Alarm;
 import com.nizlumina.minori.android.model.alarm.AlarmFactory;
-import com.nizlumina.minori.common.hummingbird.AnimeObject;
-import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.hummingbirdc.AnimeObject;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
 
 /**
  * Base Minori data. Access this class to do stuffs.

@@ -1,4 +1,4 @@
-package com.nizlumina.minori.common.Hummingbird;
+package com.nizlumina.minori.common.hummingbirdc;
 
 /**
  * Hummingbird API JSON object

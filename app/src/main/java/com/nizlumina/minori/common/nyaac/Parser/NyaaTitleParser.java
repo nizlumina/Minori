@@ -1,8 +1,8 @@
-package com.nizlumina.minori.common.Nyaa.Parser;
+package com.nizlumina.minori.common.nyaac.Parser;
 
 //import android.util.Log;
 
-import com.nizlumina.minori.common.Nyaa.NyaaEntry;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
 
 
 /**

@@ -11,7 +11,7 @@ import com.nizlumina.minori.android.internal.network.DownloadUnit;
 import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.receiver.ScanReceiver;
 import com.nizlumina.minori.android.utility.ScanNotification;
-import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
 
 import java.util.ArrayList;
 

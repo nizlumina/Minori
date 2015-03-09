@@ -24,7 +24,7 @@ import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.listener.WebUnitListener;
 import com.nizlumina.minori.android.utility.HummingbirdScraper;
 import com.nizlumina.minori.android.utility.Util;
-import com.nizlumina.minori.common.hummingbird.AnimeObject;
+import com.nizlumina.minori.common.hummingbirdc.AnimeObject;
 
 import java.util.ArrayList;
 import java.util.List;

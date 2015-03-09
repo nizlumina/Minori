@@ -15,8 +15,8 @@ package com.nizlumina.minori.android.wrapper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.nizlumina.minori.common.nyaa.NyaaEntry;
-import com.nizlumina.minori.common.nyaa.NyaaFansubGroup;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
+import com.nizlumina.minori.common.nyaac.NyaaFansubGroup;
 
 import java.util.ArrayList;
 import java.util.List;

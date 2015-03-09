@@ -1,10 +1,10 @@
-package com.nizlumina.minori.common.Nyaa.Parser;
+package com.nizlumina.minori.common.nyaac.Parser;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.nizlumina.minori.common.Nyaa.NyaaEntry;
-import com.nizlumina.minori.common.Nyaa.NyaaFansubGroup;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
+import com.nizlumina.minori.common.nyaac.NyaaFansubGroup;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

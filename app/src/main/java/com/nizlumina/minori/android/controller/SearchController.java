@@ -17,7 +17,7 @@ import android.os.AsyncTask;
 import com.nizlumina.minori.android.internal.ThreadWorker;
 import com.nizlumina.minori.android.internal.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
-import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
 
 import java.util.ArrayList;
 import java.util.List;

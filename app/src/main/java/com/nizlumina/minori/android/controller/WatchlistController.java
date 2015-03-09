@@ -10,8 +10,8 @@ import com.nizlumina.minori.android.internal.factory.WatchDataJSONFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.model.alarm.Alarm;
-import com.nizlumina.minori.common.hummingbird.AnimeObject;
-import com.nizlumina.minori.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.common.hummingbirdc.AnimeObject;
+import com.nizlumina.minori.common.nyaac.NyaaEntry;
 
 import org.json.JSONArray;
 

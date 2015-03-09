@@ -1,4 +1,4 @@
-package com.nizlumina.minori.common.Nyaa;
+package com.nizlumina.minori.common.nyaac;
 
 /**
  * Base data class for Nyaa stuffs
