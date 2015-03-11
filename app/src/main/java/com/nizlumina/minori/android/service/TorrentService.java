@@ -68,6 +68,7 @@ public class TorrentService extends Service
         //Load config
         //Todo:Replace with SharedPrefs
         EngineConfig engineConfig = new EngineConfig.Builder()
+                .setMetafileDirectory(getCacheDir())
                 .setSaveDirectory(getFilesDir())
                 .setPort(6868)
                 .build();

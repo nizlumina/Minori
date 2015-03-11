@@ -29,9 +29,10 @@ public final class EngineConfig
     private int maxRunningDownloads;
     private int maxRunningTorrent;
     private File saveDirectory;
+    private File metafileDirectory;
     private int port;
 
-    public EngineConfig(int connectionCountLimit, int uploadBandwithLimit, int downloadBandwithLimit, int maxRunningUploads, int maxRunningDownloads, int maxRunningTorrent, File saveDirectory, int port)
+    public EngineConfig(int connectionCountLimit, int uploadBandwithLimit, int downloadBandwithLimit, int maxRunningUploads, int maxRunningDownloads, int maxRunningTorrent, File saveDirectory, File metafileDirectory, int port)
     {
         this.connectionCountLimit = connectionCountLimit;
         this.uploadBandwithLimit = uploadBandwithLimit;
@@ -40,10 +41,16 @@ public final class EngineConfig
         this.maxRunningDownloads = maxRunningDownloads;
         this.maxRunningTorrent = maxRunningTorrent;
         this.saveDirectory = saveDirectory;
+        this.metafileDirectory = metafileDirectory;
         this.port = port;
     }
 
     public EngineConfig() {}
+
+    public File getMetafileDirectory()
+    {
+        return metafileDirectory;
+    }
 
     public int getConnectionCountLimit()
     {
@@ -96,6 +103,7 @@ public final class EngineConfig
         private int maxRunningTorrent;
         private File saveDirectory;
         private int port;
+        private File metafileDirectory;
 
         public Builder setConnectionCountLimit(int connectionCountLimit)
         {
@@ -145,9 +153,15 @@ public final class EngineConfig
             return this;
         }
 
+        public Builder setMetafileDirectory(File metafileDirectory)
+        {
+            this.metafileDirectory = metafileDirectory;
+            return this;
+        }
+
         public EngineConfig build()
         {
-            return new EngineConfig(connectionCountLimit, uploadBandwithLimit, downloadBandwithLimit, maxRunningUploads, maxRunningDownloads, maxRunningTorrent, saveDirectory, port);
+            return new EngineConfig(connectionCountLimit, uploadBandwithLimit, downloadBandwithLimit, maxRunningUploads, maxRunningDownloads, maxRunningTorrent, saveDirectory, metafileDirectory, port);
         }
     }
 }

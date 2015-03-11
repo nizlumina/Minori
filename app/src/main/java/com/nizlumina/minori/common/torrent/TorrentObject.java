@@ -12,27 +12,27 @@
 
 package com.nizlumina.minori.common.torrent;
 
-import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.common.torrent.TorrentEngine}
  */
-public class TorrentObject
+public class TorrentObject implements Serializable
 {
     final String name;
-    final InputStream metafile;
+    final String metafileName;
     final String status;
 
-    public TorrentObject(String name, InputStream metafile, String status)
+    public TorrentObject(String name, String metafileName, String status)
     {
         this.name = name;
-        this.metafile = metafile;
+        this.metafileName = metafileName;
         this.status = status;
     }
 
-    public InputStream getMetafile()
+    public String getMetafile()
     {
-        return metafile;
+        return metafileName;
     }
 
     public String getName()
