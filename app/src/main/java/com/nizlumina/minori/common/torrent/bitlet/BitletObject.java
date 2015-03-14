@@ -10,43 +10,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.nizlumina.minori.common.torrent;
+package com.nizlumina.minori.common.torrent.bitlet;
 
-import java.io.Serializable;
+import com.nizlumina.minori.common.torrent.TorrentObject;
 
-/**
- * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.common.torrent.TorrentEngine}
- */
-public abstract class TorrentObject implements Serializable
+import org.bitlet.wetorrent.Torrent;
+
+public class BitletObject extends TorrentObject
 {
-    final String name;
-    final String metafileName;
-    final Status status;
+    private Torrent torrent;
 
-    public TorrentObject(String name, String metafileName, Status status)
+    public BitletObject(String name, String metafileName, Status status)
     {
-        this.name = name;
-        this.metafileName = metafileName;
-        this.status = status;
+        super(name, metafileName, status);
     }
 
-    public String getMetafile()
+    public Torrent getTorrent()
     {
-        return metafileName;
+        return torrent;
     }
 
-    public String getName()
+    public void setTorrent(Torrent torrent)
     {
-        return name;
-    }
-
-    public Status getStatus()
-    {
-        return status;
-    }
-
-    public enum Status
-    {
-        PAUSED, COMPLETED, DOWNLOADING
+        this.torrent = torrent;
     }
 }
