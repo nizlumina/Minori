@@ -21,13 +21,21 @@ import java.util.List;
  */
 public interface TorrentEngine
 {
+    /**
+     * Called after the framework fully received a raw metafile/magnet/etc. The TorrentObject is immediately created with a generated id plus references to the raw files/sources set.
+     * In a sense, this method hands off the raw source to the engine and expect its implementation to fully initialize it.
+     *
+     * @param torrentObject A TorrentObject created from any valid source (metafile/magnet/etc).
+     */
+    public void onReceiveNewTorrentObject(TorrentObject torrentObject);
+
     public void download(String id);
 
     public void pause(String id);
 
     public void remove(String id);
 
-    public List<TorrentObject> getTorrents();
+    public List<TorrentObject> getTorrentObjects();
 
     public void startEngine();
 

@@ -73,7 +73,7 @@ public class TorrentService extends Service
                 .setPort(6868)
                 .build();
 
-        //Concrete implementations. Enums for choosing engine might be implementated later as well.
+        //Concrete implementations. Enums for choosing engine might be implemented later as well.
         mTorrentEngine = new BitletEngine();
         mTorrentEngine.initializeSettings(engineConfig);
 

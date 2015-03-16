@@ -19,18 +19,25 @@ import java.io.Serializable;
  */
 public abstract class TorrentObject implements Serializable
 {
+    final String id;
     final String name;
     final String metafileName;
     final Status status;
 
-    public TorrentObject(String name, String metafileName, Status status)
+    public TorrentObject(String id, String name, String metafileName, Status status)
     {
+        this.id = id;
         this.name = name;
         this.metafileName = metafileName;
         this.status = status;
     }
 
-    public String getMetafile()
+    public String getId()
+    {
+        return id;
+    }
+
+    public String getMetafileName()
     {
         return metafileName;
     }

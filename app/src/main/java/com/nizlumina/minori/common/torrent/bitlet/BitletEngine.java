@@ -16,29 +16,22 @@ import com.nizlumina.minori.common.torrent.EngineConfig;
 import com.nizlumina.minori.common.torrent.TorrentEngine;
 import com.nizlumina.minori.common.torrent.TorrentObject;
 
-import org.bitlet.wetorrent.Metafile;
 import org.bitlet.wetorrent.Torrent;
-import org.bitlet.wetorrent.disk.PlainFileSystemTorrentDisk;
-import org.bitlet.wetorrent.disk.TorrentDisk;
-import org.bitlet.wetorrent.peer.IncomingPeerListener;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A wrapper for bitlet Torrent pseudo thread-based implementation. Each {@link org.bitlet.wetorrent.Torrent} extended from a Thread, so we might as well utilize that.
+ * A wrapper for Bitlet pseudo thread-based implementation of Torrent. Since each {@link org.bitlet.wetorrent.Torrent} extended from a Thread, we might as well utilize that.
  */
 public class BitletEngine implements TorrentEngine
 {
@@ -46,16 +39,27 @@ public class BitletEngine implements TorrentEngine
     //a sparse key-value index for identifying ID with its metafile names.
 
     //internal map for the actual torrents
-    private final Map<String, Torrent> mTorrentsMap = new HashMap<>();
+    private final Map<String, BitletObject> mTorrentsMap = new HashMap<>();
     private final Object mIOLock = new Object();
     private EngineConfig mEngineConfig;
+
+    public EngineConfig getEngineConfig()
+    {
+        return mEngineConfig;
+    }
+
+    @Override
+    public void onReceiveNewTorrentObject(TorrentObject torrentObject)
+    {
+
+    }
 
     @Override
     public void download(String id)
     {
         try
         {
-            getTorrentMap().get(id).startDownload();
+            getTorrentMap().get(id).getTorrent().startDownload();
             //tick method etc. wrapped under a thread manager
         }
         catch (Exception e)
@@ -76,13 +80,15 @@ public class BitletEngine implements TorrentEngine
 
     }
 
+    //This return a sparse clone copy of the BitletObject list.
+    //We want to limit interaction only via IDs and abstract the internal engine implementation here.
     @Override
-    public synchronized List<TorrentObject> getTorrents()
+    public synchronized List<TorrentObject> getTorrentObjects()
     {
         List<TorrentObject> outList = new ArrayList<>();
-        for (Torrent torrent : getTorrentMap().values())
+        for (BitletObject bitletObject : getTorrentMap().values())
         {
-            outList.add(new BitletObject(torrent.getName(), torrent.getMetafile().getName(), null));
+            outList.add(bitletObject.getSparseClone());
         }
         return outList;
     }
@@ -90,33 +96,36 @@ public class BitletEngine implements TorrentEngine
     @Override
     public synchronized void startEngine()
     {
-        //check cache dir for metafiles
-        Runnable loadRunnable = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                loadIndexFromDisk(mEngineConfig.getMetafileDirectory());
-            }
-        };
-
-        Thread ioThread = new Thread(loadRunnable, "torrent-metafile-load");
-        ioThread.start();
 
         Runnable engineRunnable = new Runnable()
         {
             @Override
             public void run()
             {
+                //to make sure nobody is using IO during state resume
                 synchronized (mIOLock)
                 {
-
+                    final File metafileDirectory = mEngineConfig.getMetafileDirectory();
+                    loadIndexFromDisk(metafileDirectory);
+                    mapIndexToMetafiles(metafileDirectory, getTorrentMap());
                 }
 
                 //check torrent status (paused/running but exited)
-                for (Torrent torrent : getTorrentMap().values())
+                for (BitletObject bitletObject : getTorrentMap().values())
                 {
-
+                    final boolean isDownloading = bitletObject.getStatus() == TorrentObject.Status.DOWNLOADING;
+                    final Torrent torrent = bitletObject.getTorrent();
+                    if (torrent != null && !torrent.isCompleted() && isDownloading)
+                    {
+                        try
+                        {
+                            torrent.startDownload();
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         };
@@ -126,7 +135,7 @@ public class BitletEngine implements TorrentEngine
 
     }
 
-    private void mapIndexToMetafiles(final File metafileDirectory, final Map<String, TorrentObject> index)
+    private void mapIndexToMetafiles(final File metafileDirectory, final Map<String, BitletObject> bitletObjectMap)
     {
         if (metafileDirectory.exists() && metafileDirectory.isDirectory() && metafileDirectory.canRead())
         {
@@ -139,116 +148,65 @@ public class BitletEngine implements TorrentEngine
                 }
             });
 
+            //After viewing Data Oriented Design by Mike Acton
+            File saveDir = getEngineConfig().getSaveDirectory();
+            int port = getEngineConfig().getPort();
             for (File metafile : files)
             {
                 //Todo:Build BitLetObject here?
+                BitletObject bitletObject = BitletObject.buildBitletObject(metafile, saveDir, port);
+
+                if (bitletObject != null)
+                {
+                    bitletObjectMap.put(bitletObject.getName(), bitletObject);
+                }
             }
         }
     }
 
     /**
-     * Build a BitletObject from a metafile. Since this operation will read from disk, make sure to call it in a background thread.
-     *
-     * @param metafile          A .torrent file. Doesn't necessarily have to be .torrent though.
-     *                          Look into {@link org.bitlet.wetorrent.Metafile} for its parsing options.
-     * @param downloadDirectory Directory for the downloaded file.
-     * @param port              Port for incoming connections.
-     * @return A BitletObject ready to be used for downloading.
-     */
-    private BitletObject buildBitletObject(File metafile, File downloadDirectory, int port)
-    {
-        BitletObject bitletObject = new BitletObject(null, metafile.getName(), TorrentObject.Status.PAUSED);
-        BufferedInputStream bufferedInputStream = null;
-        try
-        {
-            bufferedInputStream = new BufferedInputStream(new FileInputStream(metafile));
-            Metafile metafileInstance = new Metafile(bufferedInputStream);
-
-            TorrentDisk torrentDisk = new PlainFileSystemTorrentDisk(metafileInstance, downloadDirectory);
-            torrentDisk.init();
-
-            IncomingPeerListener peerListener = new IncomingPeerListener(port);
-
-            Torrent torrent = new Torrent(metafileInstance, torrentDisk, peerListener);
-            bitletObject.setTorrent(torrent);
-            return bitletObject;
-
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (bufferedInputStream != null)
-            {
-                try
-                {
-                    bufferedInputStream.close();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-
-        return null;
-    }
-
-    /**
-     * Populate index from disk
+     * Populate index from disk. This method must be encapsulated with a synchronized IO access
+     * @param metafileDirectory
+     * @return A map of String (ID) and TorrentObjects.
      */
     private Map<String, TorrentObject> loadIndexFromDisk(final File metafileDirectory)
     {
         final Map<String, TorrentObject> torrentObjectIndex = new HashMap<>();
 
         final File metafileIndex = new File(metafileDirectory, metafileIndexName);
-        synchronized (mIOLock)
+        if (metafileIndex.exists())
         {
-            if (metafileIndex.exists())
+            FileInputStream fileInputStream = null;
+            ObjectInputStream objectInputStream = null;
+            try
             {
-                FileInputStream fileInputStream = null;
-                ObjectInputStream objectInputStream = null;
-                try
-                {
-                    fileInputStream = new FileInputStream(metafileIndex);
-                    objectInputStream = new ObjectInputStream(fileInputStream);
-                    //noinspection unchecked
-                    final Map<String, TorrentObject> torrentObjects = (Map<String, TorrentObject>) objectInputStream.readObject();
+                fileInputStream = new FileInputStream(metafileIndex);
+                objectInputStream = new ObjectInputStream(fileInputStream);
+                //noinspection unchecked
+                final Map<String, TorrentObject> torrentObjects = (Map<String, TorrentObject>) objectInputStream.readObject();
 
-                    torrentObjectIndex.putAll(torrentObjects);
-                }
-                catch (IOException e)
+                torrentObjectIndex.putAll(torrentObjects);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if (fileInputStream != null && objectInputStream != null)
                 {
-                    e.printStackTrace();
-                }
-                catch (ClassNotFoundException e)
-                {
-                    e.printStackTrace();
-                }
-                finally
-                {
-                    if (fileInputStream != null && objectInputStream != null)
+                    try
                     {
-                        try
-                        {
-                            objectInputStream.close();
-                            fileInputStream.close();
-                        }
-                        catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        objectInputStream.close();
+                        fileInputStream.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -310,7 +268,7 @@ public class BitletEngine implements TorrentEngine
         this.mEngineConfig = engineConfig;
     }
 
-    private Map<String, Torrent> getTorrentMap()
+    private Map<String, BitletObject> getTorrentMap()
     {
         return mTorrentsMap;
     }
