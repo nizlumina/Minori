@@ -29,89 +29,77 @@ import java.security.NoSuchAlgorithmException;
 
 public class BitletObject extends TorrentObject
 {
-    private transient Torrent torrent;
-
-    private BitletObject(String id, String name, String metafileName, Status status)
-    {
-        super(id, name, metafileName, status);
-    }
+    private transient Torrent mTorrent;
 
     /**
-     * Build a BitletObject from a metafile. Since this operation will read from disk, make sure to call it in a background thread.
+     * Init the {@link org.bitlet.wetorrent.Torrent} property for this object. Metafile will be read and decoded, port listener setup, and the disk will be ready for downloading w.r.t. the passed downloadDirectory.
      *
-     * @param metafile          A .torrent file. Doesn't necessarily have to be .torrent though.
-     *                          Look into {@link org.bitlet.wetorrent.Metafile} for its parsing options.
-     * @param downloadDirectory Directory for the downloaded file.
-     * @param port              Port for incoming connections.
-     * @return A BitletObject ready to be used for downloading. Returns null on failure.
+     * @param metafile          Metafile to be read as inputstream
+     * @param downloadDirectory The directory for this torrent download
+     * @param port              The port where this torrent will use for downloading
+     * @return true on succesful init. False on any initialization exception.
      */
-    public static BitletObject buildBitletObject(File metafile, File downloadDirectory, int port)
+    public boolean initTorrent(File metafile, File downloadDirectory, int port)
     {
-        String id = generateId();
-        BitletObject bitletObject = new BitletObject(id, null, metafile.getName(), TorrentObject.Status.PAUSED);
-        BufferedInputStream bufferedInputStream = null;
-        try
+        boolean success = false;
+        if (metafile.exists() && metafile.canRead())
         {
-            bufferedInputStream = new BufferedInputStream(new FileInputStream(metafile));
-            Metafile metafileInstance = new Metafile(bufferedInputStream);
-
-            TorrentDisk torrentDisk = new PlainFileSystemTorrentDisk(metafileInstance, downloadDirectory);
-            torrentDisk.init();
-
-            IncomingPeerListener peerListener = new IncomingPeerListener(port);
-
-            Torrent torrent = new Torrent(metafileInstance, torrentDisk, peerListener);
-            bitletObject.setTorrent(torrent);
-            return bitletObject;
-
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (bufferedInputStream != null)
+            BufferedInputStream bufferedInputStream = null;
+            try
             {
-                try
+                bufferedInputStream = new BufferedInputStream(new FileInputStream(metafile));
+                final Metafile metafileInstance = new Metafile(bufferedInputStream);
+
+                final TorrentDisk torrentDisk = new PlainFileSystemTorrentDisk(metafileInstance, downloadDirectory);
+                torrentDisk.init();
+
+                final IncomingPeerListener peerListener = new IncomingPeerListener(port);
+
+                final Torrent torrent = new Torrent(metafileInstance, torrentDisk, peerListener);
+
+                this.setTorrent(torrent); //important setter
+                success = true;
+            }
+            catch (FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+            catch (NoSuchAlgorithmException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                if (bufferedInputStream != null)
                 {
-                    bufferedInputStream.close();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
+                    try
+                    {
+                        bufferedInputStream.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                        success = false;
+                    }
                 }
             }
         }
-        return null;
+
+        return success;
     }
 
-    private static String generateId()
-    {
-        //Todo: What kind of ID would be right for this situation?
-        return null;
-    }
 
     public Torrent getTorrent()
     {
-        return torrent;
+        return mTorrent;
     }
 
     public void setTorrent(Torrent torrent)
     {
-        this.torrent = torrent;
-    }
-
-    public BitletObject getSparseClone()
-    {
-        return new BitletObject(getId(), getName(), getMetafileName(), getStatus());
+        this.mTorrent = torrent;
     }
 }

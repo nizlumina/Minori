@@ -12,24 +12,42 @@
 
 package com.nizlumina.minori.common.torrent;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
  * A model class that implements basic properties to be used by internal {@link com.nizlumina.minori.common.torrent.TorrentEngine}
  */
-public abstract class TorrentObject implements Serializable
+public class TorrentObject implements Serializable
 {
-    final String id;
-    final String name;
-    final String metafileName;
-    final Status status;
+    private String id;
+    private Status status;
+    private File metafile;
 
-    public TorrentObject(String id, String name, String metafileName, Status status)
+    public TorrentObject() {}
+
+    /**
+     * Generate a random String with size 10.
+     */
+    public static String generateId()
     {
-        this.id = id;
-        this.name = name;
-        this.metafileName = metafileName;
-        this.status = status;
+        //Pseudo imgur. YOLO.
+        final int length = 10;
+        final char[] randomChars = new char[length];
+
+        for (int i = 0; i < length; ++i)
+        {
+            final int randomVal = (int) (Math.random() * 52);
+            final char base;
+            if (randomVal < 26)
+                base = 'A';
+            else
+                base = 'a';
+
+            randomChars[i] = (char) (base + randomVal % 26);
+        }
+        return String.valueOf(randomChars);
+
     }
 
     public String getId()
@@ -37,19 +55,29 @@ public abstract class TorrentObject implements Serializable
         return id;
     }
 
-    public String getMetafileName()
+    public void setId(String id)
     {
-        return metafileName;
-    }
-
-    public String getName()
-    {
-        return name;
+        this.id = id;
     }
 
     public Status getStatus()
     {
         return status;
+    }
+
+    public void setStatus(Status status)
+    {
+        this.status = status;
+    }
+
+    public File getMetafile()
+    {
+        return metafile;
+    }
+
+    public void setMetafile(File metafile)
+    {
+        this.metafile = metafile;
     }
 
     public enum Status

@@ -27,7 +27,7 @@ public interface TorrentEngine
      *
      * @param torrentObject A TorrentObject created from any valid source (metafile/magnet/etc).
      */
-    public void onReceiveNewTorrentObject(TorrentObject torrentObject);
+    void onReceiveNewTorrentObject(TorrentObject torrentObject);
 
     public void download(String id);
 

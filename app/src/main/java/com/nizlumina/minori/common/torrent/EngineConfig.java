@@ -82,7 +82,7 @@ public final class EngineConfig
         return maxRunningTorrent;
     }
 
-    public File getSaveDirectory()
+    public File getDownloadDirectory()
     {
         return saveDirectory;
     }
