@@ -9,39 +9,69 @@
   ~
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:padding="16dp"
-    android:scrollbars="vertical">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/detail_image"
-        android:layout_width="@dimen/gallery_image_width_small"
-        android:layout_height="@dimen/gallery_image_height_small"
-        android:layout_gravity="center"
-        android:layout_marginRight="8dp"
-        tools:src="@android:color/holo_blue_light" />
-
-    <TableLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/detail_image"
-        android:layout_alignTop="@id/detail_image"
-        android:layout_toRightOf="@id/detail_image"
-        android:stretchColumns="*">
+        android:orientation="vertical">
 
-        <TableRow android:layout_weight="1">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/detail_header_synopsis"
+                style="@style/TextColorSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/header_synopsis" />
+
+            <ImageView
+                android:id="@+id/detail_image"
+                android:layout_width="@dimen/gallery_image_width_small"
+                android:layout_height="@dimen/gallery_image_height_small"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/detail_header_synopsis"
+                android:layout_marginLeft="16dp"
+                android:contentDescription="@string/acc_poster_description"
+                android:scaleType="fitCenter"
+                tools:background="@android:color/holo_blue_dark"
+                tools:src="@drawable/ic_star_white_48dp" />
+
+            <!--This will use Html.from(string) for display since it use MAL as base source-->
+            <TextView
+                android:id="@+id/detail_synopsis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detail_header_synopsis"
+                android:layout_toLeftOf="@id/detail_image"
+                android:autoLink="web"
+                android:fontFamily="sans-serif-light"
+                android:textSize="12sp"
+                tools:text="Jugem Jugem Unko Nage Ki Ototoi no Shin-chan no Pantsu Shinpachi no Jinsei Balmunk Fezarion Isaac Schneider San Bun no Ichi Junjyou na Kanjyou no Nokotta San Bun no Ni wa Sakamuke ga Kininaru Kanjyou Uragiri wa Boku no Namae wo Shitteiruyou de Shinranai no wo Boku wa Shitteiru Rusu Surume Medaka Kazuno Kokoedame Medaka….Kono Medaka wa saki no to wa Chigau Yatsu Dakara﻿ Ikeno Medaka no Hou Dakara Raa-yuu yuuteimiouki Mukou Pepepepepepepepepepepepe Bichiguso Maru" />
+        </RelativeLayout>
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:columnCount="3"
+            android:paddingBottom="8dp"
+            android:rowCount="3">
 
             <include
                 android:id="@+id/detail_badge_rating"
                 layout="@layout/badgeview_category_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="0"
                 android:layout_gravity="center" />
 
             <include
@@ -49,51 +79,63 @@
                 layout="@layout/badgeview_category_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:layout_gravity="center" />
-        </TableRow>
-
-        <TableRow
-            android:layout_marginTop="8dp"
-            android:layout_weight="1">
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp" />
 
             <include
                 android:id="@+id/detail_badge_source"
                 layout="@layout/badgeview_category_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="0"
                 android:layout_gravity="center" />
 
             <include
-                android:id="@+id/detail_badge_studio"
-                layout="@layout/badgeview_category_text_nobg"
+                android:id="@+id/detail_button_mark"
+                layout="@layout/old_fab_standard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:layout_gravity="center" />
-        </TableRow>
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:layout_marginTop="16dp" />
 
+            <include
+                android:id="@+id/detail_button_refresh"
+                layout="@layout/old_fab_standard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:layout_marginTop="16dp" />
 
-    </TableLayout>
+            <include
+                android:id="@+id/detail_button_download"
+                layout="@layout/old_fab_standard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:layout_marginTop="16dp" />
 
-    <TextView
-        android:id="@+id/detail_header_synopsis"
-        style="@style/TextColorSecondary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/detail_image"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Synopsis" />
-    <!--This will use Html.from(string) for display since it use MAL as base source-->
-    <TextView
-        android:id="@+id/detail_synopsis"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/detail_header_synopsis"
-        android:autoLink="web"
-        tools:text="Jugem Jugem Unko Nage Ki Ototoi no Shin-chan no Pantsu Shinpachi no Jinsei Balmunk Fezarion Isaac Schneider San Bun no Ichi Junjyou na Kanjyou no Nokotta San Bun no Ni wa Sakamuke ga Kininaru Kanjyou Uragiri wa Boku no Namae wo Shitteiruyou de Shinranai no wo Boku wa Shitteiru Rusu Surume Medaka Kazuno Kokoedame Medaka….Kono Medaka wa saki no to wa Chigau Yatsu Dakara﻿ Ikeno Medaka no Hou Dakara Raa-yuu yuuteimiouki Mukou Pepepepepepepepepepepepe Bichiguso Maru" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Mark" />
 
-</RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Refresh" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Download" />
+        </GridLayout>
+
+    </LinearLayout>
+</ScrollView>
 

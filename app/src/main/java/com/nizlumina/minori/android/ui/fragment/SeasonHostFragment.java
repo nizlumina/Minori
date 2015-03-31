@@ -90,16 +90,6 @@ public class SeasonHostFragment extends TabbedFragment
         }
     }
 
-//    private void removeParentTab(View view)
-//    {
-//        if (view instanceof ViewGroup)
-//        {
-//            ViewGroup parent = (ViewGroup) getTabLayout().getParent();
-//
-//            parent.removeView(getTabLayout());
-//        }
-//    }
-
     private void onLoad(@NonNull final SlidingTabLayout tabLayout, @NonNull final ViewPager viewPager)
     {
         mIndexController.loadIndex(new OnFinishListener<Void>()
@@ -157,8 +147,7 @@ public class SeasonHostFragment extends TabbedFragment
     private void buildViews(final List<Season> mSeasons, ViewPager viewPager, SlidingTabLayout tabLayout)
     {
         viewPager.setOffscreenPageLimit(1);
-        if (getLoadingPlaceholder().getVisibility() != View.GONE)
-            getLoadingPlaceholder().setVisibility(View.GONE);
+
         FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getFragmentManager())
         {
             @Override

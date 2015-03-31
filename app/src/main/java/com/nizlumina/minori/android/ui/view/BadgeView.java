@@ -51,10 +51,15 @@ public final class BadgeView
 
     public static BadgeView quickBuild(View parent, @IdRes int badgeViewContainerID, String category, String contentText)
     {
-        BadgeView badgeView = new BadgeView((ViewGroup) parent.findViewById(badgeViewContainerID));
-        badgeView.getContentTextView().setText(contentText);
-        badgeView.getCategoryTextView().setText(category);
-        badgeView.getCategoryTextView().setTextColor(DEFAULT_CATEGORY_TEXT_COLOR);
+        final ViewGroup parentView = (ViewGroup) parent.findViewById(badgeViewContainerID);
+        BadgeView badgeView = null;
+        if (parentView != null)
+        {
+            badgeView = new BadgeView(parentView);
+            badgeView.getContentTextView().setText(contentText);
+            badgeView.getCategoryTextView().setText(category);
+            badgeView.getCategoryTextView().setTextColor(DEFAULT_CATEGORY_TEXT_COLOR);
+        }
         return badgeView;
     }
 

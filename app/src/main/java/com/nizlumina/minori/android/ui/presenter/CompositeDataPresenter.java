@@ -64,6 +64,8 @@ public class CompositeDataPresenter
         return getCompositeData().getLiveChartObject().getWebsite();
     }
 
+    public String getBigImageURL() {return getCompositeData().getSmallAnimeObject().getPosterImage();}
+
     public String getImageURL()
     {
         return getCompositeData().getMalObject().getImage();

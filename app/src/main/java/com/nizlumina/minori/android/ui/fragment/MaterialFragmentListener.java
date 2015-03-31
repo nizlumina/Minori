@@ -12,6 +12,18 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
-public class DownloadQueueFragment
+import android.support.annotation.DrawableRes;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+
+public interface MaterialFragmentListener
 {
+    void invokeFragmentChange(Fragment target);
+
+    Toolbar getMainToolbar();
+
+    void setupPrimaryFab(boolean show, View.OnClickListener listener, @DrawableRes int icon);
+
+    void setupMiniFab(boolean show, View.OnClickListener listener, @DrawableRes int icon);
 }

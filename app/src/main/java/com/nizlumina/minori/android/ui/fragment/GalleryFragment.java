@@ -26,16 +26,24 @@ import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.model.WatchData;
-import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
+
+import java.lang.ref.WeakReference;
 
 public class GalleryFragment extends Fragment
 {
     private static final String FRAGMENT_TAG = "gallery_fragment";
     private GridView mGridView;
-
+    private WeakReference<MaterialFragmentListener> mListener = new WeakReference<>(null);
     public GalleryFragment() {}
+
+    public static GalleryFragment newInstance(MaterialFragmentListener listener)
+    {
+        GalleryFragment galleryFragment = new GalleryFragment();
+        galleryFragment.mListener = new WeakReference<>(listener);
+        return galleryFragment;
+    }
 
     public static String getFragmentTag()
     {
@@ -62,21 +70,14 @@ public class GalleryFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        DrawerActivity drawerActivity = ((DrawerActivity) getActivity());
-        Toolbar toolbar = drawerActivity.getToolbar();
-        toolbar.setTitle(R.string.app_name);
-
-        drawerActivity.getFabMain().setOnClickListener(new View.OnClickListener()
+        MaterialFragmentListener listener = mListener.get();
+        if (listener != null)
         {
-            @Override
-            public void onClick(View v)
-            {
-                getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new SearchFragment()).addToBackStack(GalleryFragment.class.getSimpleName()).commit();
-            }
-        });
+            Toolbar toolbar = listener.getMainToolbar();
+            if (toolbar != null)
+                toolbar.setTitle(R.string.app_name);
 
-        drawerActivity.setupFab(drawerActivity.getFabMain(), R.drawable.ic_add_black_24dp);
-        drawerActivity.setupFab(drawerActivity.getFabMini(), R.drawable.ic_refresh_black_24dp);
+        }
 
         setupGridView(mGridView);
     }

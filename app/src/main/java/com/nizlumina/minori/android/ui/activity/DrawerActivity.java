@@ -19,6 +19,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,17 +30,54 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.android.ui.fragment.DetailFragment;
 import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
-import com.nizlumina.minori.android.ui.fragment.SeasonFragment;
+import com.nizlumina.minori.android.ui.fragment.MaterialFragmentListener;
 import com.nizlumina.minori.android.ui.fragment.SeasonHostFragment;
 import com.nizlumina.minori.android.utility.Util;
 
-public class DrawerActivity extends ActionBarActivity implements SeasonFragment.Listener, SeasonHostFragment.Listener, DetailFragment.Listener
+public class DrawerActivity extends ActionBarActivity
 {
+    private final int FRAGMENT_CONTAINER = R.id.base_contentfragment;
     private Toolbar mToolbar;
+
+    private final MaterialFragmentListener fragmentListener = new MaterialFragmentListener()
+    {
+        @Override
+        public void invokeFragmentChange(Fragment target)
+        {
+            getSupportFragmentManager().beginTransaction().replace(FRAGMENT_CONTAINER, target).commit();
+        }
+
+        @Override
+        public Toolbar getMainToolbar()
+        {
+            return mToolbar;
+        }
+
+        @Override
+        public void setupPrimaryFab(boolean show, View.OnClickListener listener, @DrawableRes int icon)
+        {
+
+        }
+
+        @Override
+        public void setupMiniFab(boolean show, View.OnClickListener listener, @DrawableRes int icon)
+        {
+
+        }
+    };
     private ViewGroup mTopContainer;
     private LinearLayout mFabContainer;
+
+    private final SeasonHostFragment.Listener seasonHostListener = new SeasonHostFragment.Listener()
+    {
+        @Override
+        public ViewGroup getContainerForTabs()
+        {
+            return mFabContainer;
+        }
+    };
+
     private ImageButton mFabMain;
     private ImageButton mFabMini;
     private DrawerLayout mDrawerLayout;
@@ -48,27 +86,6 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
     private Point mDisplaySize;
     private float mFabContainerX = -10000;
     private boolean mContainerVisibility;
-    private int mTopContainerBaseHeight = -1;
-
-    public ImageButton getFabMini()
-    {
-        return mFabMini;
-    }
-
-    public ImageButton getFabMain()
-    {
-        return mFabMain;
-    }
-
-    public Toolbar getToolbar()
-    {
-        return mToolbar;
-    }
-
-    public ViewGroup getToolbarContainer()
-    {
-        return (ViewGroup) mToolbar.getParent();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,7 +96,7 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         setupViews();
         setupMetrics();
         if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
-            getSupportFragmentManager().beginTransaction().add(R.id.base_contentfragment, new GalleryFragment(), GalleryFragment.getFragmentTag()).commit();
+            getSupportFragmentManager().beginTransaction().add(FRAGMENT_CONTAINER, new GalleryFragment(), GalleryFragment.getFragmentTag()).commit();
 
     }
 
@@ -146,13 +163,13 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         switch (view.getId())
         {
             case R.id.drawer_watchlist:
-                getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, new GalleryFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(FRAGMENT_CONTAINER, new GalleryFragment()).commit();
                 showFab();
                 break;
             case R.id.drawer_season:
                 SeasonHostFragment seasonHostFragment = (SeasonHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonHostFragment.class.getSimpleName());
                 if (seasonHostFragment == null)
-                    getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, SeasonHostFragment.newInstance(this), SeasonHostFragment.class.getSimpleName()).commit();
+                    getSupportFragmentManager().beginTransaction().replace(FRAGMENT_CONTAINER, SeasonHostFragment.newInstance(seasonHostListener), SeasonHostFragment.class.getSimpleName()).commit();
 
                 hideFab();
                 break;
@@ -182,78 +199,5 @@ public class DrawerActivity extends ActionBarActivity implements SeasonFragment.
         Resources resources = getResources();
         fab.setImageDrawable(resources.getDrawable(drawableID));
         Util.tintImageButton(fab, resources.getColor(foregroundColor), resources.getColor(backgroundColor));
-    }
-
-    /**
-     * Set fab with default accent color and shade
-     *
-     * @param fab        The ImageButton or FAB
-     * @param drawableID The drawable ID used as foreground
-     */
-    public void setupFab(ImageButton fab, @DrawableRes int drawableID)
-    {
-        setupFab(fab, drawableID, R.color.accent_color_shade, R.color.accent_color);
-    }
-
-    public boolean containerIsVisible()
-    {
-        return mContainerVisibility;
-    }
-
-    /**
-     * Hides the ViewGroup containing toolbar
-     */
-    public void hideTopContainer()
-    {
-        if (mTopContainer != null && containerIsVisible())
-        {
-//            mTopContainer.setVisibility(View.GONE);
-//            ObjectAnimator animator = ObjectAnimator.ofFloat(mTopContainer, "y", mTopContainer.getHeight());
-//            animator.start();
-            mContainerVisibility = false;
-        }
-    }
-
-    public void showTopContainer()
-    {
-        if (mTopContainer != null && !containerIsVisible())
-        {
-//            mTopContainer.setVisibility(View.VISIBLE);
-            //ObjectAnimator.ofFloat(mTopContainer, "translationY", -mTopContainer.getHeight()).start();
-            mContainerVisibility = true;
-        }
-    }
-
-    @Override
-    public void displayDetailFragment(Bundle args)
-    {
-        DetailFragment detailFragment = DetailFragment.newInstance(this);
-        detailFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction().replace(R.id.base_contentfragment, detailFragment).commit();
-
-    }
-
-    @Override
-    public void onScrollUp()
-    {
-        showTopContainer();
-    }
-
-    @Override
-    public void onScrollDown()
-    {
-        hideTopContainer();
-    }
-
-    @Override
-    public void setToolbarTitle(String title)
-    {
-        getToolbar().setTitle(title);
-    }
-
-    @Override
-    public ViewGroup getContainerForTabs()
-    {
-        return getToolbarContainer();
     }
 }

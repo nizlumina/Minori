@@ -15,6 +15,7 @@ package com.nizlumina.minori.android.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,12 +40,12 @@ public class DetailFragment extends Fragment
     private static final String EPISODECOUNT_CATEGORY = "episodes";
 
     private CompositeData mCompositeData;
-    private WeakReference<Listener> mFragmentListener;
+    private WeakReference<MaterialFragmentListener> mFragmentListener;
 
-    public static DetailFragment newInstance(Listener fragmentListener)
+    public static DetailFragment newInstance(MaterialFragmentListener materialFragmentListener)
     {
         DetailFragment detailFragment = new DetailFragment();
-        detailFragment.mFragmentListener = new WeakReference<Listener>(fragmentListener);
+        detailFragment.mFragmentListener = new WeakReference<MaterialFragmentListener>(materialFragmentListener);
         return detailFragment;
     }
 
@@ -64,6 +65,16 @@ public class DetailFragment extends Fragment
     private void setupViews(View inflatedView)
     {
         final CompositeDataPresenter presenter = new CompositeDataPresenter(mCompositeData);
+        final MaterialFragmentListener materialFragmentListener = mFragmentListener.get();
+        Toolbar mainToolbar = null;
+        if (materialFragmentListener != null)
+        {
+            mainToolbar = materialFragmentListener.getMainToolbar();
+            if (mainToolbar != null)
+            {
+                mainToolbar.setTitle(presenter.getTitle());
+            }
+        }
 
         final ImageView detailImageView = (ImageView) inflatedView.findViewById(R.id.detail_image);
         Glide.with(DetailFragment.this).load(presenter.getImageURL()).diskCacheStrategy(DiskCacheStrategy.ALL).into(detailImageView);
@@ -71,17 +82,46 @@ public class DetailFragment extends Fragment
         final TextView synopsisView = (TextView) inflatedView.findViewById(R.id.detail_synopsis);
         synopsisView.setText(Html.fromHtml(presenter.getSynopsis()));
 
+        final BadgeView studioBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_studio, STUDIO_CATEGORY, presenter.getStudio());
+
+        if (studioBadge != null)
+        {
+            studioBadge.quickTint(R.color.blue_800);
+        }
+        else
+        {
+            if (mainToolbar != null)
+            {
+                mainToolbar.setSubtitle(presenter.getStudio());
+            }
+        }
+
+
         final BadgeView ratingBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_rating, SCORE_CATEGORY, presenter.getScore());
         ratingBadge.quickTint(R.color.orange_800);
-
-        final BadgeView studioBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_studio, STUDIO_CATEGORY, presenter.getStudio());
-        studioBadge.quickTint(R.color.blue_800);
 
         final BadgeView sourceBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_source, SOURCE_CATEGORY, presenter.getSource());
         sourceBadge.quickTint(R.color.purple_800);
 
         final BadgeView episodeCountBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_episodecount, EPISODECOUNT_CATEGORY, presenter.getEpisodesCount());
         episodeCountBadge.quickTint(R.color.green_800);
+
+        final View downloadButton = inflatedView.findViewById(R.id.detail_button_download);
+        if (downloadButton != null)
+        {
+            downloadButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    MaterialFragmentListener materialFragmentListener = mFragmentListener.get();
+                    if (materialFragmentListener != null)
+                    {
+                        materialFragmentListener.invokeFragmentChange(SearchFragment.newInstance(presenter.getTitle()));
+                    }
+                }
+            });
+        }
     }
 
 
@@ -91,19 +131,5 @@ public class DetailFragment extends Fragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mCompositeData = getArguments().getParcelable(CompositeData.PARCELKEY_COMPOSITEDATA);
-
-        //Defensive coding. Sigh..
-        if (mFragmentListener != null)
-        {
-            Listener fragmentListener = mFragmentListener.get();
-            if (fragmentListener != null)
-                fragmentListener.setToolbarTitle(mCompositeData.getLiveChartObject().getTitle());
-        }
-
-    }
-
-    public static interface Listener
-    {
-        void setToolbarTitle(final String title);
     }
 }

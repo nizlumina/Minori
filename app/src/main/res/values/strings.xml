@@ -20,4 +20,6 @@
     <string name="series_filter_text">Series</string>
     <string name="movies_filter_text">Movies</string>
     <string name="specials_filter_text">Specials</string>
+    <string name="header_synopsis">Synopsis</string>
+    <string name="acc_poster_description">Poster Image</string>
 </resources>

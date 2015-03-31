@@ -12,8 +12,6 @@
 
 package com.nizlumina.minori.android.controller;
 
-import android.os.AsyncTask;
-
 import com.nizlumina.minori.android.internal.ThreadWorker;
 import com.nizlumina.minori.android.internal.factory.CoreNetworkFactory;
 import com.nizlumina.minori.android.listener.OnFinishListener;
@@ -26,7 +24,6 @@ import java.util.concurrent.Callable;
 public class SearchController
 {
     ThreadWorker<List<NyaaEntry>> searchWorker = new ThreadWorker<>();
-    private AsyncTask searchFuture;
 
     public void searchNyaa(final String terms, final OnFinishListener<List<NyaaEntry>> onFinishListener)
     {

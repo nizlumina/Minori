@@ -43,10 +43,20 @@ import java.util.List;
 
 public class SearchFragment extends Fragment
 {
+    public static final String SEARCH_STRING = "SEARCH_STRING";
     private final SearchController mSearchController = new SearchController();
     private GenericAdapter<NyaaFansubGroup> mGenericAdapter;
 
     public SearchFragment() {}
+
+    public static SearchFragment newInstance(String searchString)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString(SEARCH_STRING, searchString);
+        SearchFragment searchFragment = new SearchFragment();
+        searchFragment.setArguments(bundle);
+        return searchFragment;
+    }
 
     @Override
     public void onAttach(Activity activity)
@@ -72,6 +82,16 @@ public class SearchFragment extends Fragment
 
         final ListView listView = (ListView) view.findViewById(R.id.sf_listview);
         setupList(listView);
+
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            String searchTerms = args.getString(SEARCH_STRING);
+            if (searchTerms != null)
+            {
+                invokeSearch(searchTerms);
+            }
+        }
     }
 
     private void setupList(ListView listView)

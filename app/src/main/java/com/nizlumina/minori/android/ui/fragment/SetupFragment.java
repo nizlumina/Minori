@@ -39,12 +39,12 @@ import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.android.controller.WatchlistController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.alarm.Alarm;
-import com.nizlumina.minori.android.ui.activity.DrawerActivity;
 import com.nizlumina.minori.android.wrapper.ParcelableNyaaFansubGroup;
 import com.nizlumina.minori.common.hummingbird.AnimeObject;
 import com.nizlumina.minori.common.nyaa.NyaaEntry;
 import com.nizlumina.minori.common.nyaa.NyaaFansubGroup;
 
+import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +57,14 @@ public class SetupFragment extends Fragment
     private Alarm.Mode mSelectedMode = Alarm.Mode.RELEASE_DAY;
     private String mSelectedEpisode;
     private AnimeObject mSelectedAnimeObject;
+    private WeakReference<MaterialFragmentListener> mFragmentListener = new WeakReference<MaterialFragmentListener>(null);
+
+    public static SetupFragment newInstance(MaterialFragmentListener fragmentListener)
+    {
+        final SetupFragment setupFragment = new SetupFragment();
+        setupFragment.mFragmentListener = new WeakReference<MaterialFragmentListener>(fragmentListener);
+        return setupFragment;
+    }
 
 
     @Override
@@ -67,12 +75,16 @@ public class SetupFragment extends Fragment
         if (parcelableNyaaFansubGroup != null)
             mNyaaFansubGroup = parcelableNyaaFansubGroup.getNyaaFansubGroup();
 
-        DrawerActivity activity = (DrawerActivity) getActivity();
-        activity.getFabMain().setVisibility(View.GONE);
-        activity.getFabMini().setVisibility(View.GONE);
-        Toolbar toolbar = activity.getToolbar();
-        toolbar.setTitle(mNyaaFansubGroup.getSeriesTitle());
-        toolbar.setSubtitle(mNyaaFansubGroup.getGroupName());
+        MaterialFragmentListener fragmentListener = mFragmentListener.get();
+        if (fragmentListener != null)
+        {
+            Toolbar toolbar = fragmentListener.getMainToolbar();
+            if (toolbar != null)
+            {
+                toolbar.setTitle(mNyaaFansubGroup.getSeriesTitle());
+                toolbar.setSubtitle(mNyaaFansubGroup.getGroupName());
+            }
+        }
     }
 
     @Override
