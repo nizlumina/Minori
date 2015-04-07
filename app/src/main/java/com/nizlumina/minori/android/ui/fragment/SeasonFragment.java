@@ -45,28 +45,23 @@ import java.util.List;
 
 public class SeasonFragment extends Fragment
 {
-    boolean mInitialized = false;
+    public static final String ARGS_GRIDVIEW_PADDING_TOP = "ARGS_GRIDVIEW_PADDING_TOP";
     private CustomGridView mGridView;
     private SeasonController mSeasonController;
     private List<CompositeData> mCompositeDatasForDisplay = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
     private Season mSeason;
-    private WeakReference<Listener> mFragmentListenerRef;
+    private WeakReference<DrawerFragmentListener> mFragmentListenerRef;
+    private AbsListView.OnScrollListener mOnScrollListener;
 
-    public static SeasonFragment newInstance(Season season, Listener fragmentListener)
+    public static SeasonFragment newInstance(Season season, DrawerFragmentListener fragmentListener, AbsListView.OnScrollListener onScrollListener)
     {
         SeasonFragment seasonFragment = new SeasonFragment();
         seasonFragment.mSeason = season;
         seasonFragment.mSeasonController = new SeasonController(season);
-        seasonFragment.mFragmentListenerRef = new WeakReference<Listener>(fragmentListener);
+        seasonFragment.mOnScrollListener = onScrollListener;
+        seasonFragment.mFragmentListenerRef = new WeakReference<DrawerFragmentListener>(fragmentListener);
         return seasonFragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Nullable
@@ -86,103 +81,99 @@ public class SeasonFragment extends Fragment
 
     private void setupGridView()
     {
-        if (!mInitialized)
+        Bundle arguments = getArguments();
+        if (arguments.containsKey(ARGS_GRIDVIEW_PADDING_TOP))
         {
-            mInitialized = true;
-            GalleryItemHolder.GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryItemHolder.GalleryPresenter<CompositeData>()
-            {
-                @Override
-                public void loadInto(final ImageView imageView, CompositeData source)
-                {
-                    Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).placeholder(R.color.primary_color_dark).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
-                }
-
-                @Override
-                public String getTitle(CompositeData source)
-                {
-                    return source.getLiveChartObject().getTitle();
-                }
-
-                @Override
-                public String getGroup(CompositeData source)
-                {
-                    return null;
-                }
-
-                @Override
-                public String getEpisode(CompositeData source)
-                {
-                    return null;
-                }
-
-
-                @Override
-                public String getSourceText(CompositeData source)
-                {
-                    return source.getLiveChartObject().getSource();
-                }
-
-                private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
-
-                @Override
-                public String getScore(CompositeData source)
-                {
-                    return decimalFormat.format(source.getMalObject().getScore());
-                }
-            };
-
-            GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter)
-            {
-                @Override
-                protected void modifyViewProperties(TextView titleView, ImageView imageView, TextView groupView, TextView episodeView)
-                {
-                    groupView.setVisibility(View.GONE);
-                    episodeView.setVisibility(View.GONE);
-                }
-            };
-
-            mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatasForDisplay, compositeDataHolder);
-            mCompositeDataAdapter.setNotifyOnChange(true);
-            mGridView.setAdapter(mCompositeDataAdapter);
-
-            mGridView.setOnScrollListener(new AbsListView.OnScrollListener()
-            {
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState)
-                {
-                }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-                {
-
-                }
-            });
-
-            mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    if (mFragmentListenerRef != null)
-                    {
-                        Listener fragmentListener = mFragmentListenerRef.get();
-                        if (fragmentListener != null)
-                        {
-                            CompositeData detailData = mCompositeDataAdapter.getItem(position);
-
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(CompositeData.PARCELKEY_COMPOSITEDATA, detailData);
-
-                            fragmentListener.displayDetailFragment(bundle);
-                        }
-                        else
-                            Log.e(SeasonFragment.class.getSimpleName(), "FragmentListener for this fragment is null!");
-                    }
-                }
-            });
-            buildGridItems(false);
+            int topPadding = arguments.getInt(ARGS_GRIDVIEW_PADDING_TOP);
+            mGridView.setPadding(mGridView.getPaddingLeft(), mGridView.getPaddingTop() + topPadding, mGridView.getPaddingRight(), mGridView.getPaddingBottom());
+            mGridView.setClipToPadding(false);
         }
+
+        GalleryItemHolder.GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryItemHolder.GalleryPresenter<CompositeData>()
+        {
+            private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+            @Override
+            public void loadInto(final ImageView imageView, CompositeData source)
+            {
+                Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).placeholder(R.color.primary_color_dark).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+            }
+
+            @Override
+            public String getTitle(CompositeData source)
+            {
+                return source.getLiveChartObject().getTitle();
+            }
+
+            @Override
+            public String getGroup(CompositeData source)
+            {
+                return null;
+            }
+
+            @Override
+            public String getEpisode(CompositeData source)
+            {
+                return null;
+            }
+
+            @Override
+            public String getSourceText(CompositeData source)
+            {
+                return source.getLiveChartObject().getSource();
+            }
+
+            @Override
+            public String getScore(CompositeData source)
+            {
+                return decimalFormat.format(source.getMalObject().getScore());
+            }
+        };
+
+        GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter)
+        {
+            @Override
+            protected void modifyViewProperties(TextView titleView, ImageView imageView, TextView groupView, TextView episodeView)
+            {
+                groupView.setVisibility(View.GONE);
+                episodeView.setVisibility(View.GONE);
+            }
+        };
+
+        mCompositeDataAdapter = new GenericAdapter<>(getActivity(), mCompositeDatasForDisplay, compositeDataHolder);
+        mCompositeDataAdapter.setNotifyOnChange(true);
+        mGridView.setAdapter(mCompositeDataAdapter);
+
+        if (mOnScrollListener != null)
+        {
+            mGridView.setOnScrollListener(mOnScrollListener);
+
+        }
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                if (mFragmentListenerRef != null)
+                {
+                    DrawerFragmentListener fragmentListener = mFragmentListenerRef.get();
+                    if (fragmentListener != null)
+                    {
+                        CompositeData detailData = mCompositeDataAdapter.getItem(position);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(CompositeData.PARCELKEY_COMPOSITEDATA, detailData);
+                        DetailFragment detailFragment = DetailFragment.newInstance(fragmentListener);
+                        detailFragment.setArguments(bundle);
+                        fragmentListener.invokeFragmentChange(detailFragment);
+                    }
+                    else
+                        Log.e(SeasonFragment.class.getSimpleName(), "FragmentListener for this fragment is null!");
+                }
+            }
+        });
+        buildGridItems(false);
     }
 
     private void buildGridItems(final boolean forceRefresh)
@@ -224,29 +215,8 @@ public class SeasonFragment extends Fragment
         }, forceRefresh);
     }
 
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-    }
-
     private void log(String input)
     {
         Log.v(getClass().getSimpleName() + " - " + mSeason.getIndexKey(), input);
-    }
-
-    public static interface Listener extends MaterialFragmentListener
-    {
-        public void displayDetailFragment(Bundle args);
-
-        public void onScrollUp();
-
-        public void onScrollDown();
     }
 }

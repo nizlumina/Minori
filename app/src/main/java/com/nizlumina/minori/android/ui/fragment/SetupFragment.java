@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -57,12 +56,12 @@ public class SetupFragment extends Fragment
     private Alarm.Mode mSelectedMode = Alarm.Mode.RELEASE_DAY;
     private String mSelectedEpisode;
     private AnimeObject mSelectedAnimeObject;
-    private WeakReference<MaterialFragmentListener> mFragmentListener = new WeakReference<MaterialFragmentListener>(null);
+    private WeakReference<DrawerFragmentListener> mFragmentListener = new WeakReference<DrawerFragmentListener>(null);
 
-    public static SetupFragment newInstance(MaterialFragmentListener fragmentListener)
+    public static SetupFragment newInstance(DrawerFragmentListener fragmentListener)
     {
         final SetupFragment setupFragment = new SetupFragment();
-        setupFragment.mFragmentListener = new WeakReference<MaterialFragmentListener>(fragmentListener);
+        setupFragment.mFragmentListener = new WeakReference<DrawerFragmentListener>(fragmentListener);
         return setupFragment;
     }
 
@@ -75,15 +74,16 @@ public class SetupFragment extends Fragment
         if (parcelableNyaaFansubGroup != null)
             mNyaaFansubGroup = parcelableNyaaFansubGroup.getNyaaFansubGroup();
 
-        MaterialFragmentListener fragmentListener = mFragmentListener.get();
+        DrawerFragmentListener fragmentListener = mFragmentListener.get();
         if (fragmentListener != null)
         {
-            Toolbar toolbar = fragmentListener.getMainToolbar();
-            if (toolbar != null)
-            {
-                toolbar.setTitle(mNyaaFansubGroup.getSeriesTitle());
-                toolbar.setSubtitle(mNyaaFansubGroup.getGroupName());
-            }
+            //TODO
+//            Toolbar toolbar = fragmentListener.getMainToolbar();
+//            if (toolbar != null)
+//            {
+//                toolbar.setTitle(mNyaaFansubGroup.getSeriesTitle());
+//                toolbar.setSubtitle(mNyaaFansubGroup.getGroupName());
+//            }
         }
     }
 

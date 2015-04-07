@@ -14,7 +14,6 @@ package com.nizlumina.minori.android.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,17 +30,18 @@ import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 
 import java.lang.ref.WeakReference;
 
-public class GalleryFragment extends Fragment
+public class GalleryFragment extends ToolbarFragment
 {
     private static final String FRAGMENT_TAG = "gallery_fragment";
     private GridView mGridView;
-    private WeakReference<MaterialFragmentListener> mListener = new WeakReference<>(null);
+    private WeakReference<DrawerFragmentListener> mFragmentListenerRef = new WeakReference<>(null);
+
     public GalleryFragment() {}
 
-    public static GalleryFragment newInstance(MaterialFragmentListener listener)
+    public static GalleryFragment newInstance(DrawerFragmentListener listener)
     {
         GalleryFragment galleryFragment = new GalleryFragment();
-        galleryFragment.mListener = new WeakReference<>(listener);
+        galleryFragment.mFragmentListenerRef = new WeakReference<>(listener);
         return galleryFragment;
     }
 
@@ -61,29 +61,32 @@ public class GalleryFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //return super.onCreateView(inflater, container, savedInstanceState);
-        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
-        return mGridView;
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        MaterialFragmentListener listener = mListener.get();
+
+        mGridView = (GridView) setContentView(R.layout.layout_gridview);
+        //TODO
+        final DrawerFragmentListener listener = mFragmentListenerRef.get();
+        final Toolbar toolbar = getToolbar();
         if (listener != null)
         {
-            Toolbar toolbar = listener.getMainToolbar();
-            if (toolbar != null)
-                toolbar.setTitle(R.string.app_name);
-
+            listener.setDrawerToggle(toolbar);
         }
+        toolbar.setTitle("Watchlist");
 
         setupGridView(mGridView);
     }
 
-    private void setupGridView(GridView gridView)
+    private void setupGridView(final GridView gridView)
     {
+        gridView.setOnScrollListener(makeToolbarOnScrollListener());
+
         WatchlistController controller = new WatchlistController();
         GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryItemHolder.GalleryPresenter<WatchData>()
         {
@@ -126,7 +129,6 @@ public class GalleryFragment extends Fragment
 
         GenericAdapter<WatchData> watchDataAdapter = new GenericAdapter<>(getActivity(), controller.getWatchDataList(), itemHolder);
         gridView.setAdapter(watchDataAdapter);
-
     }
 
     @Override

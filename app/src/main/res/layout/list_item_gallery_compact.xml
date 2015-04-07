@@ -18,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="66dp"
         android:layout_below="@id/item_image"
-
         android:ellipsize="end"
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
@@ -26,6 +25,7 @@
         android:paddingBottom="24dp"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
+        android:textSize="14sp"
         tools:text="Watashi Wakaranai Desu Dekinai ga Warau Don Don Sasquatch Oboeteru" />
 
     <TextView

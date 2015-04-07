@@ -16,5 +16,6 @@
     <dimen name="round_rect_stroke">2dp</dimen>
     <dimen name="badge_width">72dp</dimen>
     <dimen name="badge_height">72dp</dimen>
+    <dimen name="height_shadow_three">3dp</dimen>
 </resources>
 

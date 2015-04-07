@@ -14,7 +14,6 @@ package com.nizlumina.minori.android.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -32,7 +31,7 @@ import com.nizlumina.syncmaru.model.CompositeData;
 
 import java.lang.ref.WeakReference;
 
-public class DetailFragment extends Fragment
+public class DetailFragment extends ToolbarFragment
 {
     private static final String SCORE_CATEGORY = "score";
     private static final String STUDIO_CATEGORY = "studio";
@@ -40,41 +39,41 @@ public class DetailFragment extends Fragment
     private static final String EPISODECOUNT_CATEGORY = "episodes";
 
     private CompositeData mCompositeData;
-    private WeakReference<MaterialFragmentListener> mFragmentListener;
+    private WeakReference<DrawerFragmentListener> mFragmentListenerRef;
 
-    public static DetailFragment newInstance(MaterialFragmentListener materialFragmentListener)
+    public static DetailFragment newInstance(DrawerFragmentListener drawerFragmentListener)
     {
         DetailFragment detailFragment = new DetailFragment();
-        detailFragment.mFragmentListener = new WeakReference<MaterialFragmentListener>(materialFragmentListener);
+        detailFragment.mFragmentListenerRef = new WeakReference<DrawerFragmentListener>(drawerFragmentListener);
         return detailFragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        setupViews(view);
+        addContentHeaderPadding();
+        View content = setContentView(R.layout.fragment_detail);
+        setupViews(content);
     }
 
     private void setupViews(View inflatedView)
     {
         final CompositeDataPresenter presenter = new CompositeDataPresenter(mCompositeData);
-        final MaterialFragmentListener materialFragmentListener = mFragmentListener.get();
-        Toolbar mainToolbar = null;
-        if (materialFragmentListener != null)
+        Toolbar mainToolbar = getToolbar();
+        final DrawerFragmentListener drawerFragmentListener = mFragmentListenerRef.get();
+        if (drawerFragmentListener != null)
         {
-            mainToolbar = materialFragmentListener.getMainToolbar();
-            if (mainToolbar != null)
-            {
-                mainToolbar.setTitle(presenter.getTitle());
-            }
+            drawerFragmentListener.setDrawerToggle(getToolbar());
         }
+
+        mainToolbar.setTitle(presenter.getTitle());
 
         final ImageView detailImageView = (ImageView) inflatedView.findViewById(R.id.detail_image);
         Glide.with(DetailFragment.this).load(presenter.getImageURL()).diskCacheStrategy(DiskCacheStrategy.ALL).into(detailImageView);
@@ -90,10 +89,7 @@ public class DetailFragment extends Fragment
         }
         else
         {
-            if (mainToolbar != null)
-            {
-                mainToolbar.setSubtitle(presenter.getStudio());
-            }
+            mainToolbar.setSubtitle(presenter.getStudio());
         }
 
 
@@ -114,10 +110,9 @@ public class DetailFragment extends Fragment
                 @Override
                 public void onClick(View v)
                 {
-                    MaterialFragmentListener materialFragmentListener = mFragmentListener.get();
-                    if (materialFragmentListener != null)
+                    if (drawerFragmentListener != null)
                     {
-                        materialFragmentListener.invokeFragmentChange(SearchFragment.newInstance(presenter.getTitle()));
+                        drawerFragmentListener.invokeFragmentChange(SearchFragment.newInstance(presenter.getTitle()));
                     }
                 }
             });

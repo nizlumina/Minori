@@ -81,8 +81,8 @@ public class SeasonDataIndexController
                 indexCache.loadCache();
                 loggy.logTimeDelta("Index initial cache load ends");
 
-                //Force HTTP GET if not valid or stale
-                if (!indexCache.isValid() || indexCache.isStale(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit))
+                //Force HTTP GET if not valid or stale or forced
+                if (!indexCache.isValid() || indexCache.isStale(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit) || forceRefresh)
                 {
                     String indexJson = null;
                     try
