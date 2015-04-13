@@ -25,7 +25,7 @@ public class ScanNotification
         ntManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(context);
         builder.setAutoCancel(true)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("Scanning in progress");
         mSize = scanSize;
     }

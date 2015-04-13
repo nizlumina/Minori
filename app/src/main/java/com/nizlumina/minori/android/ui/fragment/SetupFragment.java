@@ -43,7 +43,7 @@ import com.nizlumina.minori.common.hummingbird.AnimeObject;
 import com.nizlumina.minori.common.nyaa.NyaaEntry;
 import com.nizlumina.minori.common.nyaa.NyaaFansubGroup;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +56,12 @@ public class SetupFragment extends Fragment
     private Alarm.Mode mSelectedMode = Alarm.Mode.RELEASE_DAY;
     private String mSelectedEpisode;
     private AnimeObject mSelectedAnimeObject;
-    private WeakReference<DrawerFragmentListener> mFragmentListener = new WeakReference<DrawerFragmentListener>(null);
+    private SoftReference<DrawerFragmentListener> mFragmentListener = new SoftReference<DrawerFragmentListener>(null);
 
     public static SetupFragment newInstance(DrawerFragmentListener fragmentListener)
     {
         final SetupFragment setupFragment = new SetupFragment();
-        setupFragment.mFragmentListener = new WeakReference<DrawerFragmentListener>(fragmentListener);
+        setupFragment.mFragmentListener = new SoftReference<DrawerFragmentListener>(fragmentListener);
         return setupFragment;
     }
 
@@ -166,24 +166,27 @@ public class SetupFragment extends Fragment
                     @Override
                     public void onFinish(final List<AnimeObject> result)
                     {
-                        Log.v(SetupFragment.class.getSimpleName(), "Humm Search result:" + result.size());
-                        getActivity().runOnUiThread(new Runnable()
+                        if (getActivity() != null)
                         {
-                            @Override
-                            public void run()
+                            Log.v(SetupFragment.class.getSimpleName(), "Humm Search result:" + result.size());
+                            getActivity().runOnUiThread(new Runnable()
                             {
-                                if (mAnimeObjectAdapter.getCount() > 0)
-                                    mAnimeObjectAdapter.clear();
-
-                                mAnimeObjectAdapter.addAll(result);
-                                mAnimeObjectAdapter.notifyDataSetChanged();
-                                if (result.size() == 1)
+                                @Override
+                                public void run()
                                 {
-                                    listView.setItemChecked(0, true);
-                                    mSelectedAnimeObject = mAnimeObjectAdapter.getItem(0);
+                                    if (mAnimeObjectAdapter.getCount() > 0)
+                                        mAnimeObjectAdapter.clear();
+
+                                    mAnimeObjectAdapter.addAll(result);
+                                    mAnimeObjectAdapter.notifyDataSetChanged();
+                                    if (result.size() == 1)
+                                    {
+                                        listView.setItemChecked(0, true);
+                                        mSelectedAnimeObject = mAnimeObjectAdapter.getItem(0);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             }

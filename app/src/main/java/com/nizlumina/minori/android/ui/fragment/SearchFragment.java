@@ -12,21 +12,20 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
-import android.app.Activity;
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nizlumina.minori.R;
@@ -41,33 +40,25 @@ import com.nizlumina.minori.common.nyaa.Parser.NyaaXMLParser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends Fragment
+public class SearchFragment extends ToolbarFragment
 {
     public static final String SEARCH_STRING = "SEARCH_STRING";
     private final SearchController mSearchController = new SearchController();
     private GenericAdapter<NyaaFansubGroup> mGenericAdapter;
+    private ProgressBar mProgressBar;
 
     public SearchFragment() {}
 
-    public static SearchFragment newInstance(String searchString)
+    public static SearchFragment newInstance(@Nullable String searchString)
     {
         Bundle bundle = new Bundle();
-        bundle.putString(SEARCH_STRING, searchString);
+        if (searchString != null)
+        {
+            bundle.putString(SEARCH_STRING, searchString);
+        }
         SearchFragment searchFragment = new SearchFragment();
         searchFragment.setArguments(bundle);
         return searchFragment;
-    }
-
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
     }
 
     @Override
@@ -75,12 +66,19 @@ public class SearchFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        final EditText searchText = (EditText) view.findViewById(R.id.sf_search_edittext);
-        final ImageButton searchButton = (ImageButton) view.findViewById(R.id.sf_fab_search);
+        final LayoutInflater inflater = LayoutInflater.from(getActivity());
+        final EditText searchText = (EditText) setToolbarChild(inflater, R.layout.view_search_edittext);
+
+        final ImageButton searchButton = null;
 
         setupSearch(searchText, searchButton);
 
-        final ListView listView = (ListView) view.findViewById(R.id.sf_listview);
+        final ListView listView = (ListView) setContentView(inflater, R.layout.view_search_listview);
+
+        mProgressBar = (ProgressBar) setToolbarSiblingView(inflater, R.layout.view_progressbar);
+        mProgressBar.setVisibility(View.GONE);
+        getToolbarSiblingViewContainer().setLayoutTransition(new LayoutTransition());
+
         setupList(listView);
 
         Bundle args = getArguments();
@@ -92,6 +90,7 @@ public class SearchFragment extends Fragment
                 invokeSearch(searchTerms);
             }
         }
+        addContentHeaderPadding();
     }
 
     private void setupList(ListView listView)
@@ -104,12 +103,12 @@ public class SearchFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                NyaaFansubGroup nyaaFansubGroup = mGenericAdapter.getItem(position);
+                final NyaaFansubGroup nyaaFansubGroup = mGenericAdapter.getItem(position);
                 if (nyaaFansubGroup != null)
                 {
                     //Because the Android framework literally force you to do shit like this
-                    SetupFragment setupFragment = new SetupFragment();
-                    Bundle bundle = new Bundle();
+                    final SetupFragment setupFragment = new SetupFragment();
+                    final Bundle bundle = new Bundle();
                     bundle.putParcelable(SetupFragment.NYAAFANSUBGROUP_PARCELKEY, new ParcelableNyaaFansubGroup(nyaaFansubGroup));
                     setupFragment.setArguments(bundle);
 
@@ -117,6 +116,8 @@ public class SearchFragment extends Fragment
                 }
             }
         });
+
+        listView.setOnScrollListener(makeToolbarOnScrollListener());
     }
 
 
@@ -129,7 +130,7 @@ public class SearchFragment extends Fragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (actionId == EditorInfo.IME_ACTION_DONE)
+                if (actionId == EditorInfo.IME_ACTION_DONE || event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
                 {
                     //do search
                     String terms = searchText.getText().toString().trim();
@@ -139,40 +140,36 @@ public class SearchFragment extends Fragment
             }
         });
 
-        searchButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                searchText.onEditorAction(EditorInfo.IME_ACTION_DONE); // this will do the above
-            }
-        });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.fragment_search, container, false);
+//        searchButton.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                searchText.onEditorAction(EditorInfo.IME_ACTION_DONE); // this will do the above
+//            }
+//        });
     }
 
     private void invokeSearch(String terms)
     {
+        mProgressBar.setVisibility(View.VISIBLE);
         mGenericAdapter.clear();
         mSearchController.searchNyaa(terms, new OnFinishListener<List<NyaaEntry>>()
         {
             @Override
             public void onFinish(final List<NyaaEntry> result)
             {
-                Log.v(SearchFragment.class.getSimpleName(), "Nyaa Results: " + result.size());
-                if (getActivity() != null)
+                if (getActivity() != null && result != null)
                 {
+                    Log.v(SearchFragment.class.getSimpleName(), "Nyaa Results: " + result.size());
                     final List<NyaaFansubGroup> groups = NyaaXMLParser.Group(result);
                     getActivity().runOnUiThread(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            mGenericAdapter.addAll(groups);
+                            if (mGenericAdapter != null) mGenericAdapter.addAll(groups);
+                            if (mProgressBar != null) mProgressBar.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -180,7 +177,7 @@ public class SearchFragment extends Fragment
         });
     }
 
-    private static class SearchItemHolder implements GenericAdapter.ViewHolder<NyaaFansubGroup>
+    private class SearchItemHolder implements GenericAdapter.ViewHolder<NyaaFansubGroup>
     {
         private TextView episode;
         private TextView title;
@@ -208,10 +205,9 @@ public class SearchFragment extends Fragment
             episode = (TextView) inflatedConvertView.findViewById(R.id.text_episode);
             group = (TextView) inflatedConvertView.findViewById(R.id.text_group);
 
-            View container = inflatedConvertView.findViewById(R.id.qualifiers_container);
-            trust = (TextView) container.findViewById(R.id.text_trust);
-            resolution = (TextView) container.findViewById(R.id.text_res);
-            quality = (TextView) container.findViewById(R.id.text_quality);
+            trust = (TextView) inflatedConvertView.findViewById(R.id.text_trust);
+            resolution = (TextView) inflatedConvertView.findViewById(R.id.text_res);
+            quality = (TextView) inflatedConvertView.findViewById(R.id.text_quality);
             return this;
         }
 

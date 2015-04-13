@@ -32,7 +32,7 @@ import com.nizlumina.minori.android.model.SeasonType;
 import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
 import com.nizlumina.syncmaru.model.Season;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -45,14 +45,14 @@ public class SeasonTabHostFragment extends ToolbarFragment
     private static final String FRAGMENT_TAG = "season_host_fragment";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
 
-    private WeakReference<DrawerFragmentListener> mFragmentListenerRef;
+    private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
     private SlidingTabLayout mTabLayout;
     private ViewPager mViewPager;
 
     public static SeasonTabHostFragment newInstance(DrawerFragmentListener fragmentListener)
     {
         SeasonTabHostFragment seasonTabHostFragment = new SeasonTabHostFragment();
-        seasonTabHostFragment.mFragmentListenerRef = new WeakReference<>(fragmentListener);
+        seasonTabHostFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(fragmentListener);
         return seasonTabHostFragment;
     }
 
@@ -66,9 +66,10 @@ public class SeasonTabHostFragment extends ToolbarFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-        mTabLayout = (SlidingTabLayout) setToolbarContentView(R.layout.view_slidingtab);
-        mViewPager = (ViewPager) setContentView(R.layout.view_viewpager);
+        mTabLayout = (SlidingTabLayout) setToolbarSiblingView(inflater, R.layout.view_slidingtab);
+        mViewPager = (ViewPager) setContentView(inflater, R.layout.view_viewpager);
 
         final DrawerFragmentListener drawerFragmentListener = mFragmentListenerRef.get();
         if (drawerFragmentListener != null)
@@ -148,66 +149,50 @@ public class SeasonTabHostFragment extends ToolbarFragment
                 return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
             }
         };
-
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setViewPager(viewPager);
-        log("Pager Adapter init - Size: " + pagerAdapter.getCount());
-        viewPager.setVisibility(View.VISIBLE);
-        int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
-        viewPager.setCurrentItem(position);
-        mTabLayout.explicitScrollTo(position);
-    }
+        tabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
+                if (!isToolbarVisible())
+                    showToolbar();
+            }
 
+            @Override
+            public void onPageSelected(int position)
+            {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state)
+            {
+
+            }
+        });
+        log("Pager Adapter init - Size: " + pagerAdapter.getCount());
+        View view = getView();
+
+        if (view != null)
+        {
+            view.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
+                    viewPager.setCurrentItem(position);
+                }
+            });
+        }
+
+        //mTabLayout.explicitScrollTo(position);
+    }
 
     private void log(String input)
     {
         Log.v(getClass().getSimpleName(), input);
     }
-
-//    public void addTabLayout(final ViewGroup tabContainer)
-//    {
-//        log("Tab added");
-//        mTabLayout = (SlidingTabLayout) View.inflate(getActivity(), R.layout.view_slidingtab, null);
-//        mTabLayout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//
-//        mTabContainerOriginalHeight = tabContainer.getHeight();
-//
-//        Util.makeLayoutHeightAnimator(tabContainer, mTabLayout.getMeasuredHeight() + mTabContainerOriginalHeight).start();
-//        tabContainer.addView(mTabLayout);
-//    }
-
-//    public void removeTabLayout(final ViewGroup tabContainer)
-//    {
-//        ValueAnimator animator = Util.makeLayoutHeightAnimator(tabContainer, mTabContainerOriginalHeight);
-//        animator.addListener(new Animator.AnimatorListener()
-//        {
-//            @Override
-//            public void onAnimationStart(Animator animation)
-//            {
-//                tabContainer.removeView(mTabLayout);
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation)
-//            {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation)
-//            {
-//
-//            }
-//        });
-//
-//        animator.start();
-//
-//    }
-
 }

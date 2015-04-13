@@ -34,14 +34,12 @@ import com.nizlumina.minori.R;
  */
 public class ToolbarFragment extends Fragment
 {
-
-    private FrameLayout mContentViewContainer, mToolbarContentViewContainer;
+    private FrameLayout mContentViewContainer, mToolbarSiblingViewContainer;
     private Toolbar mToolbar;
-
-
     private LinearLayout mToolbarContainer;
     private boolean mToolbarVisible = true, mContentNeedPadding = false;
-    private View mContentView, mToolbarContentView;
+    private View mToolbarChildView, mContentView, mToolbarSiblingView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -50,7 +48,7 @@ public class ToolbarFragment extends Fragment
         mToolbar = (Toolbar) view.findViewById(R.id.fragment_toolbar);
         mContentViewContainer = (FrameLayout) view.findViewById(R.id.fragment_content);
         mToolbarContainer = (LinearLayout) view.findViewById(R.id.fragment_toolbar_container);
-        mToolbarContentViewContainer = (FrameLayout) mToolbarContainer.findViewById(R.id.fragment_toolbar_content);
+        mToolbarSiblingViewContainer = (FrameLayout) mToolbarContainer.findViewById(R.id.fragment_toolbar_content);
         return view;
     }
 
@@ -75,23 +73,52 @@ public class ToolbarFragment extends Fragment
         }
     }
 
+    public View getToolbarChildView()
+    {
+        return mToolbarChildView;
+    }
+
+    public FrameLayout getToolbarSiblingViewContainer()
+    {
+        return mToolbarSiblingViewContainer;
+    }
+
+    public boolean isToolbarVisible()
+    {
+        return mToolbarVisible;
+    }
+
     /**
-     * Call this in {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} if the layout in {@link #setContentView(int)} is scrollable so padding can be added internally
+     * Call this in {@link #onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} if the layout in {@link #setContentView(android.view.LayoutInflater, int)} is scrollable so padding can be added internally
      */
     public void addContentHeaderPadding()
     {
         mContentNeedPadding = true;
     }
 
-    public View getContentView()
+    public View setContentView(LayoutInflater inflater, @LayoutRes int layoutResID)
     {
+        mContentView = inflater.inflate(layoutResID, mContentViewContainer, false);
+        mContentViewContainer.addView(mContentView);
         return mContentView;
     }
 
-    public View setContentView(@LayoutRes int layoutResID)
+    public View setToolbarSiblingView(LayoutInflater inflater, @LayoutRes int layoutResID)
     {
-        mContentView = LayoutInflater.from(getActivity()).inflate(layoutResID, mContentViewContainer, false);
-        mContentViewContainer.addView(mContentView);
+        mToolbarSiblingView = inflater.inflate(layoutResID, mToolbarSiblingViewContainer, false);
+        mToolbarSiblingViewContainer.addView(mToolbarSiblingView);
+        return mToolbarSiblingView;
+    }
+
+    public View setToolbarChild(LayoutInflater inflater, @LayoutRes int layoutResID)
+    {
+        mToolbarChildView = inflater.inflate(layoutResID, getToolbar(), false);
+        getToolbar().addView(mToolbarChildView);
+        return mToolbarChildView;
+    }
+
+    public View getContentView()
+    {
         return mContentView;
     }
 
@@ -100,30 +127,19 @@ public class ToolbarFragment extends Fragment
         return mToolbarContainer;
     }
 
-
-    private void addPaddingForScrollableParent()
+    public View getToolbarSiblingView()
     {
-        final ViewGroup viewGroup = (ViewGroup) mContentView;
-        int top = viewGroup.getPaddingTop() + mToolbarContainer.getMeasuredHeight();
-        viewGroup.setPadding(viewGroup.getPaddingLeft(), top, viewGroup.getPaddingRight(), viewGroup.getPaddingBottom());
-        viewGroup.setClipToPadding(false);
-    }
-
-    public View setToolbarContentView(@LayoutRes int layoutResID)
-    {
-        mToolbarContentView = LayoutInflater.from(getActivity()).inflate(layoutResID, mContentViewContainer, false);
-        mToolbarContentViewContainer.addView(mToolbarContentView);
-        return mToolbarContentView;
-    }
-
-    public View getToolbarContentView()
-    {
-        return mToolbarContentView;
+        return mToolbarSiblingView;
     }
 
     public Toolbar getToolbar()
     {
         return mToolbar;
+    }
+
+    public void removeToolbarChild()
+    {
+        getToolbar().removeView(mToolbarChildView);
     }
 
     public void hideToolbar()
@@ -136,6 +152,15 @@ public class ToolbarFragment extends Fragment
     {
         mToolbarVisible = true;
         slideToolbar(0).start();
+    }
+
+
+    private void addPaddingForScrollableParent()
+    {
+        final ViewGroup viewGroup = (ViewGroup) mContentView;
+        int top = viewGroup.getPaddingTop() + mToolbarContainer.getMeasuredHeight();
+        viewGroup.setPadding(viewGroup.getPaddingLeft(), top, viewGroup.getPaddingRight(), viewGroup.getPaddingBottom());
+        viewGroup.setClipToPadding(false);
     }
 
     final ValueAnimator slideToolbar(final int translationY)

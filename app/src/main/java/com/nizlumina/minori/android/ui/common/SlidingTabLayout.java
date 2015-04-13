@@ -257,19 +257,6 @@ public class SlidingTabLayout extends HorizontalScrollView
         }
     }
 
-    /**
-     * Exposed for Minori. Force slide to index if view is created programmatically.
-     *
-     * @param tabIndex
-     */
-    public void explicitScrollTo(int tabIndex)
-    {
-        if (mViewPager != null)
-        {
-            scrollToTab(mViewPager.getCurrentItem(), 0);
-        }
-    }
-
     private void scrollToTab(int tabIndex, int positionOffset)
     {
         final int tabStripChildCount = mTabStrip.getChildCount();

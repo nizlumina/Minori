@@ -73,7 +73,7 @@ public class CompositeDataPresenter
 
     public String getSynopsis()
     {
-        return getCompositeData().getMalObject().getSynopsis();
+        return getCompositeData().getMalObject().getSynopsis().replace('[', '<').replace(']', '>');
     }
 
     /**

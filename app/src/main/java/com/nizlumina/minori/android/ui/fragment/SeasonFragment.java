@@ -36,7 +36,7 @@ import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.LiveChartObject;
 import com.nizlumina.syncmaru.model.Season;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class SeasonFragment extends Fragment
     private List<CompositeData> mCompositeDatasForDisplay = new ArrayList<>();
     private GenericAdapter<CompositeData> mCompositeDataAdapter;
     private Season mSeason;
-    private WeakReference<DrawerFragmentListener> mFragmentListenerRef;
+    private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
     private AbsListView.OnScrollListener mOnScrollListener;
 
     public static SeasonFragment newInstance(Season season, DrawerFragmentListener fragmentListener, AbsListView.OnScrollListener onScrollListener)
@@ -60,7 +60,7 @@ public class SeasonFragment extends Fragment
         seasonFragment.mSeason = season;
         seasonFragment.mSeasonController = new SeasonController(season);
         seasonFragment.mOnScrollListener = onScrollListener;
-        seasonFragment.mFragmentListenerRef = new WeakReference<DrawerFragmentListener>(fragmentListener);
+        seasonFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(fragmentListener);
         return seasonFragment;
     }
 

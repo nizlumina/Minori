@@ -31,7 +31,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher" />
+                android:src="@drawable/ic_star_white_48dp" />
         </RelativeLayout>
 
 
@@ -55,10 +55,10 @@
             android:text="@string/drawer_season" />
 
         <TextView
-            android:id="@+id/drawer_explore"
+            android:id="@+id/drawer_search"
             style="@style/DrawerItemStyle"
             android:onClick="onDrawerInteraction"
-            android:text="@string/drawer_explore" />
+            android:text="@string/drawer_search" />
 
         <TextView
             android:id="@+id/drawer_downloadqueue"

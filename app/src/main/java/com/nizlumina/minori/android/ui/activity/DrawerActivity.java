@@ -14,6 +14,7 @@ package com.nizlumina.minori.android.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +24,7 @@ import android.view.View;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.ui.fragment.DrawerFragmentListener;
 import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
+import com.nizlumina.minori.android.ui.fragment.SearchFragment;
 import com.nizlumina.minori.android.ui.fragment.SeasonTabHostFragment;
 
 public class DrawerActivity extends ActionBarActivity
@@ -77,35 +79,35 @@ public class DrawerActivity extends ActionBarActivity
     //Utilize XML bindings
     public void onDrawerInteraction(View view)
     {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         switch (view.getId())
         {
             case R.id.drawer_watchlist:
-                getSupportFragmentManager()
+                fragmentManager
                         .beginTransaction()
                         .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener))
                         .commit();
                 break;
             case R.id.drawer_season:
-                SeasonTabHostFragment seasonTabHostFragment = (SeasonTabHostFragment) getSupportFragmentManager().findFragmentByTag(SeasonTabHostFragment.class.getSimpleName());
+                SeasonTabHostFragment seasonTabHostFragment = (SeasonTabHostFragment) fragmentManager.findFragmentByTag(SeasonTabHostFragment.class.getSimpleName());
                 if (seasonTabHostFragment == null)
                 {
-                    getSupportFragmentManager()
+                    fragmentManager
                             .beginTransaction()
-                            .addToBackStack(SeasonTabHostFragment.class.getSimpleName())
                             .replace(FRAGMENT_CONTAINER, SeasonTabHostFragment.newInstance(fragmentListener), SeasonTabHostFragment.class.getSimpleName())
                             .commit();
                 }
                 else
                 {
-                    getSupportFragmentManager()
+                    fragmentManager
                             .beginTransaction()
-                            .addToBackStack(SeasonTabHostFragment.class.getSimpleName())
                             .replace(FRAGMENT_CONTAINER, seasonTabHostFragment, SeasonTabHostFragment.class.getSimpleName())
                             .commit();
                 }
 
                 break;
-            case R.id.drawer_explore:
+            case R.id.drawer_search:
+                fragmentManager.beginTransaction().replace(FRAGMENT_CONTAINER, SearchFragment.newInstance("NARUTO")).commit();
                 break;
             case R.id.drawer_downloadqueue:
                 break;

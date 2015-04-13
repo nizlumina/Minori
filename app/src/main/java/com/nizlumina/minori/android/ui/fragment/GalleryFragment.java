@@ -28,20 +28,20 @@ import com.nizlumina.minori.android.model.WatchData;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 
 public class GalleryFragment extends ToolbarFragment
 {
     private static final String FRAGMENT_TAG = "gallery_fragment";
     private GridView mGridView;
-    private WeakReference<DrawerFragmentListener> mFragmentListenerRef = new WeakReference<>(null);
+    private SoftReference<DrawerFragmentListener> mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(null);
 
     public GalleryFragment() {}
 
     public static GalleryFragment newInstance(DrawerFragmentListener listener)
     {
         GalleryFragment galleryFragment = new GalleryFragment();
-        galleryFragment.mFragmentListenerRef = new WeakReference<>(listener);
+        galleryFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(listener);
         return galleryFragment;
     }
 
@@ -69,8 +69,8 @@ public class GalleryFragment extends ToolbarFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-        mGridView = (GridView) setContentView(R.layout.layout_gridview);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        mGridView = (GridView) setContentView(inflater, R.layout.layout_gridview);
         //TODO
         final DrawerFragmentListener listener = mFragmentListenerRef.get();
         final Toolbar toolbar = getToolbar();

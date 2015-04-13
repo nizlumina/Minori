@@ -14,6 +14,6 @@
         android:layout_height="24dp"
         android:layout_gravity="center"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/ic_star_white_48dp"
         android:tint="@color/rb_white" />
 </FrameLayout>

@@ -10,37 +10,12 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+<ProgressBar
+    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/text_trust"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:textSize="@dimen/abc_text_size_small_material"
-        android:textStyle="bold"
-        tools:text="Trusted" />
-
-    <TextView
-        android:id="@+id/text_res"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:textSize="@dimen/abc_text_size_small_material"
-        android:textStyle="bold"
-        tools:text="720p" />
-
-    <TextView
-        android:id="@+id/text_quality"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:textSize="@dimen/abc_text_size_small_material"
-        android:textStyle="bold"
-        tools:text="BD" />
-</LinearLayout>
+    android:layout_marginBottom="-7dp"
+    android:layout_marginTop="-7dp"
+    android:indeterminate="true" />
 

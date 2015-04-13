@@ -10,62 +10,90 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="56dp"
-    android:orientation="horizontal"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="4dp">
 
     <TextView
         android:id="@+id/text_episode"
         style="@style/TextColorBase"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:background="@drawable/circle_neutral_primary"
         android:gravity="center"
         android:textSize="20sp"
         tools:text="00" />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/text_episode"
+        android:layout_toRightOf="@id/text_episode"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-condensed"
+        android:singleLine="true"
+        android:textSize="20sp"
+        tools:text="Naruto Narutimate Hero 3: Finally a Clash! Jonin VS Genin!! Indescriminate Grand Melee Tournament Meeting!!" />
+
+    <TextView
+        android:id="@+id/text_group"
+        style="@style/TextColorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-condensed"
-            android:padding="0dp"
-            android:singleLine="true"
-            android:textSize="20sp"
-            tools:text="Naruto Narutimate Hero 3: Finally a Clash! Jonin VS Genin!! Indescriminate Grand Melee Tournament Meeting!!" />
-
-        <TextView
-            android:id="@+id/text_group"
-            style="@style/TextColorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_title"
-            android:textSize="18sp"
-            tools:text="MuchGroups" />
-
-        <include
-            android:id="@+id/qualifiers_container"
-            layout="@layout/layout_item_qualifiers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/text_title" />
-
-    </RelativeLayout>
+        android:layout_alignLeft="@id/text_title"
+        android:layout_below="@id/text_title"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="MuchGroups" />
 
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/text_quality"
+        style="@style/TextColorSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/text_group"
+        android:layout_alignParentRight="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginRight="4dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="BD" />
+
+
+    <TextView
+        android:id="@+id/text_res"
+        style="@style/TextColorTertiary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/text_group"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@id/text_quality"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="720p" />
+
+    <TextView
+        android:id="@+id/text_trust"
+        style="@style/TextColorQuinary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/text_group"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_marginRight="4dp"
+        android:layout_toLeftOf="@id/text_res"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="Trusted" />
+
+</RelativeLayout>

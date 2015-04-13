@@ -29,7 +29,7 @@ import com.nizlumina.minori.android.ui.presenter.CompositeDataPresenter;
 import com.nizlumina.minori.android.ui.view.BadgeView;
 import com.nizlumina.syncmaru.model.CompositeData;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 
 public class DetailFragment extends ToolbarFragment
 {
@@ -39,12 +39,12 @@ public class DetailFragment extends ToolbarFragment
     private static final String EPISODECOUNT_CATEGORY = "episodes";
 
     private CompositeData mCompositeData;
-    private WeakReference<DrawerFragmentListener> mFragmentListenerRef;
+    private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
 
     public static DetailFragment newInstance(DrawerFragmentListener drawerFragmentListener)
     {
         DetailFragment detailFragment = new DetailFragment();
-        detailFragment.mFragmentListenerRef = new WeakReference<DrawerFragmentListener>(drawerFragmentListener);
+        detailFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(drawerFragmentListener);
         return detailFragment;
     }
 
@@ -59,7 +59,7 @@ public class DetailFragment extends ToolbarFragment
     {
         super.onViewCreated(view, savedInstanceState);
         addContentHeaderPadding();
-        View content = setContentView(R.layout.fragment_detail);
+        View content = setContentView(LayoutInflater.from(getActivity()), R.layout.fragment_detail);
         setupViews(content);
     }
 
@@ -124,7 +124,6 @@ public class DetailFragment extends ToolbarFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         mCompositeData = getArguments().getParcelable(CompositeData.PARCELKEY_COMPOSITEDATA);
     }
 }
