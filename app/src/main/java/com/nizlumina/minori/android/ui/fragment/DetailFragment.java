@@ -31,7 +31,7 @@ import com.nizlumina.syncmaru.model.CompositeData;
 
 import java.lang.ref.SoftReference;
 
-public class DetailFragment extends ToolbarFragment
+public class DetailFragment extends DrawerContentFragment
 {
     private static final String SCORE_CATEGORY = "score";
     private static final String STUDIO_CATEGORY = "studio";
@@ -51,27 +51,21 @@ public class DetailFragment extends ToolbarFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_detail, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        addContentHeaderPadding();
-        View content = setContentView(LayoutInflater.from(getActivity()), R.layout.fragment_detail);
-        setupViews(content);
+        setupViews(view);
     }
 
     private void setupViews(View inflatedView)
     {
         final CompositeDataPresenter presenter = new CompositeDataPresenter(mCompositeData);
-        Toolbar mainToolbar = getToolbar();
+        Toolbar mainToolbar = getToolbarContract().getToolbar();
         final DrawerFragmentListener drawerFragmentListener = mFragmentListenerRef.get();
-        if (drawerFragmentListener != null)
-        {
-            drawerFragmentListener.setDrawerToggle(getToolbar());
-        }
 
         mainToolbar.setTitle(presenter.getTitle());
 

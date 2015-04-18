@@ -30,7 +30,7 @@ import com.nizlumina.minori.android.ui.gallery.GalleryItemHolder;
 
 import java.lang.ref.SoftReference;
 
-public class GalleryFragment extends ToolbarFragment
+public class GalleryFragment extends DrawerContentFragment
 {
     private static final String FRAGMENT_TAG = "gallery_fragment";
     private GridView mGridView;
@@ -61,31 +61,23 @@ public class GalleryFragment extends ToolbarFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+        mGridView = (GridView) inflater.inflate(R.layout.layout_gridview, container, false);
+        return mGridView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-        mGridView = (GridView) setContentView(inflater, R.layout.layout_gridview);
-        //TODO
-        final DrawerFragmentListener listener = mFragmentListenerRef.get();
-        final Toolbar toolbar = getToolbar();
-        if (listener != null)
-        {
-            listener.setDrawerToggle(toolbar);
-        }
+        final Toolbar toolbar = getToolbarContract().getToolbar();
         toolbar.setTitle("Watchlist");
-
         setupGridView(mGridView);
     }
 
     private void setupGridView(final GridView gridView)
     {
-        gridView.setOnScrollListener(makeToolbarOnScrollListener());
+
+        gridView.setOnScrollListener(getToolbarContract().getAutoDisplayToolbarListener());
 
         WatchlistController controller = new WatchlistController();
         GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryItemHolder.GalleryPresenter<WatchData>()

@@ -29,6 +29,7 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SeasonDataIndexController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
 import com.nizlumina.minori.android.model.SeasonType;
+import com.nizlumina.minori.android.ui.ToolbarContract;
 import com.nizlumina.minori.android.ui.common.SlidingTabLayout;
 import com.nizlumina.syncmaru.model.Season;
 
@@ -40,7 +41,7 @@ import java.util.List;
 /**
  * A host fragment for SeasonFragment child tabs. Upon load, it acquires index from Firebase (or check its relevant cache) and populate child tabs as needed.
  */
-public class SeasonTabHostFragment extends ToolbarFragment
+public class SeasonTabHostFragment extends DrawerContentFragment
 {
     private static final String FRAGMENT_TAG = "season_host_fragment";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
@@ -59,24 +60,18 @@ public class SeasonTabHostFragment extends ToolbarFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return mViewPager = (ViewPager) inflater.inflate(R.layout.view_viewpager, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.disableExtraTopPadding();
         super.onViewCreated(view, savedInstanceState);
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-        mTabLayout = (SlidingTabLayout) setToolbarSiblingView(inflater, R.layout.view_slidingtab);
-        mViewPager = (ViewPager) setContentView(inflater, R.layout.view_viewpager);
+        final LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-        final DrawerFragmentListener drawerFragmentListener = mFragmentListenerRef.get();
-        if (drawerFragmentListener != null)
-        {
-            drawerFragmentListener.setDrawerToggle(getToolbar());
-        }
-
+        mTabLayout = (SlidingTabLayout) getToolbarContract().setToolbarSiblingView(inflater, R.layout.view_slidingtab);
         onLoad(mTabLayout, mViewPager);
     }
 
@@ -122,15 +117,17 @@ public class SeasonTabHostFragment extends ToolbarFragment
     private void buildViews(final List<Season> mSeasons, final ViewPager viewPager, final SlidingTabLayout tabLayout)
     {
         viewPager.setOffscreenPageLimit(1);
+        final ToolbarContract toolbarContract = getToolbarContract();
 
-        FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getChildFragmentManager())
+        final FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getChildFragmentManager())
         {
             @Override
             public Fragment getItem(int position)
             {
-                SeasonFragment seasonFragment = SeasonFragment.newInstance(mSeasons.get(position), mFragmentListenerRef.get(), makeToolbarOnScrollListener());
+
+                SeasonFragment seasonFragment = SeasonFragment.newInstance(mSeasons.get(position), mFragmentListenerRef.get(), toolbarContract.getAutoDisplayToolbarListener());
                 Bundle args = new Bundle();
-                args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, getToolbarContainer().getHeight());
+                args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, toolbarContract.getToolbarContainer().getHeight());
                 seasonFragment.setArguments(args);
                 return seasonFragment;
             }
@@ -149,6 +146,7 @@ public class SeasonTabHostFragment extends ToolbarFragment
                 return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
             }
         };
+
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setViewPager(viewPager);
         tabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
@@ -156,8 +154,8 @@ public class SeasonTabHostFragment extends ToolbarFragment
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
             {
-                if (!isToolbarVisible())
-                    showToolbar();
+                if (toolbarContract.isToolbarVisible())
+                    toolbarContract.showToolbar();
             }
 
             @Override
@@ -172,6 +170,7 @@ public class SeasonTabHostFragment extends ToolbarFragment
 
             }
         });
+
         log("Pager Adapter init - Size: " + pagerAdapter.getCount());
         View view = getView();
 
@@ -187,8 +186,6 @@ public class SeasonTabHostFragment extends ToolbarFragment
                 }
             });
         }
-
-        //mTabLayout.explicitScrollTo(position);
     }
 
     private void log(String input)

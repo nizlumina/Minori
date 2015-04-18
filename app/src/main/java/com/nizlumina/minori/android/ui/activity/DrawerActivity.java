@@ -12,25 +12,33 @@
 
 package com.nizlumina.minori.android.ui.activity;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.android.ui.ToolbarContract;
 import com.nizlumina.minori.android.ui.fragment.DrawerFragmentListener;
 import com.nizlumina.minori.android.ui.fragment.GalleryFragment;
 import com.nizlumina.minori.android.ui.fragment.SearchFragment;
 import com.nizlumina.minori.android.ui.fragment.SeasonTabHostFragment;
 
+import java.lang.ref.SoftReference;
+
 public class DrawerActivity extends ActionBarActivity
 {
-    private final int FRAGMENT_CONTAINER = R.id.base_contentfragment;
-    private DrawerLayout mDrawerLayout;
+    private final int FRAGMENT_CONTAINER = R.id.base_content_container;
     private final DrawerFragmentListener fragmentListener = new DrawerFragmentListener()
     {
         @Override
@@ -42,18 +50,18 @@ public class DrawerActivity extends ActionBarActivity
                     .replace(FRAGMENT_CONTAINER, target)
                     .commit();
         }
-
-        @Override
-        public void setDrawerToggle(Toolbar toolbar)
-        {
-            if (toolbar != null)
-            {
-                ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
-                mDrawerLayout.setDrawerListener(drawerToggle);
-                drawerToggle.syncState();
-            }
-        }
     };
+    private DrawerLayout mDrawerLayout;
+    private FrameLayout mContentViewContainer, mToolbarSiblingViewContainer;
+    private Toolbar mToolbar;
+    private LinearLayout mToolbarContainer;
+    private boolean mToolbarVisible = true, mContentNeedPadding = false;
+    private View mToolbarChildView, mContentView, mToolbarSiblingView;
+
+    public ToolbarContract getToolbarContract()
+    {
+        return mToolbarContract;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,11 +78,148 @@ public class DrawerActivity extends ActionBarActivity
 
     }
 
+    private final ToolbarContract mToolbarContract = new ToolbarContract()
+    {
+        @Override
+        public View getToolbarChildView()
+        {
+            return mToolbarChildView;
+        }
+
+        @Override
+        public FrameLayout getToolbarSiblingViewContainer()
+        {
+            return mToolbarSiblingViewContainer;
+        }
+
+        @Override
+        public boolean isToolbarVisible()
+        {
+            return mToolbarVisible;
+        }
+
+        @Override
+        public View setToolbarSiblingView(LayoutInflater inflater, @LayoutRes int layoutResID)
+        {
+            mToolbarSiblingView = inflater.inflate(layoutResID, mToolbarSiblingViewContainer, false);
+            mToolbarSiblingViewContainer.addView(mToolbarSiblingView);
+            return mToolbarSiblingView;
+        }
+
+        @Override
+        public View setToolbarChild(LayoutInflater inflater, @LayoutRes int layoutResID)
+        {
+            mToolbarChildView = inflater.inflate(layoutResID, getToolbar(), false);
+            getToolbar().addView(mToolbarChildView);
+            return mToolbarChildView;
+        }
+
+        @Override
+        public LinearLayout getToolbarContainer()
+        {
+            return mToolbarContainer;
+        }
+
+        @Override
+        public View getToolbarSiblingView()
+        {
+            return mToolbarSiblingView;
+        }
+
+        @Override
+        public Toolbar getToolbar()
+        {
+            return mToolbar;
+        }
+
+        @Override
+        public void removeToolbarChild()
+        {
+            getToolbar().removeView(mToolbarChildView);
+        }
+
+        @Override
+        public void hideToolbar()
+        {
+            mToolbarVisible = false;
+            slideToolbar(-mToolbarContainer.getHeight()).start();
+        }
+
+        @Override
+        public void showToolbar()
+        {
+            mToolbarVisible = true;
+            slideToolbar(0).start();
+        }
+
+        @Override
+        public AbsListView.OnScrollListener getAutoDisplayToolbarListener()
+        {
+            return toolbarOnScrollListener;
+        }
+    };
+
     private void setupViews()
     {
         //Set drawers
         mDrawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
+
+        final View view = mDrawerLayout; //easy refactoring later on
+        mToolbar = (Toolbar) view.findViewById(R.id.base_toolbar);
+        mContentViewContainer = (FrameLayout) view.findViewById(R.id.base_content_container);
+        mToolbarContainer = (LinearLayout) view.findViewById(R.id.base_toolbar_container);
+        mToolbarSiblingViewContainer = (FrameLayout) mToolbarContainer.findViewById(R.id.base_toolbar_sibling_content);
+
+        if (mToolbar != null)
+        {
+            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, mDrawerLayout, mToolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+            mDrawerLayout.setDrawerListener(drawerToggle);
+            drawerToggle.syncState();
+        }
     }
+
+    protected AbsListView.OnScrollListener toolbarOnScrollListener = new AbsListView.OnScrollListener()
+    {
+        private int mLastFirstVisibleItem;
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState)
+        {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+        {
+            if (firstVisibleItem > mLastFirstVisibleItem)
+            {
+                //scroll down
+                if (mToolbarVisible)
+                {
+                    final ToolbarContract contract = toolbarContractSoftRef.get();
+                    if (contract != null)
+                        contract.hideToolbar();
+                }
+            }
+
+            if (firstVisibleItem < mLastFirstVisibleItem)
+            {
+                //scroll up
+                if (!mToolbarVisible)
+                {
+                    final ToolbarContract contract = toolbarContractSoftRef.get();
+                    if (contract != null)
+                        contract.showToolbar();
+                }
+            }
+
+            mLastFirstVisibleItem = firstVisibleItem;
+        }
+
+        private SoftReference<ToolbarContract> toolbarContractSoftRef = new SoftReference<ToolbarContract>(mToolbarContract);
+
+
+    };
 
     //Utilize XML bindings
     public void onDrawerInteraction(View view)
@@ -119,5 +264,21 @@ public class DrawerActivity extends ActionBarActivity
 
         mDrawerLayout.closeDrawers();
     }
+
+    final ValueAnimator slideToolbar(final int translationY)
+    {
+        final ValueAnimator animator = ValueAnimator.ofFloat(mToolbarContainer.getTranslationY(), translationY);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
+                final float animatedValue = (float) animation.getAnimatedValue();
+                mToolbarContainer.setTranslationY(animatedValue);
+            }
+        });
+        return animator;
+    }
+
 
 }

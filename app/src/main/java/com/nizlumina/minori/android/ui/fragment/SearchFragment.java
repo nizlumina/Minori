@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.SearchController;
 import com.nizlumina.minori.android.listener.OnFinishListener;
+import com.nizlumina.minori.android.ui.ToolbarContract;
 import com.nizlumina.minori.android.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.android.wrapper.ParcelableNyaaFansubGroup;
 import com.nizlumina.minori.common.nyaa.NyaaEntry;
@@ -40,7 +42,7 @@ import com.nizlumina.minori.common.nyaa.Parser.NyaaXMLParser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchFragment extends ToolbarFragment
+public class SearchFragment extends DrawerContentFragment
 {
     public static final String SEARCH_STRING = "SEARCH_STRING";
     private final SearchController mSearchController = new SearchController();
@@ -62,26 +64,35 @@ public class SearchFragment extends ToolbarFragment
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.view_search_listview, container, false);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final EditText searchText = (EditText) setToolbarChild(inflater, R.layout.view_search_edittext);
+        final ToolbarContract toolbarContract = getToolbarContract();
+        final EditText searchText = (EditText) toolbarContract.setToolbarChild(inflater, R.layout.view_search_edittext);
 
         final ImageButton searchButton = null;
 
         setupSearch(searchText, searchButton);
 
-        final ListView listView = (ListView) setContentView(inflater, R.layout.view_search_listview);
+        final ListView listView = (ListView) view;
 
-        mProgressBar = (ProgressBar) setToolbarSiblingView(inflater, R.layout.view_progressbar);
+        mProgressBar = (ProgressBar) toolbarContract.setToolbarSiblingView(inflater, R.layout.view_progressbar);
         mProgressBar.setVisibility(View.GONE);
-        getToolbarSiblingViewContainer().setLayoutTransition(new LayoutTransition());
+        toolbarContract.getToolbarSiblingViewContainer().setLayoutTransition(new LayoutTransition());
+
+        listView.setOnScrollListener(toolbarContract.getAutoDisplayToolbarListener());
 
         setupList(listView);
 
-        Bundle args = getArguments();
+        final Bundle args = getArguments();
         if (args != null)
         {
             String searchTerms = args.getString(SEARCH_STRING);
@@ -90,7 +101,6 @@ public class SearchFragment extends ToolbarFragment
                 invokeSearch(searchTerms);
             }
         }
-        addContentHeaderPadding();
     }
 
     private void setupList(ListView listView)
@@ -112,12 +122,10 @@ public class SearchFragment extends ToolbarFragment
                     bundle.putParcelable(SetupFragment.NYAAFANSUBGROUP_PARCELKEY, new ParcelableNyaaFansubGroup(nyaaFansubGroup));
                     setupFragment.setArguments(bundle);
 
-                    getFragmentManager().beginTransaction().replace(R.id.base_contentfragment, setupFragment).addToBackStack(SearchFragment.class.getSimpleName()).commit();
+                    getFragmentManager().beginTransaction().replace(R.id.base_content_container, setupFragment).addToBackStack(SearchFragment.class.getSimpleName()).commit();
                 }
             }
         });
-
-        listView.setOnScrollListener(makeToolbarOnScrollListener());
     }
 
 
