@@ -40,9 +40,13 @@ public interface ToolbarContract
 
     public void removeToolbarChild();
 
+    public void removeToolbarSiblingView();
+
     public void hideToolbar();
 
     public void showToolbar();
+
+    public void resetToolbar();
 
     public AbsListView.OnScrollListener getAutoDisplayToolbarListener();
 }

@@ -43,8 +43,8 @@ import java.util.List;
  */
 public class SeasonTabHostFragment extends DrawerContentFragment
 {
-    private static final String FRAGMENT_TAG = "season_host_fragment";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
+    private final String fragmentTitle = "Season Browser";
 
     private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
     private SlidingTabLayout mTabLayout;
@@ -71,7 +71,10 @@ public class SeasonTabHostFragment extends DrawerContentFragment
 
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
 
-        mTabLayout = (SlidingTabLayout) getToolbarContract().setToolbarSiblingView(inflater, R.layout.view_slidingtab);
+        final ToolbarContract toolbarContract = getToolbarContract();
+        toolbarContract.getToolbar().setTitle(fragmentTitle);
+        mTabLayout = (SlidingTabLayout) toolbarContract.setToolbarSiblingView(inflater, R.layout.view_slidingtab);
+
         onLoad(mTabLayout, mViewPager);
     }
 

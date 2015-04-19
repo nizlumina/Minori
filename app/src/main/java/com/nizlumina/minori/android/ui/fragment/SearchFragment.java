@@ -12,7 +12,6 @@
 
 package com.nizlumina.minori.android.ui.fragment;
 
-import android.animation.LayoutTransition;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -86,8 +85,6 @@ public class SearchFragment extends DrawerContentFragment
 
         mProgressBar = (ProgressBar) toolbarContract.setToolbarSiblingView(inflater, R.layout.view_progressbar);
         mProgressBar.setVisibility(View.GONE);
-        toolbarContract.getToolbarSiblingViewContainer().setLayoutTransition(new LayoutTransition());
-
         listView.setOnScrollListener(toolbarContract.getAutoDisplayToolbarListener());
 
         setupList(listView);

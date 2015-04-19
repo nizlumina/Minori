@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -88,5 +89,14 @@ public class DrawerContentFragment extends Fragment
         }
     }
 
-
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        FragmentActivity activity = getActivity();
+        if (activity instanceof DrawerActivity)
+        {
+            mToolbarContract.resetToolbar();
+        }
+    }
 }
