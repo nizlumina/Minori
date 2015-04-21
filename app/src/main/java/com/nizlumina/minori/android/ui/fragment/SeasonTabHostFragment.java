@@ -66,7 +66,7 @@ public class SeasonTabHostFragment extends DrawerContentFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        super.disableExtraTopPadding();
+        disableExtraTopPadding();
         super.onViewCreated(view, savedInstanceState);
 
         final LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -74,7 +74,6 @@ public class SeasonTabHostFragment extends DrawerContentFragment
         final ToolbarContract toolbarContract = getToolbarContract();
         toolbarContract.getToolbar().setTitle(fragmentTitle);
         mTabLayout = (SlidingTabLayout) toolbarContract.setToolbarSiblingView(inflater, R.layout.view_slidingtab);
-
         onLoad(mTabLayout, mViewPager);
     }
 
@@ -130,7 +129,7 @@ public class SeasonTabHostFragment extends DrawerContentFragment
 
                 SeasonFragment seasonFragment = SeasonFragment.newInstance(mSeasons.get(position), mFragmentListenerRef.get(), toolbarContract.getAutoDisplayToolbarListener());
                 Bundle args = new Bundle();
-                args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, toolbarContract.getToolbarContainer().getHeight());
+                args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, toolbarContract.getToolbarContainer().getMeasuredHeight());
                 seasonFragment.setArguments(args);
                 return seasonFragment;
             }

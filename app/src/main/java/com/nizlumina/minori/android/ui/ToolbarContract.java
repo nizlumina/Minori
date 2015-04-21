@@ -16,15 +16,14 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 public interface ToolbarContract
 {
     public View getToolbarChildView();
 
-    public FrameLayout getToolbarSiblingViewContainer();
+    public ViewGroup getToolbarSiblingViewContainer();
 
     public boolean isToolbarVisible();
 
@@ -32,7 +31,7 @@ public interface ToolbarContract
 
     public View setToolbarChild(LayoutInflater inflater, @LayoutRes int layoutResID);
 
-    public LinearLayout getToolbarContainer();
+    public ViewGroup getToolbarContainer();
 
     public View getToolbarSiblingView();
 

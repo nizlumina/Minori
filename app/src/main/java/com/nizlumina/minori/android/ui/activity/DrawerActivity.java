@@ -12,6 +12,7 @@
 
 package com.nizlumina.minori.android.ui.activity;
 
+import android.animation.LayoutTransition;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -23,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -73,7 +75,7 @@ public class DrawerActivity extends ActionBarActivity
         if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener), GalleryFragment.getFragmentTag())
+                    .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener), GalleryFragment.getFragmentTag())
                     .commit();
 
     }
@@ -91,10 +93,51 @@ public class DrawerActivity extends ActionBarActivity
 
         if (mToolbar != null)
         {
-            ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, mDrawerLayout, mToolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+            final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, mDrawerLayout, mToolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
             mDrawerLayout.setDrawerListener(drawerToggle);
             drawerToggle.syncState();
         }
+
+        final LayoutTransition layoutTransition = mToolbarContainer.getLayoutTransition();
+        if (layoutTransition != null)
+        {
+            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        }
+    }
+
+    //Utilize XML bindings
+    public void onDrawerInteraction(View view)
+    {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        switch (view.getId())
+        {
+            case R.id.drawer_watchlist:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener))
+                        .commit();
+                break;
+            case R.id.drawer_season:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(FRAGMENT_CONTAINER, SeasonTabHostFragment.newInstance(fragmentListener), SeasonTabHostFragment.class.getSimpleName())
+                        .commit();
+                break;
+            case R.id.drawer_search:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(FRAGMENT_CONTAINER, SearchFragment.newInstance("NARUTO"), SearchFragment.class.getSimpleName())
+                        .commit();
+                break;
+            case R.id.drawer_downloadqueue:
+                break;
+            case R.id.drawer_settings:
+                break;
+            case R.id.drawer_about:
+                break;
+        }
+
+        mDrawerLayout.closeDrawers();
     }
 
     private final ToolbarContract mToolbarContract = new ToolbarContract()
@@ -106,7 +149,7 @@ public class DrawerActivity extends ActionBarActivity
         }
 
         @Override
-        public FrameLayout getToolbarSiblingViewContainer()
+        public ViewGroup getToolbarSiblingViewContainer()
         {
             return mToolbarSiblingViewContainer;
         }
@@ -120,7 +163,7 @@ public class DrawerActivity extends ActionBarActivity
         @Override
         public View setToolbarSiblingView(LayoutInflater inflater, @LayoutRes int layoutResID)
         {
-            mToolbarSiblingView = inflater.inflate(layoutResID, mToolbarSiblingViewContainer, false);
+            mToolbarSiblingView = inflater.inflate(layoutResID, getToolbarSiblingViewContainer(), false);
             mToolbarSiblingViewContainer.addView(mToolbarSiblingView);
             return mToolbarSiblingView;
         }
@@ -134,7 +177,7 @@ public class DrawerActivity extends ActionBarActivity
         }
 
         @Override
-        public LinearLayout getToolbarContainer()
+        public ViewGroup getToolbarContainer()
         {
             return mToolbarContainer;
         }
@@ -180,8 +223,8 @@ public class DrawerActivity extends ActionBarActivity
         @Override
         public void resetToolbar()
         {
-            removeToolbarChild();
-            removeToolbarSiblingView();
+            if (mToolbarChildView != null) removeToolbarChild();
+            if (mToolbarSiblingView != null) removeToolbarSiblingView();
             if (!mToolbarContract.isToolbarVisible()) mToolbarContract.showToolbar();
         }
 
@@ -191,41 +234,6 @@ public class DrawerActivity extends ActionBarActivity
             return toolbarOnScrollListener;
         }
     };
-
-    //Utilize XML bindings
-    public void onDrawerInteraction(View view)
-    {
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        switch (view.getId())
-        {
-            case R.id.drawer_watchlist:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener))
-                        .commit();
-                break;
-            case R.id.drawer_season:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SeasonTabHostFragment.newInstance(fragmentListener), SeasonTabHostFragment.class.getSimpleName())
-                        .commit();
-                break;
-            case R.id.drawer_search:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SearchFragment.newInstance("NARUTO"), SearchFragment.class.getSimpleName())
-                        .commit();
-                break;
-            case R.id.drawer_downloadqueue:
-                break;
-            case R.id.drawer_settings:
-                break;
-            case R.id.drawer_about:
-                break;
-        }
-
-        mDrawerLayout.closeDrawers();
-    }
 
     final ValueAnimator slideToolbar(final int translationY)
     {
@@ -241,6 +249,7 @@ public class DrawerActivity extends ActionBarActivity
         });
         return animator;
     }
+
 
     protected AbsListView.OnScrollListener toolbarOnScrollListener = new AbsListView.OnScrollListener()
     {
