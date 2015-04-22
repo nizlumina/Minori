@@ -31,8 +31,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.android.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.android.controller.WatchlistController;
@@ -311,20 +309,20 @@ public class SetupFragment extends Fragment
 
     private void assignSimpleDialogOnClick(final View view, @LayoutRes final int layoutResourceID)
     {
-        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .customView(layoutResourceID, true)
-                .theme(Theme.DARK)
-                .positiveText(R.string.dialog_dismiss)
-                .build();
-
-        view.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                dialog.show();
-            }
-        });
+//        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+//                .customView(layoutResourceID, true)
+//                .theme(Theme.DARK)
+//                .positiveText(R.string.dialog_dismiss)
+//                .build();
+//
+//        view.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                dialog.show();
+//            }
+//        });
     }
 
     private void finalizeWatchDataSelection(final View triggerButton)
