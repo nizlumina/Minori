@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Minori</string>
-    <string name="hello_world">Hello world!</string>
     <string name="drawer_settings">Settings</string>
     <string name="title_activity_test">testActivity</string>
     <string name="title_activity_screen">ScreenActivity</string>
@@ -22,4 +21,18 @@
     <string name="specials_filter_text">Specials</string>
     <string name="header_synopsis">Synopsis</string>
     <string name="acc_poster_description">Poster Image</string>
+    <string-array name="array_resolutions">
+        <item>480p</item>
+        <item>720p</item>
+        <item>1080p</item>
+        <item>Default</item>
+    </string-array>
+    <string-array name="array_modes">
+        <item>Release Day</item>
+        <item>Eager</item>
+        <item>15 Mins</item>
+        <item>30 Mins</item>
+        <item>1 Hour</item>
+        <item>2 Hour</item>
+    </string-array>
 </resources>

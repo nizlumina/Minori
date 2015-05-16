@@ -19,8 +19,8 @@ import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +38,7 @@ import com.nizlumina.minori.android.ui.fragment.SeasonTabHostFragment;
 
 import java.lang.ref.SoftReference;
 
-public class DrawerActivity extends ActionBarActivity
+public class DrawerActivity extends AppCompatActivity
 {
     private final int FRAGMENT_CONTAINER = R.id.base_content_container;
     private final DrawerFragmentListener fragmentListener = new DrawerFragmentListener()
@@ -58,88 +58,48 @@ public class DrawerActivity extends ActionBarActivity
     private Toolbar mToolbar;
     private LinearLayout mToolbarContainer;
     private boolean mToolbarVisible = true;
+    protected AbsListView.OnScrollListener toolbarOnScrollListener = new AbsListView.OnScrollListener()
+    {
+        private int mLastFirstVisibleItem;
+        private SoftReference<ToolbarContract> toolbarContractSoftRef = new SoftReference<ToolbarContract>(mToolbarContract);
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState)
+        {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+        {
+            if (firstVisibleItem > mLastFirstVisibleItem)
+            {
+                //scroll down
+                if (mToolbarVisible)
+                {
+                    final ToolbarContract contract = toolbarContractSoftRef.get();
+                    if (contract != null)
+                        contract.hideToolbar();
+                }
+            }
+
+            if (firstVisibleItem < mLastFirstVisibleItem)
+            {
+                //scroll up
+                if (!mToolbarVisible)
+                {
+                    final ToolbarContract contract = toolbarContractSoftRef.get();
+                    if (contract != null)
+                        contract.showToolbar();
+                }
+            }
+
+            mLastFirstVisibleItem = firstVisibleItem;
+        }
+
+
+    };
     private View mToolbarChildView, mContentView, mToolbarSiblingView;
-
-    public ToolbarContract getToolbarContract()
-    {
-        return mToolbarContract;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.base_activity_drawer);
-        setupViews();
-        if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener), GalleryFragment.getFragmentTag())
-                    .commit();
-
-    }
-
-    private void setupViews()
-    {
-        //Set drawers
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
-
-        final View view = mDrawerLayout; //easy refactoring later on
-        mToolbar = (Toolbar) view.findViewById(R.id.base_toolbar);
-        mContentViewContainer = (FrameLayout) view.findViewById(R.id.base_content_container);
-        mToolbarContainer = (LinearLayout) view.findViewById(R.id.base_toolbar_container);
-        mToolbarSiblingViewContainer = (FrameLayout) mToolbarContainer.findViewById(R.id.base_toolbar_sibling_content);
-
-        if (mToolbar != null)
-        {
-            final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, mDrawerLayout, mToolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
-            mDrawerLayout.setDrawerListener(drawerToggle);
-            drawerToggle.syncState();
-        }
-
-        final LayoutTransition layoutTransition = mToolbarContainer.getLayoutTransition();
-        if (layoutTransition != null)
-        {
-            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-        }
-    }
-
-    //Utilize XML bindings
-    public void onDrawerInteraction(View view)
-    {
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        switch (view.getId())
-        {
-            case R.id.drawer_watchlist:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener))
-                        .commit();
-                break;
-            case R.id.drawer_season:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SeasonTabHostFragment.newInstance(fragmentListener), SeasonTabHostFragment.class.getSimpleName())
-                        .commit();
-                break;
-            case R.id.drawer_search:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SearchFragment.newInstance("NARUTO"), SearchFragment.class.getSimpleName())
-                        .commit();
-                break;
-            case R.id.drawer_downloadqueue:
-                break;
-            case R.id.drawer_settings:
-                break;
-            case R.id.drawer_about:
-                break;
-        }
-
-        mDrawerLayout.closeDrawers();
-    }
-
     private final ToolbarContract mToolbarContract = new ToolbarContract()
     {
         @Override
@@ -235,6 +195,85 @@ public class DrawerActivity extends ActionBarActivity
         }
     };
 
+    public ToolbarContract getToolbarContract()
+    {
+        return mToolbarContract;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.base_activity_drawer);
+        setupViews();
+        if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener), GalleryFragment.getFragmentTag())
+                    .commit();
+
+    }
+
+    private void setupViews()
+    {
+        //Set drawers
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.base_drawerlayout);
+
+        final View view = mDrawerLayout; //easy refactoring later on
+        mToolbar = (Toolbar) view.findViewById(R.id.base_toolbar);
+        mContentViewContainer = (FrameLayout) view.findViewById(R.id.base_content_container);
+        mToolbarContainer = (LinearLayout) view.findViewById(R.id.base_toolbar_container);
+        mToolbarSiblingViewContainer = (FrameLayout) mToolbarContainer.findViewById(R.id.base_toolbar_sibling_content);
+
+        if (mToolbar != null)
+        {
+            final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(DrawerActivity.this, mDrawerLayout, mToolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+            mDrawerLayout.setDrawerListener(drawerToggle);
+            drawerToggle.syncState();
+        }
+
+        final LayoutTransition layoutTransition = mToolbarContainer.getLayoutTransition();
+        if (layoutTransition != null)
+        {
+            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+        }
+    }
+
+    //Utilize XML bindings
+    public void onDrawerInteraction(View view)
+    {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        switch (view.getId())
+        {
+            case R.id.drawer_watchlist:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener))
+                        .commit();
+                break;
+            case R.id.drawer_season:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(FRAGMENT_CONTAINER, SeasonTabHostFragment.newInstance(fragmentListener), SeasonTabHostFragment.class.getSimpleName())
+                        .commit();
+                break;
+            case R.id.drawer_search:
+                fragmentManager
+                        .beginTransaction()
+                        .replace(FRAGMENT_CONTAINER, SearchFragment.newInstance("NARUTO"), SearchFragment.class.getSimpleName())
+                        .commit();
+                break;
+            case R.id.drawer_downloadqueue:
+                break;
+            case R.id.drawer_settings:
+                break;
+            case R.id.drawer_about:
+                break;
+        }
+
+        mDrawerLayout.closeDrawers();
+    }
+
     final ValueAnimator slideToolbar(final int translationY)
     {
         final ValueAnimator animator = ValueAnimator.ofFloat(mToolbarContainer.getTranslationY(), translationY);
@@ -249,50 +288,6 @@ public class DrawerActivity extends ActionBarActivity
         });
         return animator;
     }
-
-
-    protected AbsListView.OnScrollListener toolbarOnScrollListener = new AbsListView.OnScrollListener()
-    {
-        private int mLastFirstVisibleItem;
-
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState)
-        {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-        {
-            if (firstVisibleItem > mLastFirstVisibleItem)
-            {
-                //scroll down
-                if (mToolbarVisible)
-                {
-                    final ToolbarContract contract = toolbarContractSoftRef.get();
-                    if (contract != null)
-                        contract.hideToolbar();
-                }
-            }
-
-            if (firstVisibleItem < mLastFirstVisibleItem)
-            {
-                //scroll up
-                if (!mToolbarVisible)
-                {
-                    final ToolbarContract contract = toolbarContractSoftRef.get();
-                    if (contract != null)
-                        contract.showToolbar();
-                }
-            }
-
-            mLastFirstVisibleItem = firstVisibleItem;
-        }
-
-        private SoftReference<ToolbarContract> toolbarContractSoftRef = new SoftReference<ToolbarContract>(mToolbarContract);
-
-
-    };
 
 
 }

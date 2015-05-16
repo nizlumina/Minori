@@ -21,31 +21,31 @@ import android.widget.AbsListView;
 
 public interface ToolbarContract
 {
-    public View getToolbarChildView();
+    View getToolbarChildView();
 
-    public ViewGroup getToolbarSiblingViewContainer();
+    ViewGroup getToolbarSiblingViewContainer();
 
-    public boolean isToolbarVisible();
+    boolean isToolbarVisible();
 
-    public View setToolbarSiblingView(LayoutInflater inflater, @LayoutRes int layoutResID);
+    View setToolbarSiblingView(LayoutInflater inflater, @LayoutRes int layoutResID);
 
-    public View setToolbarChild(LayoutInflater inflater, @LayoutRes int layoutResID);
+    View setToolbarChild(LayoutInflater inflater, @LayoutRes int layoutResID);
 
-    public ViewGroup getToolbarContainer();
+    ViewGroup getToolbarContainer();
 
-    public View getToolbarSiblingView();
+    View getToolbarSiblingView();
 
-    public Toolbar getToolbar();
+    Toolbar getToolbar();
 
-    public void removeToolbarChild();
+    void removeToolbarChild();
 
-    public void removeToolbarSiblingView();
+    void removeToolbarSiblingView();
 
-    public void hideToolbar();
+    void hideToolbar();
 
-    public void showToolbar();
+    void showToolbar();
 
-    public void resetToolbar();
+    void resetToolbar();
 
-    public AbsListView.OnScrollListener getAutoDisplayToolbarListener();
+    AbsListView.OnScrollListener getAutoDisplayToolbarListener();
 }

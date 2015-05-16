@@ -38,15 +38,8 @@ final class WebUnitMaster
     {
         mainClient = new OkHttpClient();
         int cacheSize = 10 * 1024 * 1024; //10 MB
-        try
-        {
-            mCache = new Cache(Minori.getAppContext().getCacheDir(), cacheSize);
-            mainClient.setCache(mCache);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        mCache = new Cache(Minori.getAppContext().getCacheDir(), cacheSize);
+        mainClient.setCache(mCache);
     }
 
     public static WebUnitMaster getInstance()
