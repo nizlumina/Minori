@@ -5,6 +5,7 @@
 /.idea/libraries
 .DS_Store
 /build
+/captures
 
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
