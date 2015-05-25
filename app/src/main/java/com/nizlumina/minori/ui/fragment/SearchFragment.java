@@ -36,7 +36,7 @@ import com.nizlumina.minori.controller.SearchController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.ui.ToolbarContract;
 import com.nizlumina.minori.ui.adapter.GenericAdapter;
-import com.nizlumina.minori.wrapper.ParcelableNyaaFansubGroup;
+import com.nizlumina.minori.utility.ParcelableNyaaFansubGroup;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,13 +17,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:padding="16dp">
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/detail_image"
@@ -56,7 +57,7 @@
                 android:autoLink="web"
                 android:fontFamily="sans-serif-light"
                 android:textSize="12sp"
-                tools:text="Jugem Jugem Unko Nage Ki Ototoi no Shin-chan no Pantsu Shinpachi no Jinsei Balmunk Fezarion Isaac Schneider San Bun no Ichi Junjyou na Kanjyou no Nokotta San Bun no Ni wa Sakamuke ga Kininaru Kanjyou Uragiri wa Boku no Namae wo Shitteiruyou de Shinranai no wo Boku wa Shitteiru Rusu Surume Medaka Kazuno Kokoedame Medaka….Kono Medaka wa saki no to wa Chigau Yatsu Dakara﻿ Ikeno Medaka no Hou Dakara Raa-yuu yuuteimiouki Mukou Pepepepepepepepepepepepe Bichiguso Maru" />
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
         </RelativeLayout>
 
         <GridLayout
@@ -90,52 +91,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
-
-            <include
-                android:id="@+id/detail_button_mark"
-                layout="@layout/old_fab_standard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:layout_marginTop="16dp" />
-
-            <include
-                android:id="@+id/detail_button_refresh"
-                layout="@layout/old_fab_standard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:layout_marginTop="16dp" />
-
-            <include
-                android:id="@+id/detail_button_download"
-                layout="@layout/old_fab_standard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:layout_marginTop="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Mark" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Refresh" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Download" />
         </GridLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD TO BATCH MODE" />
+
+        <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="LATEST REDDIT DISCUSSION" />-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="MAL" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="HUMMINGBIRD" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="ANIDB" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 </ScrollView>

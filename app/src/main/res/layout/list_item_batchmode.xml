@@ -10,91 +10,48 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    style="@style/CardView.Dark"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardElevation="2dp">
 
-    <TextView
-        android:id="@+id/lib_tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center"
-        android:maxLines="2"
-        tools:text="Running Man" />
-
-    <LinearLayout
-        android:id="@+id/lib_second_row"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lib_tv_title"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <EditText
+        <TextView
+            android:id="@+id/lib_tv_title"
+            style="@style/TextColorSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            tools:text="Lorem ipsum del amet si suma ipsum mon avacci si" />
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:inputType="numberSigned"
-            android:minWidth="48dp"
-            tools:text="14324" />
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_settings_white_24dp" />
 
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="48dp"
-            android:text="-" />
-
-        <Button
-
-            android:layout_width="40dp"
-            android:layout_height="48dp"
-            android:text="+" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
 
         <Spinner
+            style="?android:attr/spinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            tools:entries="@array/array_resolutions" />
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/lib_tv_title"
+            android:entries="@array/array_modes" />
 
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            tools:entries="Release Day" />
+    </RelativeLayout>
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/lib_third_row"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_below="@id/lib_second_row"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="8dp"
-            android:text="FIRST EP" />
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="CURR EP" />
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="NEXT EP" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</android.support.v7.widget.CardView>

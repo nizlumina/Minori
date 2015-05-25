@@ -60,7 +60,7 @@
     <color name="rb_black">#000000</color>
     <color name="rb_black_half">#80000000</color>
 
-    <!--Shadows color-->
+    <!--Shadows color. Transparency base on percentage: ie shadow 13: ~13% transparency-->
     <color name="shadow_85">#D9000000</color>
     <color name="shadow_73">#6A000000</color>
     <color name="shadow_55">#8C000000</color>
@@ -68,5 +68,6 @@
     <color name="shadow_32">#52000000</color>
     <color name="shadow_25">#40000000</color>
     <color name="shadow_13">#21000000</color>
+    <color name="shadow_05">#0c000000</color>
 
 </resources>

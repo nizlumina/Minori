@@ -96,21 +96,21 @@ public class DetailFragment extends DrawerContentFragment
         final BadgeView episodeCountBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_episodecount, EPISODECOUNT_CATEGORY, presenter.getEpisodesCount());
         episodeCountBadge.quickTint(R.color.green_800);
 
-        final View downloadButton = inflatedView.findViewById(R.id.detail_button_download);
-        if (downloadButton != null)
-        {
-            downloadButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if (drawerFragmentListener != null)
-                    {
-                        drawerFragmentListener.invokeFragmentChange(SearchFragment.newInstance(presenter.getTitle()));
-                    }
-                }
-            });
-        }
+//        final View downloadButton = inflatedView.findViewById(R.id.detail_button_download);
+//        if (downloadButton != null)
+//        {
+//            downloadButton.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View v)
+//                {
+//                    if (drawerFragmentListener != null)
+//                    {
+//                        drawerFragmentListener.invokeFragmentChange(SearchFragment.newInstance(presenter.getTitle()));
+//                    }
+//                }
+//            });
+//        }
     }
 
 

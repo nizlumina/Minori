@@ -13,4 +13,4 @@
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="3dp"
-    android:background="@drawable/shadow_linear_bottom" />
+    android:background="@drawable/shadow_linear_top" />

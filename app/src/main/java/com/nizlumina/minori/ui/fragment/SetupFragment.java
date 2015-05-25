@@ -39,7 +39,7 @@ import com.nizlumina.minori.controller.HummingbirdNetworkController;
 import com.nizlumina.minori.controller.WatchlistController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.model.alarm.Alarm;
-import com.nizlumina.minori.wrapper.ParcelableNyaaFansubGroup;
+import com.nizlumina.minori.utility.ParcelableNyaaFansubGroup;
 
 import java.lang.ref.SoftReference;
 import java.util.Hashtable;

@@ -116,4 +116,83 @@ public class Util
 
         return valueAnimator;
     }
+
+    /**
+     * Get best terms for title search.
+     * If the title have 1 - 2 terms, it will be leaft as it is (albeit more sanitized).
+     * If more, then the order is,
+     * 1: First word longer than 2.
+     * 2: Longest word between #1 and last word
+     * 3: Last word
+     *
+     * @param input Titles as input
+     * @return String of best terms.
+     */
+    public static String getBestTerms(String input)
+    {
+        final String[] terms = input.trim().replaceAll("[^a-zA-Z0-9@]+", "%").split("%");
+        final StringBuilder builder = new StringBuilder(terms.length);
+//        System.out.println("LENGTH " + terms.length);
+
+        if (terms.length == 0)
+        {
+            return null;
+        }
+
+        if (terms.length < 3)
+        {
+            for (String term : terms)
+            {
+                builder.append(term);
+                builder.append(' ');
+            }
+        }
+        else
+        {
+            int longestTermLength = 0;
+            String longestMiddleTerm = null;
+
+            final int termsLength = terms.length;
+            String firstTerm = null;
+            String lastTerm = null;
+            for (int i = 0; i < termsLength; ++i)
+            {
+                final String term = terms[i];
+
+                if (i == termsLength - 1) //to make sure its the last word after two words have been added
+                {
+                    lastTerm = terms[i];
+                }
+                else if (term.length() > 2) //use else if since its an independent event
+                {
+                    //set first term then skip
+                    if (firstTerm == null)
+                    {
+                        firstTerm = terms[i];
+                        builder.append(firstTerm);
+                        builder.append(' ');
+                    }
+                    else if (term.length() > longestTermLength)
+                    {
+                        longestTermLength = term.length();
+                        longestMiddleTerm = term;
+                        //keep reassigning till it gets the longest
+                    }
+                }
+            }
+
+            if (longestMiddleTerm != null)
+            {
+                builder.append(longestMiddleTerm);
+                builder.append(' ');
+            }
+
+            if (lastTerm != null)
+            {
+                builder.append(lastTerm);
+            }
+        }
+
+        return builder.toString().trim();
+    }
 }
