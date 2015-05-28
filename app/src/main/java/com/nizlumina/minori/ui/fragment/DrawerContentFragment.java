@@ -93,7 +93,7 @@ public class DrawerContentFragment extends Fragment
     public void onStop()
     {
         super.onStop();
-        FragmentActivity activity = getActivity();
+        final FragmentActivity activity = getActivity();
         if (activity instanceof DrawerActivity)
         {
             mToolbarContract.resetToolbar();

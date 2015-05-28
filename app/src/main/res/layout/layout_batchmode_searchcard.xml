@@ -9,49 +9,50 @@
   ~
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
-
 <android.support.v7.widget.CardView
     style="@style/CardView.Dark"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    app:cardElevation="2dp">
+    app:cardElevation="3dp"
+    tools:layout_margin="8dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/lib_tv_title"
-            style="@style/TextColorSecondary"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentTop="true"
-            android:gravity="center_vertical"
-            android:maxLines="2"
-            tools:text="Lorem ipsum del amet si suma ipsum mon avacci si" />
-
-        <ImageView
+        <ImageButton
+            android:id="@+id/lbm_ib_search"
+            style="?android:attr/actionButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_settings_white_24dp" />
+            android:layout_alignParentTop="true"
+            android:src="@drawable/abc_ic_search_api_mtrl_alpha" />
 
+        <EditText
+            android:id="@+id/lbm_et_searchquery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/lbm_ib_search"
+            android:layout_alignTop="@id/lbm_ib_search"
+            android:layout_toLeftOf="@id/lbm_ib_search"
+            android:hint="Search" />
 
-        <Spinner
-            style="?android:attr/spinnerStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/lib_tv_title"
-            android:entries="@array/array_modes" />
+        <ListView
+            android:id="@+id/lbm_lv_searchresult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/lbm_et_searchquery"
+            android:clipToPadding="false"
+            android:dividerHeight="1dp"
+            android:paddingTop="8dp"
+            android:scrollbarStyle="outsideInset"
+            tools:listitem="@layout/list_item_batchmode_search" />
 
     </RelativeLayout>
-
-
 </android.support.v7.widget.CardView>

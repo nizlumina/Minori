@@ -15,78 +15,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:background="@color/grey_900"
+    tools:layout_margin="8dp"
+    tools:padding="8dp">
 
     <TextView
         android:id="@+id/libs_search_group"
         style="@style/TextColorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_900"
-        android:paddingBottom="0dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp"
         tools:text="Test Group" />
 
     <TextView
         android:id="@+id/libs_search_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_900"
+        android:layout_marginBottom="8dp"
         android:maxLines="2"
-        android:paddingBottom="8dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
         tools:text="Lorem ipsum del amet si Lorem ipsum mon avacci si" />
 
     <!-- Hidden until parent item is touched-->
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/libs_rl_expanded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_900"
         android:gravity="center"
+        android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <LinearLayout
-            android:id="@+id/libs_ll_episode"
+            android:id="@+id/libs_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/roundrect_inline_grey"
+            android:background="@color/shadow_25"
+            android:elevation="2dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/libs_tv_ep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/roundrect_small_white"
-                android:paddingBottom="2dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="2dp"
-                android:text="EP"
-                android:textColor="@color/grey_900"
-                android:textStyle="bold" />
+            android:padding="8dp"
+            tools:ignore="UnusedAttribute">
 
             <EditText
                 android:id="@+id/libs_et_episode"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginLeft="-8dp"
                 android:background="@drawable/circle_inline_white"
                 android:gravity="center"
                 android:inputType="numberSigned"
                 android:textSize="16sp"
                 tools:text="888" />
-
 
             <Button
                 android:id="@+id/libs_btn_firstep"
@@ -111,48 +89,58 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@color/shadow_25"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            tools:ignore="UnusedAttribute">
+
+            <Button
+                android:id="@+id/libs_btn_480"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="480P" />
+
+            <Button
+                android:id="@+id/libs_btn_720"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="720P" />
+
+
+            <Button
+                android:id="@+id/libs_btn_1080"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1080P" />
+
+            <!-- Visibility toggled if resolution options not available-->
+            <Button
+                android:id="@+id/libs_btn_default"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Default"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+        </LinearLayout>
 
         <Button
-            android:id="@+id/libs_btn_1080"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/libs_ll_episode"
-            android:layout_marginRight="4dp"
-            android:text="1080" />
+            android:layout_gravity="right"
+            android:layout_marginTop="4dp"
+            android:drawableLeft="@drawable/ic_action_check_circle_white"
+            android:drawablePadding="8dp"
+            android:text="NEXT" />
+    </LinearLayout>
 
-        <Button
-            android:id="@+id/libs_btn_720"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/libs_btn_1080"
-            android:layout_toLeftOf="@id/libs_btn_1080"
-            android:text="720" />
-
-        <Button
-            android:id="@+id/libs_btn_480"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/libs_btn_1080"
-            android:layout_toLeftOf="@id/libs_btn_720"
-
-            android:text="480" />
-
-        <!-- Visibility toggled if resolution options not available-->
-        <Button
-            android:id="@+id/libs_btn_default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/libs_ll_episode"
-            android:layout_marginRight="8dp"
-            android:text="Default Res"
-            android:visibility="gone" />
-
-    </RelativeLayout>
-
-    <include
-        layout="@layout/view_shadow_top"
-        android:layout_width="match_parent"
-        android:layout_height="3dp" />
 </LinearLayout>

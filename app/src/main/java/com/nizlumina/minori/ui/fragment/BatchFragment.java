@@ -15,11 +15,9 @@ package com.nizlumina.minori.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.ui.adapter.GenericAdapter;
@@ -27,7 +25,7 @@ import com.nizlumina.minori.ui.adapter.GenericAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatchFragment extends Fragment
+public class BatchFragment extends DrawerContentFragment
 {
     private static final String ARRAYLIST_TITLES = "batchfragment_titles";
     private List<BatchItem> batchItemList = new ArrayList<>();
@@ -52,11 +50,8 @@ public class BatchFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        final ListView listView = (ListView) getView();
-        if (listView != null)
-        {
-            final GenericAdapter<BatchItem> adapter = new GenericAdapter<>(getActivity(), batchItemList, new BatchItemViewHolder());
-        }
+
+        final GenericAdapter<BatchItem> adapter = new GenericAdapter<>(getActivity(), batchItemList, new BatchItemViewHolder());
     }
 
     @Override
@@ -77,7 +72,7 @@ public class BatchFragment extends Fragment
         @Override
         public int getLayoutResource()
         {
-            return R.layout.list_item_batchmode;
+            return R.layout.view_batchmode_card;
         }
 
         @Override

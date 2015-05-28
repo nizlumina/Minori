@@ -36,7 +36,6 @@
         <service
             android:name=".service.DownloadService"
             android:exported="false" />
-
         <service
             android:name=".service.TorrentService"
             android:enabled="true"
@@ -50,6 +49,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activity.BatchModeActivity"
+            android:label="@string/title_activity_batch">
         </activity>
     </application>
 

@@ -20,5 +20,4 @@
     android:clipToPadding="false"
     android:divider="@null"
     android:paddingTop="8dp"
-    tools:listitem="@layout/list_item_batchmode"
-    tools:showIn="@layout/fragment_search" />
+    tools:listitem="@layout/list_item_batchmode_search" />

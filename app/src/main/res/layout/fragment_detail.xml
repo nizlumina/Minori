@@ -32,7 +32,7 @@
                 android:layout_height="@dimen/gallery_image_height_small"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="16dp"
-                android:contentDescription="@string/acc_poster_description"
+                android:contentDescription="@string/cd_poster_description"
                 android:scaleType="fitCenter"
                 tools:background="@android:color/holo_blue_dark"
                 tools:src="@drawable/ic_star_white_48dp" />

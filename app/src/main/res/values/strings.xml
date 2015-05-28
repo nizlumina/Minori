@@ -20,7 +20,9 @@
     <string name="movies_filter_text">Movies</string>
     <string name="specials_filter_text">Specials</string>
     <string name="header_synopsis">Synopsis</string>
-    <string name="acc_poster_description">Poster Image</string>
+    <string name="cd_poster_description">Poster Image</string>
+    <string name="cd_bm_complete">Complete batch mode</string>
+    <string name="cd_setupfilter">Setup filter</string>
     <string-array name="array_resolutions">
         <item>480p</item>
         <item>720p</item>
@@ -35,4 +37,8 @@
         <item>1 Hour</item>
         <item>2 Hour</item>
     </string-array>
+    <string name="title_activity_batch">BatchActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>
