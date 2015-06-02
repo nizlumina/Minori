@@ -10,81 +10,106 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/abm_maintoolbar"
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/abm_batchcard"
+        style="@style/CardView.Dark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-
-            <SeekBar
-                style="?android:attr/seekBarStyle"
-                android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/vbc_btn_setdata"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:contentDescription="@string/cd_setupfilter"
+                android:src="@drawable/ic_settings_white_24dp"
+                android:tint="?colorAccent" />
 
             <TextView
-                android:id="@+id/abm_tv_batchprogress"
-                style="?android:attr/actionMenuTextAppearance"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                tools:text="9/10" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="6dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="6dp"
-                android:background="?colorPrimaryDark" />
-
-            <ImageButton
-                style="?android:attr/actionButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/cd_bm_complete"
-                android:src="@drawable/ic_action_done_all_white" />
-
-
+                android:id="@+id/vbc_tv_title"
+                style="@style/TextColorBase"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:maxLines="2"
+                android:paddingRight="8dp"
+                android:text="Lorem ipsum del amet si suma ipsum mon avacci si" />
         </LinearLayout>
 
-    </android.support.v7.widget.Toolbar>
+
+    </android.support.v7.widget.CardView>
+
+
+    <!-- Hidden until parent item is touched-->
 
 
     <include
-        android:id="@+id/abm_batchcard"
-        layout="@layout/view_batchmode_card"
+        android:id="@+id/abm_cv_search"
+        layout="@layout/layout_batchmode_card_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1" />
+
+    <include
+        android:id="@+id/abm_cv_setup"
+        layout="@layout/layout_batchmode_card_setup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/abm_maintoolbar"
-        android:layout_margin="8dp" />
-
-
-    <include
-        layout="@layout/layout_batchmode_searchcard"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/abm_batchcard"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp" />
+        android:layout_marginRight="8dp"
+        android:isScrollContainer="true"
+        android:visibility="gone"
+        tools:visibility="gone" />
 
-    <include
-        layout="@layout/view_shadow_top"
+
+    <LinearLayout
+        android:id="@+id/abm_ll_container"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_below="@id/abm_maintoolbar" />
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:isScrollContainer="true"
+        android:orientation="horizontal"
+        android:paddingRight="8dp"
+        tools:ignore="RtlSymmetry">
 
-</RelativeLayout>
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/abm_tv_batchprogress"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:minWidth="40dp"
+            tools:text="9/10" />
+
+    </LinearLayout>
+
+</LinearLayout>
