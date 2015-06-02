@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Minori colors-->
-    <color name="accent_color">@color/light_green_A200</color>
-    <color name="accent_color_shade">@color/rbc_green_shade</color>
+    <!--<color name="accent_color">@color/light_green_A200</color>-->
+    <!--<color name="accent_color_shade">@color/rbc_green_shade</color>-->
 
-    <color name="primary_color">#AD1457</color>
-    <!--Material Pink 800-->
-    <color name="primary_color_dark">#8D0641</color>
-    <!--Material Pink 900-->
+    <!--<color name="primary_color">#AD1457</color>-->
+    <!--&lt;!&ndash;Material Pink 800&ndash;&gt;-->
+    <!--<color name="primary_color_dark">#8D0641</color>-->
+    <!--&lt;!&ndash;Material Pink 900&ndash;&gt;-->
 
-    <color name="primary_color_complement">#D85B92</color>
-    <color name="primary_color_dark_complement">#C33573</color>
+    <!--<color name="primary_color_complement">#D85B92</color>-->
+    <!--<color name="primary_color_dark_complement">#C33573</color>-->
 
     <!--Shared BG Colors-->
     <!--<color name="bg_primary">@color/rbc_text_blue</color>-->
@@ -68,6 +68,11 @@
     <color name="shadow_32">#52000000</color>
     <color name="shadow_25">#40000000</color>
     <color name="shadow_13">#21000000</color>
-    <color name="shadow_05">#0c000000</color>
+    <color name="shadow_05">#0C000000</color>
+
+
+    <color name="highlight_25">#40FFFFFF</color>
+    <color name="highlight_13">#21FFFFFF</color>
+    <color name="highlight_05">#0CFFFFFF</color>
 
 </resources>

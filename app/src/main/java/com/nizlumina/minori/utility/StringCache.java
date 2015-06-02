@@ -14,7 +14,7 @@ package com.nizlumina.minori.utility;
 
 import android.util.Log;
 
-import com.nizlumina.minori.internal.Minori;
+import com.nizlumina.minori.internal.MinoriApplication;
 
 import org.apache.commons.io.IOUtils;
 
@@ -129,7 +129,7 @@ public class StringCache
      */
     private File getCacheFile()
     {
-        return new File(Minori.getAppContext().getCacheDir(), mCacheFileName);
+        return new File(MinoriApplication.getAppContext().getCacheDir(), mCacheFileName);
     }
 
     /**

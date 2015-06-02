@@ -96,7 +96,7 @@ public class SeasonFragment extends Fragment
             @Override
             public void loadInto(final ImageView imageView, CompositeData source)
             {
-                Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).placeholder(R.color.primary_color_dark).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+                Glide.with(SeasonFragment.this).load(source.getMalObject().getImage()).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
             }
 
             @Override

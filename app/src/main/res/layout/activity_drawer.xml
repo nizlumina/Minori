@@ -30,7 +30,7 @@
                 android:id="@+id/base_toolbar_sibling_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary_color" />
+                android:background="?attr/colorPrimary" />
 
             <include
                 layout="@layout/view_shadow_top"

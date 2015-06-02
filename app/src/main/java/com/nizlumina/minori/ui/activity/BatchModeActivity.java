@@ -12,43 +12,92 @@
 
 package com.nizlumina.minori.ui.activity;
 
+import android.animation.LayoutTransition;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.nizlumina.minori.R;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class BatchModeActivity extends AppCompatActivity
 {
+
+    private int bottomCardTop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_batchmode);
+        setupViews(savedInstanceState);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu)
-//    {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_batch, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item)
-//    {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings)
+    private void setupViews(Bundle savedInstanceState)
+    {
+//        final View includeTopCard = findViewById(R.id.abm_batchcard);
+//        final View includeBottomCard = findViewById(R.id.abm_searchcard);
+//        final Toolbar mainToolbar = (Toolbar) findViewById(R.id.abm_maintoolbar);
+//        includeBottomCard.post(new Runnable()
 //        {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+//            @Override
+//            public void run()
+//            {
+//                bottomCardTop = includeBottomCard.getTop();
+//            }
+//        });
+
+        ListView listView = (ListView) findViewById(R.id.lbm_lv_searchresult);
+        if (listView != null)
+        {
+            ArrayList<String> list = new ArrayList<>(50);
+            for (int i = 0; i < 50; i++)
+            {
+                list.add("Banzai " + new Random().nextInt(500));
+            }
+            listView.setAdapter(new ArrayAdapter<>(this, R.layout.list_item_batchmode_search, R.id.libs_search_title, list));
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    if (view instanceof ViewGroup)
+                    {
+                        ((ViewGroup) view).getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+                    }
+//                    view.findViewById(R.id.libs_rl_expanded).setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    }
+
+
+    //doubleSlideUp(includeTopCard, includeBottomCard, -mainToolbar.getHeight()).start();
+    final ValueAnimator doubleSlideUp(final View topCard, final View bottomCard, final int translationY)
+    {
+        final ValueAnimator animator = ValueAnimator.ofFloat(0, translationY);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
+                final float animatedValue = (float) animation.getAnimatedValue();
+                topCard.setTranslationY(animatedValue);
+//                bottomCard.setTop((int)(bottomCardTop + animatedValue));
+                final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) bottomCard.getLayoutParams();
+                params.topMargin = (int) animatedValue;
+                bottomCard.setLayoutParams(params);
+            }
+        });
+
+        return animator;
+    }
 }

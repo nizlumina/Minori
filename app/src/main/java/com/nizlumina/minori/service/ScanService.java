@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.nizlumina.common.nyaa.NyaaEntry;
 import com.nizlumina.minori.controller.WatchlistController;
-import com.nizlumina.minori.internal.Minori;
+import com.nizlumina.minori.internal.MinoriApplication;
 import com.nizlumina.minori.internal.factory.CoreNetworkFactory;
 import com.nizlumina.minori.internal.factory.IntentFactory;
 import com.nizlumina.minori.internal.network.DownloadUnit;
@@ -107,7 +107,7 @@ public class ScanService extends IntentService
                     watchData.updateAlarm(getApplicationContext());
                 }
 
-                if (!Minori.listenersAvailable())
+                if (!MinoriApplication.listenersAvailable())
                 {
                     controller.saveData(getApplicationContext());
                 }

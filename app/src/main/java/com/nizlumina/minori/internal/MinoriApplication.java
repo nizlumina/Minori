@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Simple application instance
  */
-public class Minori extends Application
+public class MinoriApplication extends Application
 {
     private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<ActivityListener>();
     private static Context mContext;

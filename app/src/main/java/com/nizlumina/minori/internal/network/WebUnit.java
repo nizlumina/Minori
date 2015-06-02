@@ -12,7 +12,7 @@
 
 package com.nizlumina.minori.internal.network;
 
-import com.nizlumina.minori.internal.Minori;
+import com.nizlumina.minori.internal.MinoriApplication;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Credentials;
@@ -38,7 +38,7 @@ final class WebUnitMaster
     {
         mainClient = new OkHttpClient();
         int cacheSize = 10 * 1024 * 1024; //10 MB
-        mCache = new Cache(Minori.getAppContext().getCacheDir(), cacheSize);
+        mCache = new Cache(MinoriApplication.getAppContext().getCacheDir(), cacheSize);
         mainClient.setCache(mCache);
     }
 

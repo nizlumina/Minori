@@ -204,7 +204,7 @@ public class DrawerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.base_activity_drawer);
+        setContentView(R.layout.activity_drawer);
         setupViews();
         if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
             getSupportFragmentManager()

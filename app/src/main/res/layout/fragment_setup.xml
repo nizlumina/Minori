@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/accent_color"
+        android:background="?attr/colorAccent"
         android:text="ADD TO WATCHLIST"
-        android:textColor="@color/accent_color_shade" />
+        android:textColor="@color/rbc_green_shade" />
 
     <ScrollView
         android:id="@+id/setup_scrollcontainer"

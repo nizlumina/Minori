@@ -72,7 +72,7 @@ public class BatchFragment extends DrawerContentFragment
         @Override
         public int getLayoutResource()
         {
-            return R.layout.view_batchmode_card;
+            return R.layout.layout_batchmode_card_setup;
         }
 
         @Override

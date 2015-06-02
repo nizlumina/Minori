@@ -1,10 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="MinoriDark" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_color_dark</item>
-        <item name="colorAccent">@color/rbc_green_lime</item>
+        <item name="colorPrimary">#AD1457</item>
+        <item name="colorPrimaryDark">#8D0641</item>
+        <item name="colorAccent">#B2FF59</item>
     </style>
+
 
     <style name="LayoutBackgroundPrimary" parent="MinoriDark">
         <item name="android:background">@color/rbc_bg_light_grey</item>
