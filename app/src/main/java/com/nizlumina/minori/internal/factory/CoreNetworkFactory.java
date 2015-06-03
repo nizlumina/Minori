@@ -38,7 +38,7 @@ public class CoreNetworkFactory
             public void onStreamReceived(InputStream inputStream)
             {
                 NyaaXMLParser parser = new NyaaXMLParser();
-                outputList.addAll(parser.Parse(inputStream));
+                outputList.addAll(parser.parse(inputStream));
             }
         };
 

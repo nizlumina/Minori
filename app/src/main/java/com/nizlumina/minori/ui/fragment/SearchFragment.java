@@ -167,7 +167,7 @@ public class SearchFragment extends DrawerContentFragment
                 if (getActivity() != null && result != null)
                 {
                     Log.v(SearchFragment.class.getSimpleName(), "Nyaa Results: " + result.size());
-                    final List<NyaaFansubGroup> groups = NyaaXMLParser.Group(result);
+                    final List<NyaaFansubGroup> groups = NyaaXMLParser.group(result);
                     getActivity().runOnUiThread(new Runnable()
                     {
                         @Override

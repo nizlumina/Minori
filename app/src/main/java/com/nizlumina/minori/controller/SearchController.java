@@ -23,12 +23,11 @@ import java.util.concurrent.Callable;
 
 public class SearchController
 {
-    ThreadWorker<List<NyaaEntry>> searchWorker = new ThreadWorker<>();
+    private final ThreadWorker<List<NyaaEntry>> searchWorker = new ThreadWorker<>();
 
     public void searchNyaa(final String terms, final OnFinishListener<List<NyaaEntry>> onFinishListener)
     {
-        searchWorker.cancelRunningTask(); //try to stop any search that is running
-        Callable<List<NyaaEntry>> backgroundTask = new Callable<List<NyaaEntry>>()
+        final Callable<List<NyaaEntry>> backgroundTask = new Callable<List<NyaaEntry>>()
         {
             @Override
             public List<NyaaEntry> call() throws Exception
@@ -39,6 +38,7 @@ public class SearchController
             }
         };
 
+        //TODO: Avoid AsyncTask
         searchWorker.postAsyncTask(backgroundTask, new OnFinishListener<List<NyaaEntry>>()
         {
             @Override
@@ -47,5 +47,9 @@ public class SearchController
                 onFinishListener.onFinish(result);
             }
         });
+    }
+
+    public boolean cancelSearch(){
+        return searchWorker.cancelRunningTask();
     }
 }

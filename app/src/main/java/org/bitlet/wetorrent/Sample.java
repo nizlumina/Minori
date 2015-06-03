@@ -34,7 +34,7 @@ public class Sample
         // read torrent filename from command line arg
         String filename = args[0];
 
-        // Parse the metafile
+        // parse the metafile
         Metafile metafile = new Metafile(new BufferedInputStream(new FileInputStream(filename)));
 
         // Create the torrent disk, this is the destination where the torrent file/s will be saved

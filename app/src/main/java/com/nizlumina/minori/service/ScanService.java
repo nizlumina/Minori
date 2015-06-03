@@ -4,8 +4,8 @@ import android.app.IntentService;
 import android.content.Intent;
 
 import com.nizlumina.common.nyaa.NyaaEntry;
+import com.nizlumina.minori.MinoriApplication;
 import com.nizlumina.minori.controller.WatchlistController;
-import com.nizlumina.minori.internal.MinoriApplication;
 import com.nizlumina.minori.internal.factory.CoreNetworkFactory;
 import com.nizlumina.minori.internal.factory.IntentFactory;
 import com.nizlumina.minori.internal.network.DownloadUnit;

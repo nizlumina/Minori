@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
+import com.nizlumina.minori.MinoriApplication;
 import com.nizlumina.minori.controller.WatchlistController;
-import com.nizlumina.minori.internal.MinoriApplication;
 import com.nizlumina.minori.internal.factory.DownloadUnitFactory;
 import com.nizlumina.minori.internal.network.DownloadUnit;
 import com.nizlumina.minori.model.WatchData;

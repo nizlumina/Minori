@@ -12,7 +12,7 @@
 
 package com.nizlumina.minori.internal.network;
 
-import com.nizlumina.minori.internal.MinoriApplication;
+import com.nizlumina.minori.MinoriApplication;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Credentials;

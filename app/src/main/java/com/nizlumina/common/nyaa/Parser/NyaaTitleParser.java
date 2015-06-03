@@ -44,7 +44,7 @@ public class NyaaTitleParser
 
             for (Character c : entry)
             {
-                //Get Group, first bracket
+                //Get group, first bracket
                 if (!bracketStart)
                 {
                     if (c == '[' || c == '(')

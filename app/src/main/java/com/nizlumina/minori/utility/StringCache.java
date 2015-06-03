@@ -14,7 +14,7 @@ package com.nizlumina.minori.utility;
 
 import android.util.Log;
 
-import com.nizlumina.minori.internal.MinoriApplication;
+import com.nizlumina.minori.MinoriApplication;
 
 import org.apache.commons.io.IOUtils;
 

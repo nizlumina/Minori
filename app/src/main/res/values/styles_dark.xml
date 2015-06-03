@@ -1,11 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <attr name="colorAccentShade" format="color|reference" />
 
     <style name="MinoriDark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">#AD1457</item>
         <item name="colorPrimaryDark">#8D0641</item>
         <item name="colorAccent">#B2FF59</item>
+        <item name="colorAccentShade">#1B5E20</item>
     </style>
 
+    <style name="MinoriDark.TranslucentStatusBar" parent="MinoriDark"></style>
 
     <style name="LayoutBackgroundPrimary" parent="MinoriDark">
         <item name="android:background">@color/rbc_bg_light_grey</item>

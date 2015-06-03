@@ -21,9 +21,9 @@ import java.util.List;
 //import android.util.Log;
 
 /**
- * Base parser for all Nyaa RSS stream. Parse() will take the resulting network inputStream and spits out a list of NyaaEntry
+ * Base parser for all Nyaa RSS stream. parse() will take the resulting network inputStream and spits out a list of NyaaEntry
  * <p>
- * The Parse method parse each xml object thru a series of internal parsers.
+ * The parse method parse each xml object thru a series of internal parsers.
  * The title where most of the meat is is actualy parsed from in an order from right to left AND THEN from left to right.
  * </p>
  */
@@ -33,12 +33,12 @@ public class NyaaXMLParser
 
     /**
      * Optional grouping. You can remove this if you don't need it.
-     * Note that the method read the resulting list from Parse() and create a list of FansubGroup(s) that also holds reference to the original list items.
+     * Note that the method read the resulting list from parse() and create a list of FansubGroup(s) that also holds reference to the original list items.
      *
      * @param rawList
      * @return
      */
-    public static List<NyaaFansubGroup> Group(@NonNull List<NyaaEntry> rawList)
+    public static List<NyaaFansubGroup> group(@NonNull List<NyaaEntry> rawList)
     {
         HashMap<Pair<String, String>, NyaaFansubGroup> fMap = new HashMap<Pair<String, String>, NyaaFansubGroup>();
 
@@ -46,7 +46,7 @@ public class NyaaXMLParser
         {
             if (rawEntry.getFansub() == null || rawEntry.getTitle() == null)
             {
-//                Log.v(debugKey + "Group()", rawEntry.stringData());
+//                Log.v(debugKey + "group()", rawEntry.stringData());
                 continue;
             }
             NyaaFansubGroup nyaaFansubGroup;
@@ -115,7 +115,7 @@ public class NyaaXMLParser
     }
 
     //This will always return an empty list (not null) even if nothing is found
-    public List<NyaaEntry> Parse(InputStream inputStream) //throws XmlPullParserException,IOException... or yer mom
+    public List<NyaaEntry> parse(InputStream inputStream) //throws XmlPullParserException,IOException... or yer mom
     {
         ArrayList<NyaaEntry> entries = new ArrayList<NyaaEntry>();
 

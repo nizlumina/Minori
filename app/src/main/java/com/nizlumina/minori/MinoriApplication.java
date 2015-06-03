@@ -1,4 +1,4 @@
-package com.nizlumina.minori.internal;
+package com.nizlumina.minori;
 
 
 import android.app.Application;

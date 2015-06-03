@@ -19,9 +19,8 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-
     <android.support.v7.widget.CardView
-        android:id="@+id/abm_batchcard"
+        android:id="@+id/abm_cv_titlecard"
         style="@style/CardView.Dark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +36,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/vbc_btn_setdata"
+                android:id="@+id/abm_titlecard_btn_setdata"
                 style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,7 +45,7 @@
                 android:tint="?colorAccent" />
 
             <TextView
-                android:id="@+id/vbc_tv_title"
+                android:id="@+id/abm_titlecard_tv_title"
                 style="@style/TextColorBase"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -55,18 +54,14 @@
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:paddingRight="8dp"
-                android:text="Lorem ipsum del amet si suma ipsum mon avacci si" />
+                tools:text="Lorem ipsum del amet si suma ipsum mon avacci si" />
         </LinearLayout>
 
 
     </android.support.v7.widget.CardView>
 
-
-    <!-- Hidden until parent item is touched-->
-
-
     <include
-        android:id="@+id/abm_cv_search"
+        android:id="@+id/abm_cv_searchcard"
         layout="@layout/layout_batchmode_card_search"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -76,7 +71,7 @@
         android:layout_weight="1" />
 
     <include
-        android:id="@+id/abm_cv_setup"
+        android:id="@+id/abm_cv_setupcard"
         layout="@layout/layout_batchmode_card_setup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,31 +79,33 @@
         android:layout_marginRight="8dp"
         android:isScrollContainer="true"
         android:visibility="gone"
-        tools:visibility="gone" />
-
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/abm_ll_container"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:gravity="center_vertical"
         android:isScrollContainer="true"
         android:orientation="horizontal"
-        android:paddingRight="8dp"
-        tools:ignore="RtlSymmetry">
+        android:padding="8dp">
 
-        <SeekBar
+        <android.support.design.widget.TabLayout
+            android:id="@+id/abm_tablayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
             android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/abm_tv_batchprogress"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/abm_fab_done"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:minWidth="40dp"
-            tools:text="9/10" />
+            android:src="@drawable/ic_action_done_all_white"
+            app:borderWidth="0dp"
+            app:fabSize="mini"
+            tools:tint="?attr/colorAccentShade" />
 
     </LinearLayout>
 
