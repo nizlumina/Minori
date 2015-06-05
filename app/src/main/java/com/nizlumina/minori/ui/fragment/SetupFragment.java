@@ -50,7 +50,8 @@ public class SetupFragment extends Fragment
 {
     public static final String NYAAFANSUBGROUP_PARCELKEY = "com.nizlumina.minori.nyaafansubgroup_parcelkey";
     private NyaaFansubGroup mNyaaFansubGroup;
-    private NyaaEntry.Resolution mSelectedRes = NyaaEntry.Resolution.DEFAULT;
+    //TODO REMOVED DEFAULT. WILL BE FIXED LATER
+    private NyaaEntry.Resolution mSelectedRes = null;//NyaaEntry.Resolution.DEFAULT;
     private Alarm.Mode mSelectedMode = Alarm.Mode.RELEASE_DAY;
     private String mSelectedEpisode;
     private AnimeObject mSelectedAnimeObject;
@@ -246,20 +247,21 @@ public class SetupFragment extends Fragment
             for (final NyaaEntry.Resolution resolution : resolutions)
             {
                 //Force resolution option. DEFAULT is special case where no resolution at all is provided with the NyaaEntry.
-                if (resolution != NyaaEntry.Resolution.DEFAULT)
-                {
-                    RadioButton radioButton = (RadioButton) resViewMap.get(resolution);
-                    radioButton.setEnabled(true);
-                    radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-                    {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                        {
-                            if (isChecked)
-                                mSelectedRes = resolution;
-                        }
-                    });
-                }
+                //TODO REMOVED DEFAULT. WILL BE FIXED LATER
+//                if (resolution != NyaaEntry.Resolution.DEFAULT)
+//                {
+//                    RadioButton radioButton = (RadioButton) resViewMap.get(resolution);
+//                    radioButton.setEnabled(true);
+//                    radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+//                    {
+//                        @Override
+//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+//                        {
+//                            if (isChecked)
+//                                mSelectedRes = resolution;
+//                        }
+//                    });
+//                }
             }
 
             //init the default choice. If only DEFAULT resolution is available, this also works.
@@ -268,7 +270,8 @@ public class SetupFragment extends Fragment
         }
         else
         {
-            resViewMap.get(NyaaEntry.Resolution.DEFAULT).setEnabled(true);
+            //TODO REMOVED DEFAULT. WILL BE FIXED LATER
+//            resViewMap.get(NyaaEntry.Resolution.DEFAULT).setEnabled(true);
         }
     }
 
