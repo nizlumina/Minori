@@ -252,7 +252,7 @@ public class NyaaTitleParser
             }
         }
 
-        if (entry.getResolution() == null) entry.setResolution(NyaaEntry.Resolution.DEFAULT);
+        //if (entry.getResolution() == null) entry.setResolution(NyaaEntry.Resolution.DEFAULT);
     }
 
     private boolean hashStringValidation(String input)

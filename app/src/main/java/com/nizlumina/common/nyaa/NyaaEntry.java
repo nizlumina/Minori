@@ -379,7 +379,7 @@ public final class NyaaEntry
 
     public enum Resolution
     {
-        DEFAULT, R480, R720, R1080;
+        R480, R720, R1080;
 
         public static String getResolutionDisplayString(NyaaEntry displayEntry, boolean displayDefaultForNonStandard)
         {
@@ -396,7 +396,8 @@ public final class NyaaEntry
                     return Static.R720 + 'p';
                 case R1080:
                     return Static.R1080 + 'p';
-                case DEFAULT:
+
+                default:
                     if (displayDefaultForNonStandard)
                     {
                         return "Default";
@@ -405,27 +406,24 @@ public final class NyaaEntry
                     {
                         return null;
                     }
-                default:
-                    return null;
             }
         }
 
         public static Resolution matchResolution(String searchString)
         {
             if (searchString.equalsIgnoreCase(Static.UNDEFINED_STRING))
-                return DEFAULT;
+                return null;
             if (searchString.contains(Static.R480))
                 return R480;
             if (searchString.contains(Static.R720))
                 return R720;
             if (searchString.contains(Static.R1080))
                 return R1080;
-            return DEFAULT;
+            return null;
         }
 
         public static Resolution getResolutionFromOrdinals(int ordinal)
         {
-            if (ordinal == DEFAULT.ordinal()) return DEFAULT;
             if (ordinal == R480.ordinal()) return R480;
             if (ordinal == R720.ordinal()) return R720;
             if (ordinal == R1080.ordinal()) return R1080;

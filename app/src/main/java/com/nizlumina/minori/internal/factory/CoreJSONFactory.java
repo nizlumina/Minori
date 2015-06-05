@@ -41,7 +41,6 @@ public class CoreJSONFactory
             if (mResolution == null)
             {
                 entry.setResolutionString(null);
-                entry.setResolution(NyaaEntry.Resolution.DEFAULT);
             }
             else
             {

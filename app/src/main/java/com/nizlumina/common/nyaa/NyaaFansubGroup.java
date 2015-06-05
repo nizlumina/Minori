@@ -14,10 +14,21 @@ public final class NyaaFansubGroup
     private int mId; //set in NyaaXmlParser while setting latest episode. it always point to the latest id
     private NyaaEntry.Trust mTrustCategory;
     private int mLatestEpisode; //set up during first Parsing in NyaaXmlParser
+    private int mModes;
 
     public NyaaFansubGroup(String groupName)
     {
         this.mGroupName = groupName;
+    }
+
+    public int getModes()
+    {
+        return mModes;
+    }
+
+    public void setModes(int mModes)
+    {
+        this.mModes = mModes;
     }
 
     public NyaaEntry getLatestEntry(NyaaEntry.Resolution resolution)
