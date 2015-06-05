@@ -25,9 +25,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +59,7 @@ public class BatchModeActivity extends AppCompatActivity
     private final SparseArrayCompat<BatchData> mBatchDatas = new SparseArrayCompat<>(20);
     private TextView mBatchCardTitle;
     private int mCurrentId = -1;
+    private SetupCard mSetupCard;
     private GenericAdapter<NyaaFansubGroup> mSearchResultListAdapter;
     private final LoaderManager.LoaderCallbacks<BatchData> mBatchDataLoaderCallbacks = new LoaderManager.LoaderCallbacks<BatchData>()
     {
@@ -94,6 +98,11 @@ public class BatchModeActivity extends AppCompatActivity
         }
     };
     private EditText mSearchQueryEditText;
+
+    public BatchData getSelectedBatchData()
+    {
+        return mBatchDatas.get(mCurrentId);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -176,14 +185,41 @@ public class BatchModeActivity extends AppCompatActivity
         }
 
 
+        final View setupCardView = findViewById(R.id.abm_cv_setupcard);
+        {
+            if (setupCardView != null)
+            {
+                mSetupCard = new SetupCard(setupCardView);
+                mSetupCard.initViews();
+                mSetupCard.setDefaultRes(NyaaEntry.Resolution.R720); //TODO: Apply sharedPrefs for default checked RES
+            }
+        }
+
+        //declared after setupCardView since clicking list item trigger setup card visibility
         final View searchCard = findViewById(R.id.abm_cv_searchcard);
         if (searchCard != null)
         {
-            final ListView mListViewSearchResult = (ListView) searchCard.findViewById(R.id.lbcs_lv_searchresult);
-            if (mListViewSearchResult != null)
+            final ListView searchResultListView = (ListView) searchCard.findViewById(R.id.lbcs_lv_searchresult);
+            if (searchResultListView != null)
             {
                 mSearchResultListAdapter = new GenericAdapter<>(BatchModeActivity.this, new ArrayList<NyaaFansubGroup>(100), new NyaaFansubGroupViewHolder());
-                mListViewSearchResult.setAdapter(mSearchResultListAdapter);
+                searchResultListView.setAdapter(mSearchResultListAdapter);
+                searchResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                    {
+                        if (mSetupCard != null)
+                        {
+                            mSetupCard.setData(mSearchResultListAdapter.getItem(position));
+                            mSetupCard.updateViews();
+                            if (mSetupCard.getVisibility() != View.VISIBLE)
+                            {
+                                mSetupCard.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
             }
 
             mSearchQueryEditText = (EditText) searchCard.findViewById(R.id.lbcs_et_searchquery);
@@ -214,14 +250,6 @@ public class BatchModeActivity extends AppCompatActivity
                 });
             }
         }
-
-        final View setupCard = findViewById(R.id.abm_cv_setupcard);
-        {
-            if (setupCard != null)
-            {
-//                setupCard.findViewById();
-            }
-        }
     }
 
     //TODO: HERE
@@ -235,11 +263,22 @@ public class BatchModeActivity extends AppCompatActivity
         private int id;
         private CompositeData compositeData;
         private List<NyaaFansubGroup> searchResults;
+        private NyaaFansubGroup selectedNyaaFansubGroup;
 
         private BatchData(int index, CompositeData compositeData)
         {
             BatchData.this.id = index;
             BatchData.this.compositeData = compositeData;
+        }
+
+        public NyaaFansubGroup getSelectedNyaaFansubGroup()
+        {
+            return selectedNyaaFansubGroup;
+        }
+
+        public void setSelectedNyaaFansubGroup(NyaaFansubGroup selectedNyaaFansubGroup)
+        {
+            this.selectedNyaaFansubGroup = selectedNyaaFansubGroup;
         }
 
         public int getId()
@@ -260,6 +299,180 @@ public class BatchModeActivity extends AppCompatActivity
         public void setSearchResults(List<NyaaFansubGroup> searchResults)
         {
             this.searchResults = searchResults;
+        }
+    }
+
+    //Small wrapper class
+    private static final class SetupCard
+    {
+        private final View mSetupCard;
+        private NyaaFansubGroup mNyaaFansubGroup;
+        private CheckBox res480CheckBox;
+        private CheckBox res720CheckBox;
+        private CheckBox res1080CheckBox;
+        private View mResolutionsContainer;
+        private EditText mEpisodeEditText;
+        private SparseArrayCompat<CheckBox> mResCheckboxSparseArray;
+        private Spinner modeSpinner;
+        private boolean mResAvailable = false;
+        private NyaaEntry.Resolution mDefaultRes = null;
+
+        public SetupCard(View setupCardView)
+        {
+            this.mSetupCard = setupCardView;
+        }
+
+        public void setDefaultRes(NyaaEntry.Resolution mDefaultRes)
+        {
+            this.mDefaultRes = mDefaultRes;
+        }
+
+        public void initViews()
+        {
+            mEpisodeEditText = (EditText) mSetupCard.findViewById(R.id.libs_et_episode);
+
+            mSetupCard.findViewById(R.id.libs_btn_firstep).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    mEpisodeEditText.setText("1");
+                }
+            });
+            mSetupCard.findViewById(R.id.libs_btn_currep).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    final int ep = mNyaaFansubGroup.getLatestEpisode();
+                    mEpisodeEditText.setText(String.valueOf(ep));
+                }
+            });
+            mSetupCard.findViewById(R.id.libs_btn_nextep).setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    final int ep = mNyaaFansubGroup.getLatestEpisode();
+                    mEpisodeEditText.setText(String.valueOf(ep + 1));
+                }
+            });
+
+            //Checkboxes
+            mResolutionsContainer = mSetupCard.findViewById(R.id.libs_ll_mid);
+            res480CheckBox = (CheckBox) mResolutionsContainer.findViewById(R.id.libs_btn_480);
+            res720CheckBox = (CheckBox) mResolutionsContainer.findViewById(R.id.libs_btn_720);
+            res1080CheckBox = (CheckBox) mResolutionsContainer.findViewById(R.id.libs_btn_1080);
+
+            mResCheckboxSparseArray = new SparseArrayCompat<>(3);
+            mResCheckboxSparseArray.append(NyaaEntry.Resolution.R480.ordinal(), res480CheckBox);
+            mResCheckboxSparseArray.append(NyaaEntry.Resolution.R720.ordinal(), res720CheckBox);
+            mResCheckboxSparseArray.append(NyaaEntry.Resolution.R1080.ordinal(), res1080CheckBox);
+
+            modeSpinner = (Spinner) mSetupCard.findViewById(R.id.libs_spinner_modes);
+        }
+
+        public int getVisibility()
+        {
+            return mSetupCard.getVisibility();
+        }
+
+        public void setVisibility(int visibility)
+        {
+            mSetupCard.setVisibility(visibility);
+        }
+
+        public void setData(NyaaFansubGroup nyaaFansubGroup)
+        {
+            this.mNyaaFansubGroup = nyaaFansubGroup;
+        }
+
+
+        //by updating views upon list item clicked, we do not need to reset their states fully due to overriding.
+        public void updateViews()
+        {
+            if (mNyaaFansubGroup != null)
+            {
+                mEpisodeEditText.setText(String.valueOf(mNyaaFansubGroup.getLatestEpisode()));
+
+                //if(mNyaaFansubGroup.getResolutions())
+                List<NyaaEntry.Resolution> resolutions = mNyaaFansubGroup.getResolutions();
+
+                mResAvailable = false;
+                if (resolutions.size() > 0)
+                {
+                    for (final NyaaEntry.Resolution resolution : mNyaaFansubGroup.getResolutions())
+                    {
+                        final CheckBox checkBox = mResCheckboxSparseArray.get(resolution.ordinal());
+                        if (checkBox != null)
+                        {
+                            mResAvailable = true;
+                            checkBox.setVisibility(View.VISIBLE);
+
+                            //Auto checked if default res is set
+                            if (mDefaultRes != null && mDefaultRes == resolution)
+                            {
+                                checkBox.setChecked(true);
+                            }
+                            else if (checkBox.isChecked())
+                            {
+                                checkBox.setChecked(false);
+                            }
+                        }
+                    }
+                }
+
+                if (!mResAvailable || resolutions.size() == 0)
+                {
+                    mResolutionsContainer.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        public NyaaFansubGroup applyFinalData(Context context)
+        {
+            final NyaaFansubGroup finalNyaaFansubGroup = new NyaaFansubGroup(mNyaaFansubGroup.getGroupName());
+
+            if (mEpisodeEditText.getText() != null && mEpisodeEditText.length() > 0)
+            {
+                finalNyaaFansubGroup.setLatestEpisode(Integer.parseInt(mEpisodeEditText.getText().toString()));
+            }
+            else
+            {
+                Toast.makeText(context, R.string.error_noepsentered, Toast.LENGTH_LONG).show();
+                return null;
+            }
+
+            if (mResAvailable) //only applicable if any res is available to be selected
+            {
+                boolean selectAny = false;
+                for (NyaaEntry.Resolution resolution : NyaaEntry.Resolution.values())
+                {
+                    final CheckBox checkBox = mResCheckboxSparseArray.get(resolution.ordinal());
+                    if (checkBox != null)
+                    {
+                        if (checkBox.isChecked())
+                        {
+                            selectAny = checkBox.isChecked();
+                            finalNyaaFansubGroup.getResolutions().add(resolution);
+                        }
+                    }
+                }
+                if (!selectAny)
+                {
+                    Toast.makeText(context, R.string.error_noresselected, Toast.LENGTH_LONG).show();
+                    return null;
+                }
+            }
+
+            finalNyaaFansubGroup.setModes(modeSpinner.getSelectedItemPosition());
+
+            finalNyaaFansubGroup.setSeriesTitle(mNyaaFansubGroup.getSeriesTitle());
+            finalNyaaFansubGroup.setId(mNyaaFansubGroup.getId());
+            finalNyaaFansubGroup.setTrustCategory(mNyaaFansubGroup.getTrustCategory());
+
+            //TODO:return modes as well
+            return finalNyaaFansubGroup;
         }
     }
 
