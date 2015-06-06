@@ -39,7 +39,7 @@ public class NyaaXMLParser
      */
     public static List<NyaaFansubGroup> group(@NonNull List<NyaaEntry> rawList)
     {
-        HashMap<Pair<String, String>, NyaaFansubGroup> fMap = new HashMap<Pair<String, String>, NyaaFansubGroup>();
+        HashMap<Pair<String, String>, NyaaFansubGroup> fMap = new HashMap<>();
 
         for (NyaaEntry rawEntry : rawList)
         {
@@ -50,7 +50,7 @@ public class NyaaXMLParser
             }
             NyaaFansubGroup nyaaFansubGroup;
 
-            Pair<String, String> pair = new Pair<String, String>(rawEntry.getFansub(), rawEntry.getTitle());
+            Pair<String, String> pair = new Pair<>(rawEntry.getFansub(), rawEntry.getTitle());
             if (!fMap.keySet().contains(pair))
             {
                 nyaaFansubGroup = new NyaaFansubGroup(rawEntry.getFansub());
@@ -62,11 +62,11 @@ public class NyaaXMLParser
                 nyaaFansubGroup.getResolutions().add(rawEntry.getResolution());
                 nyaaFansubGroup.getNyaaEntries().add(rawEntry);
 
-                fMap.put(new Pair<String, String>(rawEntry.getFansub(), rawEntry.getTitle()), nyaaFansubGroup);
+                fMap.put(new Pair<>(rawEntry.getFansub(), rawEntry.getTitle()), nyaaFansubGroup);
             }
             else
             {
-                nyaaFansubGroup = fMap.get(new Pair<String, String>(rawEntry.getFansub(), rawEntry.getTitle()));
+                nyaaFansubGroup = fMap.get(new Pair<>(rawEntry.getFansub(), rawEntry.getTitle()));
 
                 nyaaFansubGroup.getNyaaEntries().add(rawEntry);
 
@@ -94,7 +94,7 @@ public class NyaaXMLParser
             }
         }
 
-        List<NyaaFansubGroup> finalGroups = new ArrayList<NyaaFansubGroup>(fMap.values());
+        List<NyaaFansubGroup> finalGroups = new ArrayList<>(fMap.values());
 
         for (NyaaFansubGroup nyaaFansubGroup : finalGroups)
         {
@@ -116,7 +116,7 @@ public class NyaaXMLParser
     //This will always return an empty list (not null) even if nothing is found
     public List<NyaaEntry> parse(InputStream inputStream) //throws XmlPullParserException,IOException... or yer mom
     {
-        ArrayList<NyaaEntry> entries = new ArrayList<NyaaEntry>();
+        ArrayList<NyaaEntry> entries = new ArrayList<>();
 
         try
         {

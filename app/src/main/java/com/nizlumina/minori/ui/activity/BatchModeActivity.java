@@ -235,7 +235,7 @@ public class BatchModeActivity extends AppCompatActivity
                     @Override
                     public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent)
                     {
-                        if (actionId == EditorInfo.IME_ACTION_DONE)
+                        if (actionId == EditorInfo.IME_ACTION_DONE || keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)
                         {
                             searchNyaa();
                         }
