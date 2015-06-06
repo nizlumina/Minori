@@ -33,7 +33,6 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.ui.ToolbarContract;
 import com.nizlumina.minori.ui.fragment.DrawerFragmentListener;
 import com.nizlumina.minori.ui.fragment.GalleryFragment;
-import com.nizlumina.minori.ui.fragment.SearchFragment;
 import com.nizlumina.minori.ui.fragment.SeasonMasterFragment;
 
 import java.lang.ref.SoftReference;
@@ -61,7 +60,7 @@ public class DrawerActivity extends AppCompatActivity
     protected AbsListView.OnScrollListener toolbarOnScrollListener = new AbsListView.OnScrollListener()
     {
         private int mLastFirstVisibleItem;
-        private SoftReference<ToolbarContract> toolbarContractSoftRef = new SoftReference<ToolbarContract>(mToolbarContract);
+        private SoftReference<ToolbarContract> toolbarContractSoftRef = new SoftReference<>(mToolbarContract);
 
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState)
@@ -258,10 +257,7 @@ public class DrawerActivity extends AppCompatActivity
                         .commit();
                 break;
             case R.id.drawer_search:
-                fragmentManager
-                        .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SearchFragment.newInstance("NARUTO"), SearchFragment.class.getSimpleName())
-                        .commit();
+
                 break;
             case R.id.drawer_downloadqueue:
                 break;

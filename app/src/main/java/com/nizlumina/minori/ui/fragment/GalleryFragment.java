@@ -34,14 +34,14 @@ public class GalleryFragment extends DrawerContentFragment
 {
     private static final String FRAGMENT_TAG = "gallery_fragment";
     private GridView mGridView;
-    private SoftReference<DrawerFragmentListener> mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(null);
+    private SoftReference<DrawerFragmentListener> mFragmentListenerRef = new SoftReference<>(null);
 
     public GalleryFragment() {}
 
     public static GalleryFragment newInstance(DrawerFragmentListener listener)
     {
         GalleryFragment galleryFragment = new GalleryFragment();
-        galleryFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(listener);
+        galleryFragment.mFragmentListenerRef = new SoftReference<>(listener);
         return galleryFragment;
     }
 
@@ -80,7 +80,7 @@ public class GalleryFragment extends DrawerContentFragment
         gridView.setOnScrollListener(getToolbarContract().getAutoDisplayToolbarListener());
 
         WatchlistController controller = new WatchlistController();
-        GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<WatchData>(new GalleryItemHolder.GalleryPresenter<WatchData>()
+        GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<>(new GalleryItemHolder.GalleryPresenter<WatchData>()
         {
             @Override
             public void loadInto(ImageView imageView, WatchData source)

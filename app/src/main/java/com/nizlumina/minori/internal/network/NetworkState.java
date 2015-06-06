@@ -13,20 +13,7 @@ public class NetworkState
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetworkInfo != null && activeNetworkInfo.isConnected())
-        {
-//            switch (Global.CONN_OPTION)
-//            {
-//                case WIFI_ONLY:
-//                    return activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI;
-//                case MOBILE_DATA_ONLY:
-//                    return activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-//                case ANY_CONNECTION:
-//                    return true;
-//            }
-            return true;
-        }
-        return false;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

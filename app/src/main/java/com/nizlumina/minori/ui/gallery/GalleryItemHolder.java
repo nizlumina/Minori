@@ -39,13 +39,13 @@ public class GalleryItemHolder<T> implements GenericAdapter.ViewHolder<T>
     @Override
     public int getLayoutResource()
     {
-        return R.layout.list_item_gallery_compact;
+        return R.layout.list_item_gallery;
     }
 
     @Override
     public GenericAdapter.ViewHolder<T> getNewInstance()
     {
-        return new GalleryItemHolder<T>(mPresenter);
+        return new GalleryItemHolder<>(mPresenter);
     }
 
     @Override

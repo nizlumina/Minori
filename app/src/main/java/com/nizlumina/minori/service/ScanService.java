@@ -64,7 +64,7 @@ public class ScanService extends IntentService
                 WatchData watchData = controller.getWatchData(id);
                 NyaaEntry original = watchData.getNyaaEntry();
 
-                ArrayList<NyaaEntry> scanResults = new ArrayList<NyaaEntry>();
+                ArrayList<NyaaEntry> scanResults = new ArrayList<>();
                 CoreNetworkFactory.getNyaaEntries(watchData.getNyaaEntry().buildQuery(), scanResults);
 
                 NyaaEntry latestEntry = null;

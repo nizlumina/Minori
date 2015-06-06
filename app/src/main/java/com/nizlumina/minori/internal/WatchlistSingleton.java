@@ -32,7 +32,7 @@ public class WatchlistSingleton
 
     public List<WatchData> getDataList()
     {
-        if (mDataList == null) mDataList = new ArrayList<WatchData>();
+        if (mDataList == null) mDataList = new ArrayList<>();
         return mDataList;
     }
 

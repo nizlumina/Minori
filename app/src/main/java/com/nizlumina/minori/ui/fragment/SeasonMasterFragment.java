@@ -53,7 +53,7 @@ public class SeasonMasterFragment extends DrawerContentFragment
     public static SeasonMasterFragment newInstance(DrawerFragmentListener fragmentListener)
     {
         SeasonMasterFragment seasonTabHostFragment = new SeasonMasterFragment();
-        seasonTabHostFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(fragmentListener);
+        seasonTabHostFragment.mFragmentListenerRef = new SoftReference<>(fragmentListener);
         return seasonTabHostFragment;
     }
 

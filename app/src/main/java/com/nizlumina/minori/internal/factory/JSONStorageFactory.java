@@ -25,11 +25,7 @@ public class JSONStorageFactory
         {
             writer.write(jsonArray.toString(4));
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch (JSONException e)
+        catch (IOException | JSONException e)
         {
             e.printStackTrace();
         }
@@ -61,11 +57,7 @@ public class JSONStorageFactory
 
             if (jsonString != null) result = new JSONArray(jsonString);
         }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
+        catch (JSONException | IOException e)
         {
             e.printStackTrace();
         }

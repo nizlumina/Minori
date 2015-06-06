@@ -72,11 +72,7 @@ public class CoreNetworkFactory
 
             }
         }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
+        catch (JSONException | IOException e)
         {
             e.printStackTrace();
         }
@@ -91,11 +87,7 @@ public class CoreNetworkFactory
             JSONObject jsonObject = new JSONObject(resultString);
             return CoreJSONFactory.animeObjectFromJSON(jsonObject, true);
         }
-        catch (JSONException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
+        catch (JSONException | IOException e)
         {
             e.printStackTrace();
         }

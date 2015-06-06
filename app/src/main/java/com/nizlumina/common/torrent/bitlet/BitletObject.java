@@ -23,7 +23,6 @@ import org.bitlet.wetorrent.peer.IncomingPeerListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
@@ -60,15 +59,7 @@ public class BitletObject extends TorrentObject
                 this.setTorrent(torrent); //important setter
                 success = true;
             }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            catch (NoSuchAlgorithmException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IOException e)
+            catch (NoSuchAlgorithmException | IOException e)
             {
                 e.printStackTrace();
             }

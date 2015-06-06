@@ -113,7 +113,8 @@ public class GenericAdapter<T> extends BaseAdapter
      *
      * @param items The items to add at the end of the array.
      */
-    public void addAll(T... items)
+    @SafeVarargs
+    public final void addAll(T... items)
     {
         synchronized (mLock)
         {

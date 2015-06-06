@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class MinoriApplication extends Application
 {
-    private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<ActivityListener>();
+    private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<>();
     private static Context mContext;
 
     public static Context getAppContext()

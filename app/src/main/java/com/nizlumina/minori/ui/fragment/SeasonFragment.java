@@ -244,7 +244,7 @@ public class SeasonFragment extends Fragment
 
                 //Even though the result is complete, we only display series for now (since that's what people will use it for anyway).
                 //Sectioning parts of the UI for complete results will be decided later in the future
-                List<CompositeData> filteredList = new ArrayList<CompositeData>();
+                List<CompositeData> filteredList = new ArrayList<>();
                 for (CompositeData compositeData : result)
                 {
                     if (compositeData.getLiveChartObject().getCategory() == LiveChartObject.Category.TV)

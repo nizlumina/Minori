@@ -39,7 +39,7 @@ public class SeasonDataIndexController
     private final WebUnit mFirebaseIndexWebUnit = new WebUnit();
     private final Loggy loggy = new Loggy(this.getClass().getSimpleName());
     private final TypeToken<List<Season>> mSeasonHashListToken = new TypeToken<List<Season>>() {};
-    private final Map<String, Season> mSeasonHashIndex = new HashMap<String, Season>(0);
+    private final Map<String, Season> mSeasonHashIndex = new HashMap<>(0);
     private boolean mLoading = false;
 
     public List<Season> getSeasonList()

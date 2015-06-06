@@ -44,7 +44,7 @@ public class DetailFragment extends DrawerContentFragment
     public static DetailFragment newInstance(DrawerFragmentListener drawerFragmentListener)
     {
         DetailFragment detailFragment = new DetailFragment();
-        detailFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(drawerFragmentListener);
+        detailFragment.mFragmentListenerRef = new SoftReference<>(drawerFragmentListener);
         return detailFragment;
     }
 

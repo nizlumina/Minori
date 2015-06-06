@@ -5,11 +5,12 @@ import java.util.List;
 
 public final class NyaaFansubGroup
 {
-    static final String MULTI_QUALITY = "Multi-Quality", MULTI_RES = "Multi-Res";
+    public static final String MULTI_QUALITY = "Multi-Quality", MULTI_RES = "Multi-Res";
+
     private final String mGroupName;
-    private final ArrayList<NyaaEntry> mNyaaEntries = new ArrayList<NyaaEntry>(); //blind list for all entries under this fansub name
-    private final ArrayList<String> mQualities = new ArrayList<String>(); //only for display
-    private final List<NyaaEntry.Resolution> mResolutions = new ArrayList<NyaaEntry.Resolution>(); //size will always be > 0 due to Resolution.Default added to an AnimeEntry if its resolution cannot be parsed
+    private final ArrayList<NyaaEntry> mNyaaEntries = new ArrayList<>(); //blind list for all entries under this fansub name
+    private final ArrayList<String> mQualities = new ArrayList<>(); //only for display
+    private final List<NyaaEntry.Resolution> mResolutions = new ArrayList<>(); //size will always be > 0 due to Resolution.Default added to an AnimeEntry if its resolution cannot be parsed
     private String mSeriesTitle;
     private int mId; //set in NyaaXmlParser while setting latest episode. it always point to the latest id
     private NyaaEntry.Trust mTrustCategory;
@@ -19,61 +20,6 @@ public final class NyaaFansubGroup
     public NyaaFansubGroup(String groupName)
     {
         this.mGroupName = groupName;
-    }
-
-    public int getModes()
-    {
-        return mModes;
-    }
-
-    public void setModes(int mModes)
-    {
-        this.mModes = mModes;
-    }
-
-    public NyaaEntry getLatestEntry(NyaaEntry.Resolution resolution)
-    {
-        for (NyaaEntry entry : getNyaaEntries())
-        {
-            if (entry.getResolution() == resolution)
-            {
-                if (entry.getCurrentEpisode() == getLatestEpisode())
-                {
-                    return entry;
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getGroupName()
-    {
-        return mGroupName;
-    }
-
-    public ArrayList<NyaaEntry> getNyaaEntries()
-    {
-        return mNyaaEntries;
-    }
-
-    public ArrayList<String> getQualities()
-    {
-        return mQualities;
-    }
-
-    public List<NyaaEntry.Resolution> getResolutions()
-    {
-        return mResolutions;
-    }
-
-    public String getSeriesTitle()
-    {
-        return mSeriesTitle;
-    }
-
-    public void setSeriesTitle(String seriesTitle)
-    {
-        this.mSeriesTitle = seriesTitle;
     }
 
     public int getId()
@@ -111,21 +57,78 @@ public final class NyaaFansubGroup
         this.mLatestEpisode = latestEpisode;
     }
 
-    public String getResolutionDisplayString()
+    public int getModes()
     {
-        if (mResolutions.size() > 0)
-        {
-            if (mResolutions.size() == 1)
-            {
-                return NyaaEntry.Resolution.getResolutionDisplayString(mResolutions.get(0), true);
-            }
-            else return MULTI_RES;
-        }
-        else return null;
+        return mModes;
     }
 
-    public String stringData()
+    public void setModes(int mModes)
     {
-        return String.format("%s\n%s\n%s\n%s\n%s\n%s", getSeriesTitle(), getGroupName(), getId(), getLatestEpisode(), getResolutionDisplayString(), getTrustCategory().name());
+        this.mModes = mModes;
     }
+
+//    public NyaaEntry getLatestEntry(NyaaEntry.Resolution resolution)
+//    {
+//        for (NyaaEntry entry : getNyaaEntries())
+//        {
+//            if (entry.getResolution() == resolution)
+//            {
+//                if (entry.getCurrentEpisode() == getLatestEpisode())
+//                {
+//                    return entry;
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+    public String getGroupName()
+    {
+        return mGroupName;
+    }
+
+    public ArrayList<NyaaEntry> getNyaaEntries()
+    {
+        return mNyaaEntries;
+    }
+
+    public ArrayList<String> getQualities()
+    {
+        return mQualities;
+    }
+
+    public List<NyaaEntry.Resolution> getResolutions()
+    {
+        return mResolutions;
+    }
+
+    public String getSeriesTitle()
+    {
+        return mSeriesTitle;
+    }
+
+    public void setSeriesTitle(String seriesTitle)
+    {
+        this.mSeriesTitle = seriesTitle;
+    }
+
+
+//    public String getResolutionDisplayString()
+//    {
+//        if (mResolutions.size() > 0)
+//        {
+//            if (mResolutions.size() == 1)
+//            {
+//                return NyaaEntry.Resolution.getResolutionDisplayString(mResolutions.get(0), true);
+//            }
+//            else return MULTI_RES;
+//        }
+//        else return null;
+//    }
+
+//    //For debugging
+//    public String stringData()
+//    {
+//        return String.format("%s\n%s\n%s\n%s\n%s\n%s", getSeriesTitle(), getGroupName(), getId(), getLatestEpisode(), getResolutionDisplayString(), getTrustCategory().name());
+//    }
 }

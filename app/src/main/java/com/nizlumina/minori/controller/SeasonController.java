@@ -42,9 +42,9 @@ public class SeasonController
     private final TypeToken<List<CompositeData>> mCompositeDataListToken = new TypeToken<List<CompositeData>>() {};
     //For season in view
     private Season mCurrentSeason;
-    private List<CompositeData> mCompositeDatas = new ArrayList<CompositeData>();
+    private List<CompositeData> mCompositeDatas = new ArrayList<>();
     //Extras
-    private List<Future> tasks = new ArrayList<Future>();
+    private List<Future> tasks = new ArrayList<>();
 
     public SeasonController(Season season)
     {
