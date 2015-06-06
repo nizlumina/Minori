@@ -12,10 +12,13 @@
 
 package com.nizlumina.minori.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonController;
 import com.nizlumina.minori.listener.OnFinishListener;
+import com.nizlumina.minori.ui.activity.BatchModeActivity;
 import com.nizlumina.minori.ui.adapter.GenericAdapter;
 import com.nizlumina.minori.ui.gallery.GalleryItemHolder;
 import com.nizlumina.minori.ui.view.CustomGridView;
@@ -53,14 +57,16 @@ public class SeasonFragment extends Fragment
     private Season mSeason;
     private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
     private AbsListView.OnScrollListener mOnScrollListener;
+    private FloatingActionButton mBatchFab;
+    private boolean selectionMode = false;
 
     public static SeasonFragment newInstance(Season season, DrawerFragmentListener fragmentListener, AbsListView.OnScrollListener onScrollListener)
     {
-        SeasonFragment seasonFragment = new SeasonFragment();
+        final SeasonFragment seasonFragment = new SeasonFragment();
         seasonFragment.mSeason = season;
         seasonFragment.mSeasonController = new SeasonController(season);
         seasonFragment.mOnScrollListener = onScrollListener;
-        seasonFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(fragmentListener);
+        seasonFragment.mFragmentListenerRef = new SoftReference<>(fragmentListener);
         return seasonFragment;
     }
 
@@ -68,20 +74,21 @@ public class SeasonFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        mGridView = (CustomGridView) inflater.inflate(R.layout.layout_gridview, container, false);
-        return mGridView;
+        return inflater.inflate(R.layout.fragment_season, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        if (mGridView != null) setupGridView();
+        mGridView = (CustomGridView) view.findViewById(R.id.fs_gridview);
+        mBatchFab = (FloatingActionButton) view.findViewById(R.id.fs_batchfab);
+        if (mGridView != null) setupViews();
     }
 
-    private void setupGridView()
+    private void setupViews()
     {
-        Bundle arguments = getArguments();
+        final Bundle arguments = getArguments();
         if (arguments.containsKey(ARGS_GRIDVIEW_PADDING_TOP))
         {
             int topPadding = arguments.getInt(ARGS_GRIDVIEW_PADDING_TOP);
@@ -149,13 +156,15 @@ public class SeasonFragment extends Fragment
             mGridView.setOnScrollListener(mOnScrollListener);
 
         }
+        mGridView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                if (mFragmentListenerRef != null)
+
+                if (!selectionMode && mFragmentListenerRef != null)
                 {
                     DrawerFragmentListener fragmentListener = mFragmentListenerRef.get();
                     if (fragmentListener != null)
@@ -173,6 +182,53 @@ public class SeasonFragment extends Fragment
                 }
             }
         });
+
+        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                mGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+                selectionMode = true;
+                mBatchFab.setVisibility(View.VISIBLE);
+                mGridView.setItemChecked(position, true);
+
+                return true;
+            }
+        });
+
+        mBatchFab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                final SparseBooleanArray booleanArray = mGridView.getCheckedItemPositions();
+                if (booleanArray != null)
+                {
+                    final ArrayList<CompositeData> outDatas = new ArrayList<>(30);
+                    for (int i = 0; i < booleanArray.size(); i++)
+                    {
+                        if (booleanArray.get(i))
+                        {
+                            Log.v(getClass().getSimpleName(), "Selected item: " + i);
+                            outDatas.add(mCompositeDatasForDisplay.get(i));
+                        }
+                    }
+
+                    if (outDatas.size() > 0)
+                    {
+                        mGridView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+                        selectionMode = false;
+
+                        mBatchFab.setVisibility(View.GONE);
+                        Intent intent = new Intent(getActivity(), BatchModeActivity.class);
+                        intent.putParcelableArrayListExtra(CompositeData.PARCELKEY_COMPOSITEDATA, outDatas);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
+
         buildGridItems(false);
     }
 

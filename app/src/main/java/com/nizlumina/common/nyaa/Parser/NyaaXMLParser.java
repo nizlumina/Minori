@@ -29,7 +29,6 @@ import java.util.List;
  */
 public class NyaaXMLParser
 {
-    final String debugKey = "NyaaXMLParser.";
 
     /**
      * Optional grouping. You can remove this if you don't need it.
@@ -78,7 +77,7 @@ public class NyaaXMLParser
                 }
 
 
-                if (nyaaFansubGroup.getTrustCategory().ordinal() < rawEntry.getTrustCategory().ordinal()) //Nyaa Rules. If the group already is A+ in another release, they will be considered A+ in another release.. or was it still the same now..?
+                if (rawEntry.getTrustCategory().ordinal() < nyaaFansubGroup.getTrustCategory().ordinal()) //Nyaa Rules. If the group already is A+ in another release, they will be considered A+ in another release.. or was it still the same now..?
                 {
                     nyaaFansubGroup.setTrustCategory(rawEntry.getTrustCategory());
                 }

@@ -14,6 +14,8 @@ package com.nizlumina.minori.ui.activity;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -21,14 +23,15 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,6 +47,8 @@ import com.nizlumina.minori.utility.Util;
 import com.nizlumina.syncmaru.model.CompositeData;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,48 +66,9 @@ public class BatchModeActivity extends AppCompatActivity
     private int mCurrentId = -1;
     private SetupCard mSetupCard;
     private GenericAdapter<NyaaFansubGroup> mSearchResultListAdapter;
-    private final LoaderManager.LoaderCallbacks<BatchData> mBatchDataLoaderCallbacks = new LoaderManager.LoaderCallbacks<BatchData>()
-    {
-        @Override
-        public Loader<BatchData> onCreateLoader(int id, Bundle args)
-        {
-            return new NyaaSearchResultLoader(BatchModeActivity.this, mBatchDatas.get(id), args);
-        }
 
-        @Override
-        public void onLoadFinished(Loader<BatchData> loader, final BatchData data)
-        {
-            //Refresh list result if its the current BatchData
-            if (mCurrentId == data.id)
-            {
-                final Runnable runnable = new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (!mSearchResultListAdapter.isEmpty())
-                            mSearchResultListAdapter.clear();
-
-                        mSearchResultListAdapter.addAll(data.searchResults);
-                    }
-                };
-
-                runOnUiThread(runnable);
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<BatchData> loader)
-        {
-            //TODO:Loader reset
-        }
-    };
     private EditText mSearchQueryEditText;
-
-    public BatchData getSelectedBatchData()
-    {
-        return mBatchDatas.get(mCurrentId);
-    }
+    private LoaderManager.LoaderCallbacks<BatchData> callback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,33 +78,32 @@ public class BatchModeActivity extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
-            final View view = getWindow().getDecorView().getRootView();
-            if (view instanceof ViewGroup)
+            final LinearLayout view = (LinearLayout) findViewById(R.id.abm_root);
+            if (view != null)
             {
-                ((ViewGroup) view).getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+                view.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
             }
         }
 
-        final Bundle extras = getIntent().getExtras();
-        if (extras != null)
+        final ArrayList<CompositeData> passedCompositeDatas = getIntent().getParcelableArrayListExtra(CompositeData.PARCELKEY_COMPOSITEDATA);
+        if (passedCompositeDatas != null)
         {
-            final ArrayList<CompositeData> passedCompositeDatas = extras.getParcelableArrayList(CompositeData.PARCELKEY_COMPOSITEDATA);
-            if (passedCompositeDatas != null)
+            //NOTE: i is used as index!
+
+            for (int i = 0; i < passedCompositeDatas.size(); i++)
             {
-                //NOTE: i is used as index!
 
-                for (int i = 0; i < passedCompositeDatas.size(); i++)
-                {
-                    mBatchDatas.append(i, new BatchData(i, passedCompositeDatas.get(i)));
-                }
+                mBatchDatas.append(i, new BatchData(i, passedCompositeDatas.get(i)));
 
-                attachViews(savedInstanceState);
-
-                //initial setups
-                mCurrentId = 0;
-                applyViewsData(mBatchDatas.get(0));
-                setupLoaders(mBatchDatas);
             }
+
+            Log.v(getClass().getSimpleName(), "Loading size: " + mBatchDatas.size());
+            attachViews(savedInstanceState);
+
+            //initial setups
+            mCurrentId = 0;
+            applyViewsData(mBatchDatas.get(0));
+            setupLoaders(mBatchDatas);
         }
     }
 
@@ -147,9 +112,47 @@ public class BatchModeActivity extends AppCompatActivity
         for (int i = 0; i < batchDatas.size(); i++)
         {
             final BatchData batchData = batchDatas.get(i);
-
+            Log.v(getClass().getSimpleName(), "Loading ID: " + batchData.getId());
             //each batch data use its own loader ID so it can be reused
-            getSupportLoaderManager().initLoader(batchData.getId(), null, mBatchDataLoaderCallbacks);
+            callback = new LoaderManager.LoaderCallbacks<BatchData>()
+            {
+                @Override
+                public Loader<BatchData> onCreateLoader(int id, Bundle args)
+                {
+                    return new NyaaSearchResultLoader(BatchModeActivity.this, mBatchDatas.get(id), args);
+                }
+
+                @Override
+                public void onLoadFinished(Loader<BatchData> loader, final BatchData data)
+                {
+                    //Refresh list result if its the current BatchData
+                    if (mCurrentId == data.getId())
+                    {
+                        Log.v(getClass().getSimpleName(), mCurrentId + " equals " + data.getId());
+                        final Runnable runnable = new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                if (!mSearchResultListAdapter.isEmpty())
+                                    mSearchResultListAdapter.clear();
+
+                                mSearchResultListAdapter.addAll(data.searchResults);
+                                mSearchResultListAdapter.notifyDataSetChanged();
+                            }
+                        };
+
+                        mSearchQueryEditText.post(runnable);
+                    }
+                }
+
+                @Override
+                public void onLoaderReset(Loader<BatchData> loader)
+                {
+                    //TODO:Loader reset
+                }
+            };
+            getSupportLoaderManager().initLoader(batchData.getId(), null, callback).forceLoad();
         }
     }
 
@@ -160,7 +163,8 @@ public class BatchModeActivity extends AppCompatActivity
         {
             final Bundle args = new Bundle(20);
             args.putString(NyaaSearchResultLoader.KEY_SEARCH_ARG, terms);
-            getSupportLoaderManager().restartLoader(mCurrentId, args, mBatchDataLoaderCallbacks);
+            //TODO:Reapply loader
+            getSupportLoaderManager().restartLoader(mCurrentId, args, callback).forceLoad();
         }
         else
         {
@@ -255,7 +259,9 @@ public class BatchModeActivity extends AppCompatActivity
     //TODO: HERE
     private void applyViewsData(BatchData batchData)
     {
-        mBatchCardTitle.setText(batchData.compositeData.getMalObject().getTitle());
+        final String title = batchData.compositeData.getLiveChartObject().getTitle();
+        mBatchCardTitle.setText(title);
+        mSearchQueryEditText.setText(Util.getBestTerms(title, false));
     }
 
     private static final class BatchData
@@ -403,20 +409,23 @@ public class BatchModeActivity extends AppCompatActivity
                 {
                     for (final NyaaEntry.Resolution resolution : mNyaaFansubGroup.getResolutions())
                     {
-                        final CheckBox checkBox = mResCheckboxSparseArray.get(resolution.ordinal());
-                        if (checkBox != null)
+                        if (resolution != null)
                         {
-                            mResAvailable = true;
-                            checkBox.setVisibility(View.VISIBLE);
+                            final CheckBox checkBox = mResCheckboxSparseArray.get(resolution.ordinal());
+                            if (checkBox != null)
+                            {
+                                mResAvailable = true;
+                                checkBox.setVisibility(View.VISIBLE);
 
-                            //Auto checked if default res is set
-                            if (mDefaultRes != null && mDefaultRes == resolution)
-                            {
-                                checkBox.setChecked(true);
-                            }
-                            else if (checkBox.isChecked())
-                            {
-                                checkBox.setChecked(false);
+                                //Auto checked if default res is set
+                                if (mDefaultRes != null && mDefaultRes == resolution)
+                                {
+                                    checkBox.setChecked(true);
+                                }
+                                else if (checkBox.isChecked())
+                                {
+                                    checkBox.setChecked(false);
+                                }
                             }
                         }
                     }
@@ -426,6 +435,10 @@ public class BatchModeActivity extends AppCompatActivity
                 {
                     mResolutionsContainer.setVisibility(View.GONE);
                 }
+                else if (mResolutionsContainer
+                        .getVisibility() != View.VISIBLE)
+                    mResolutionsContainer.setVisibility(View.VISIBLE);
+
             }
         }
 
@@ -478,7 +491,10 @@ public class BatchModeActivity extends AppCompatActivity
 
     private static final class NyaaFansubGroupViewHolder implements GenericAdapter.ViewHolder<NyaaFansubGroup>
     {
-        private TextView nGroupTextView, mTitleTextView;
+        private TextView mGroupTextView, mTitleTextView;
+
+        private int primary = -1, secondary = -1, tertiary = -1;
+        private boolean colorInit = false;
 
         @Override
         public int getLayoutResource()
@@ -495,7 +511,7 @@ public class BatchModeActivity extends AppCompatActivity
         @Override
         public GenericAdapter.ViewHolder<NyaaFansubGroup> setupViewSource(View inflatedConvertView)
         {
-            nGroupTextView = (TextView) inflatedConvertView.findViewById(R.id.libs_search_group);
+            mGroupTextView = (TextView) inflatedConvertView.findViewById(R.id.libs_search_group);
             mTitleTextView = (TextView) inflatedConvertView.findViewById(R.id.libs_search_title);
             return this;
         }
@@ -505,7 +521,33 @@ public class BatchModeActivity extends AppCompatActivity
         {
             final String groupName = source.getGroupName();
             if (groupName != null)
-                nGroupTextView.setText(groupName);
+                mGroupTextView.setText(groupName);
+
+            //lazy init
+            if (!colorInit)
+            {
+                colorInit = true;
+                int[] attrs = {R.attr.textColorPrimary, R.attr.textColorSecondary, R.attr.textColorTertiary};
+                final TypedArray typedArray = context.obtainStyledAttributes(R.style.MinoriDark, attrs);
+                primary = typedArray.getColor(0, Color.WHITE);
+                secondary = typedArray.getColor(1, Color.WHITE);
+                tertiary = typedArray.getColor(2, Color.WHITE);
+                typedArray.recycle();
+            }
+
+            switch (source.getTrustCategory())
+            {
+                case REMAKES:
+                    mGroupTextView.setTextColor(tertiary);
+                    break;
+                case TRUSTED:
+                    mGroupTextView.setTextColor(primary);
+                    break;
+                case APLUS:
+                    mGroupTextView.setTextColor(secondary);
+                    break;
+            }
+
 
             final String seriesTitle = source.getSeriesTitle();
             if (seriesTitle != null)
@@ -516,6 +558,19 @@ public class BatchModeActivity extends AppCompatActivity
     private static final class NyaaSearchResultLoader extends AsyncTaskLoader<BatchData>
     {
         public static final String KEY_SEARCH_ARG = "search_arg";
+        static final Comparator<NyaaFansubGroup> trustComparator = new Comparator<NyaaFansubGroup>()
+        {
+            @Override
+            public int compare(NyaaFansubGroup lhs, NyaaFansubGroup rhs)
+            {
+                int result = lhs.getTrustCategory().compareTo(rhs.getTrustCategory());
+                if (result == 0)
+                {
+                    return lhs.getGroupName().compareTo(rhs.getGroupName());
+                }
+                return result;
+            }
+        };
         private final BatchData batchData;
         private final String overridedSearchTerms;
 
@@ -536,6 +591,7 @@ public class BatchModeActivity extends AppCompatActivity
         @Override
         public BatchData loadInBackground()
         {
+            Log.v(getClass().getSimpleName(), "Loader started");
             final List<NyaaEntry> result = new ArrayList<>();
             final String searchTerms;
 
@@ -545,11 +601,13 @@ public class BatchModeActivity extends AppCompatActivity
             }
             else
             {
-                searchTerms = Util.getBestTerms(batchData.getCompositeData().getMalObject().getTitle());
+                searchTerms = Util.getBestTerms(batchData.getCompositeData().getLiveChartObject().getTitle(), false);
             }
 
             CoreNetworkFactory.getNyaaEntries(searchTerms, result);
-            batchData.setSearchResults(NyaaXMLParser.group(result));
+            final List<NyaaFansubGroup> searchResults = NyaaXMLParser.group(result);
+            Collections.sort(searchResults, trustComparator);
+            batchData.setSearchResults(searchResults);
             return batchData;
         }
 

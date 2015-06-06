@@ -12,13 +12,13 @@
 
 <TextView
     android:id="@+id/item_singletext"
-    style="@style/TextColorPrimary"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/abc_action_bar_default_height_material"
     android:fontFamily="sans-serif-condensed"
     android:gravity="center"
+    android:textColor="?attr/textColorPrimary"
     android:textSize="16sp"
     tools:text="Naruto Narutimate Hero 3: Finally a Clash! Jonin VS Genin!! Indescriminate Grand Melee Tournament Meeting!!" />
 

@@ -12,10 +12,10 @@
 
 <TextView
     android:id="@+id/gallery_date"
-    style="@style/TextColorQuaternary"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:textColor="?attr/textColorQuaternary"
     android:textSize="@dimen/abc_text_size_subhead_material"
     tools:text="1:23AM Thu, 31 Dec" />

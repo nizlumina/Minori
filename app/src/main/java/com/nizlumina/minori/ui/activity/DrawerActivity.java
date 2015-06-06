@@ -34,7 +34,7 @@ import com.nizlumina.minori.ui.ToolbarContract;
 import com.nizlumina.minori.ui.fragment.DrawerFragmentListener;
 import com.nizlumina.minori.ui.fragment.GalleryFragment;
 import com.nizlumina.minori.ui.fragment.SearchFragment;
-import com.nizlumina.minori.ui.fragment.SeasonTabHostFragment;
+import com.nizlumina.minori.ui.fragment.SeasonMasterFragment;
 
 import java.lang.ref.SoftReference;
 
@@ -254,7 +254,7 @@ public class DrawerActivity extends AppCompatActivity
             case R.id.drawer_season:
                 fragmentManager
                         .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SeasonTabHostFragment.newInstance(fragmentListener), SeasonTabHostFragment.class.getSimpleName())
+                        .replace(FRAGMENT_CONTAINER, SeasonMasterFragment.newInstance(fragmentListener), SeasonMasterFragment.class.getSimpleName())
                         .commit();
                 break;
             case R.id.drawer_search:

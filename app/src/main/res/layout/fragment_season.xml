@@ -12,45 +12,61 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
 
-    <RadioGroup
-        android:id="@+id/radiogroup_filter"
+    <!--<RadioGroup-->
+    <!--android:id="@+id/radiogroup_filter"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="horizontal">-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio_season"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:singleLine="true"-->
+    <!--android:text="@string/series_filter_text" />-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio_movies"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:singleLine="true"-->
+    <!--android:text="@string/movies_filter_text" />-->
+
+    <!--<RadioButton-->
+    <!--android:id="@+id/radio_ova"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:singleLine="true"-->
+    <!--android:text="@string/specials_filter_text" />-->
+    <!--</RadioGroup>-->
+
+    <include
+        android:id="@+id/fs_gridview"
+        layout="@layout/layout_gridview" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fs_batchfab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_action_done_all_white"
+        android:tint="?attr/colorAccentShade"
+        android:visibility="gone"
+        app:borderWidth="0dp"
+        app:elevation="4dp"
+        tools:visibility="visible" />
 
-        <RadioButton
-            android:id="@+id/radio_season"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@string/series_filter_text" />
 
-        <RadioButton
-            android:id="@+id/radio_movies"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@string/movies_filter_text" />
-
-        <RadioButton
-            android:id="@+id/radio_ova"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:text="@string/specials_filter_text" />
-    </RadioGroup>
-
-    <FrameLayout
-        android:id="@+id/content_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/radiogroup_filter" />
-
-</RelativeLayout>
+</FrameLayout>

@@ -1,14 +1,33 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--Custom attrs-->
     <attr name="colorAccentShade" format="color|reference" />
+    <attr name="textColorBase" format="color|reference" />
+    <attr name="textColorPrimary" format="color|reference" />
+    <attr name="textColorSecondary" format="color|reference" />
+    <attr name="textColorTertiary" format="color|reference" />
+    <attr name="textColorQuaternary" format="color|reference" />
+    <attr name="textColorQuinary" format="color|reference" />
+    <attr name="textColorSenary" format="color|reference" />
 
     <style name="MinoriDark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">#AD1457</item>
         <item name="colorPrimaryDark">#8D0641</item>
         <item name="colorAccent">#B2FF59</item>
         <item name="colorAccentShade">#1B5E20</item>
+
+        <item name="textColorBase">@color/rb_white</item>
+        <item name="textColorPrimary">@color/rbc_text_blue</item>
+        <item name="textColorSecondary">@color/rbc_text_red</item>
+        <item name="textColorTertiary">@color/rbc_text_orange</item>
+        <item name="textColorQuaternary">@color/rbc_text_yellow</item>
+        <item name="textColorQuinary">@color/rbc_text_green</item>
+        <item name="textColorSenary">@color/rbc_text_purple</item>
+
     </style>
 
-    <style name="MinoriDark.TranslucentStatusBar" parent="MinoriDark"></style>
+    <!-- empty style for pre 21-->
+    <style name="MinoriDark.TranslucentStatusBar" parent="MinoriDark" />
 
     <style name="LayoutBackgroundPrimary" parent="MinoriDark">
         <item name="android:background">@color/rbc_bg_light_grey</item>
@@ -29,31 +48,4 @@
         <item name="android:paddingBottom">2dp</item>
     </style>
 
-    <style name="TextColorBase" parent="TextStyle">
-        <item name="android:textColor">@color/rb_white</item>
-    </style>
-
-    <style name="TextColorPrimary" parent="TextStyle">
-        <item name="android:textColor">@color/rbc_text_blue</item>
-    </style>
-
-    <style name="TextColorSecondary" parent="TextStyle">
-        <item name="android:textColor">@color/rbc_text_red</item>
-    </style>
-
-    <style name="TextColorTertiary" parent="TextStyle">
-        <item name="android:textColor">@color/rbc_text_yellow</item>
-    </style>
-
-    <style name="TextColorQuaternary" parent="TextStyle">
-        <item name="android:textColor">@color/rbc_text_orange</item>
-    </style>
-
-    <style name="TextColorQuinary" parent="TextStyle">
-        <item name="android:textColor">@color/rbc_text_green</item>
-    </style>
-
-    <style name="TextColorSenary" parent="TextStyle">
-        <item name="android:textColor">@color/rbc_text_purple</item>
-    </style>
 </resources>

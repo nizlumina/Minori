@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * A host fragment for SeasonFragment child tabs. Upon load, it acquires index from Firebase (or check its relevant cache) and populate child tabs as needed.
  */
-public class SeasonTabHostFragment extends DrawerContentFragment
+public class SeasonMasterFragment extends DrawerContentFragment
 {
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
     private final String fragmentTitle = "Season Browser";
@@ -50,9 +50,9 @@ public class SeasonTabHostFragment extends DrawerContentFragment
     private SlidingTabLayout mTabLayout;
     private ViewPager mViewPager;
 
-    public static SeasonTabHostFragment newInstance(DrawerFragmentListener fragmentListener)
+    public static SeasonMasterFragment newInstance(DrawerFragmentListener fragmentListener)
     {
-        SeasonTabHostFragment seasonTabHostFragment = new SeasonTabHostFragment();
+        SeasonMasterFragment seasonTabHostFragment = new SeasonMasterFragment();
         seasonTabHostFragment.mFragmentListenerRef = new SoftReference<DrawerFragmentListener>(fragmentListener);
         return seasonTabHostFragment;
     }

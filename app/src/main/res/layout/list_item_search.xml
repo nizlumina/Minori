@@ -22,13 +22,13 @@
 
     <TextView
         android:id="@+id/text_episode"
-        style="@style/TextColorBase"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:background="@drawable/circle_neutral_primary"
         android:gravity="center"
+        android:textColor="?attr/textColorBase"
         android:textSize="20sp"
         tools:text="00" />
 
@@ -46,11 +46,11 @@
 
     <TextView
         android:id="@+id/text_group"
-        style="@style/TextColorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/text_title"
         android:layout_below="@id/text_title"
+        android:textColor="?attr/textColorPrimary"
         android:textSize="16sp"
         android:textStyle="bold"
         tools:text="MuchGroups" />
@@ -58,13 +58,13 @@
 
     <TextView
         android:id="@+id/text_quality"
-        style="@style/TextColorSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/text_group"
         android:layout_alignParentRight="true"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginRight="4dp"
+        android:textColor="?attr/textColorSecondary"
         android:textSize="14sp"
         android:textStyle="bold"
         tools:text="BD" />
@@ -72,26 +72,26 @@
 
     <TextView
         android:id="@+id/text_res"
-        style="@style/TextColorTertiary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/text_group"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/text_quality"
+        android:textColor="?attr/textColorTertiary"
         android:textSize="14sp"
         android:textStyle="bold"
         tools:text="720p" />
 
     <TextView
         android:id="@+id/text_trust"
-        style="@style/TextColorQuinary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/text_group"
         android:layout_alignWithParentIfMissing="true"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/text_res"
+        android:textColor="?attr/textColorQuinary"
         android:textSize="14sp"
         android:textStyle="bold"
         tools:text="Trusted" />

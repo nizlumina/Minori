@@ -31,12 +31,12 @@
 
         <TextView
             android:id="@+id/detail_header_synopsis"
-            style="@style/TextColorSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_toRightOf="@id/detail_image"
-            android:text="Synopsis" />
+            android:text="Synopsis"
+            android:textColor="?attr/textColorSecondary" />
         <!--This will use Html.from(string) for display since it use MAL as base source-->
         <TextView
             android:id="@+id/detail_synopsis"

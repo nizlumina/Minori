@@ -31,13 +31,13 @@
 
             <TextView
                 android:id="@+id/setup_humm_guide"
-                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:drawableRight="@android:drawable/ic_menu_info_details"
                 android:gravity="center_vertical"
-                android:text="Select Series Data" />
+                android:text="Select Series Data"
+                android:textColor="?attr/textColorSecondary" />
 
             <ListView
                 android:id="@+id/setup_humm_listview"
@@ -50,13 +50,13 @@
 
             <TextView
                 android:id="@+id/setup_episode_guide"
-                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_humm_listview"
                 android:drawableRight="@android:drawable/ic_menu_info_details"
                 android:gravity="center_vertical"
-                android:text="Select Episode" />
+                android:text="Select Episode"
+                android:textColor="?attr/textColorSecondary" />
 
             <EditText
                 android:id="@+id/setup_episode_edittext"
@@ -86,14 +86,14 @@
             <!--Resolution Selection-->
             <TextView
                 android:id="@+id/setup_res_guide"
-                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_episode_nexteps_button"
                 android:layout_marginTop="8dp"
                 android:drawableRight="@android:drawable/ic_menu_info_details"
                 android:gravity="center_vertical"
-                android:text="Select Resolution" />
+                android:text="Select Resolution"
+                android:textColor="?attr/textColorSecondary" />
 
             <RadioGroup
                 android:id="@+id/setup_res_radiogroup"
@@ -151,14 +151,14 @@
             <!--Mode Selection-->
             <TextView
                 android:id="@+id/setup_mode_guide"
-                style="@style/TextColorSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/setup_res_radiogroup"
                 android:layout_marginTop="8dp"
                 android:drawableRight="@android:drawable/ic_menu_info_details"
                 android:gravity="center_vertical"
-                android:text="Select Mode" />
+                android:text="Select Mode"
+                android:textColor="?attr/textColorSecondary" />
 
             <RadioGroup
                 android:id="@+id/setup_mode_radiogroup"

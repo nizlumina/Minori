@@ -128,7 +128,7 @@ public class Util
      * @param input Titles as input
      * @return String of best terms.
      */
-    public static String getBestTerms(String input)
+    public static String getBestTerms(String input, boolean addLastWord)
     {
         final String[] terms = input.trim().replaceAll("[^a-zA-Z0-9@]+", "%").split("%");
         final StringBuilder builder = new StringBuilder(terms.length);
@@ -187,7 +187,7 @@ public class Util
                 builder.append(' ');
             }
 
-            if (lastTerm != null)
+            if (lastTerm != null && addLastWord)
             {
                 builder.append(lastTerm);
             }

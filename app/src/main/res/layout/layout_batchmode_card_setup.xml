@@ -21,10 +21,10 @@
     app:contentPadding="8dp"
     tools:showIn="@layout/activity_batchmode">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:orientation="vertical">
 
         <android.support.v7.widget.GridLayout
             android:id="@+id/libs_ll_top"
@@ -101,27 +101,34 @@
             <!-- Visibility toggled if resolution options not available-->
         </android.support.v7.widget.GridLayout>
 
-        <Button
-            android:id="@+id/libs_btn_nextcard"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/libs_ll_mid"
-            android:layout_gravity="right"
-            android:drawableLeft="@drawable/ic_action_check_circle_white"
-            android:drawablePadding="8dp"
-            android:text="NEXT" />
+            android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/libs_spinner_modes"
-            style="@style/Widget.AppCompat.Spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@id/libs_btn_nextcard"
-            android:layout_alignTop="@id/libs_btn_nextcard"
-            android:entries="@array/array_modes" />
+            <Spinner
+                android:id="@+id/libs_spinner_modes"
+                style="@style/Widget.AppCompat.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:entries="@array/array_modes"
+                tools:layout_width="100dp" />
 
-    </RelativeLayout>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/libs_btn_nextcard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_action_check_circle_white"
+                android:drawablePadding="8dp"
+                android:text="NEXT" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
 

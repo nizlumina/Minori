@@ -10,7 +10,9 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/abm_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -46,7 +48,6 @@
 
             <TextView
                 android:id="@+id/abm_titlecard_tv_title"
-                style="@style/TextColorBase"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_gravity="right|center_vertical"
@@ -54,6 +55,7 @@
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:paddingRight="8dp"
+                android:textColor="?attr/textColorBase"
                 tools:text="Lorem ipsum del amet si suma ipsum mon avacci si" />
         </LinearLayout>
 

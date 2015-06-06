@@ -13,7 +13,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:showIn="@layout/activity_batchmode">
 
@@ -21,7 +21,7 @@
         android:id="@+id/lbcs_cv_searchresult"
         style="@style/CardView.Dark"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -59,7 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="56dp"
-            android:hint="Search query" />
+            android:hint="Search query"
+            android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/lbcs_ib_search"
@@ -68,7 +69,6 @@
             android:layout_gravity="center_vertical|right"
             android:src="@drawable/abc_ic_search_api_mtrl_alpha" />
     </android.support.v7.widget.CardView>
-
 
 </FrameLayout>
 
