@@ -87,7 +87,7 @@ public class MessageSender implements ThreadTask
                             os.write(payload, payloadOffset, payloadChunk);
                             addSentBytes(payloadChunk);
 
-                            if (message.getType() == message.PIECE)
+                            if (message.getType() == Message.PIECE)
                             {
                                 uploaded += payloadChunk - (payloadOffset == 0 ? 13 : 0);
                             }

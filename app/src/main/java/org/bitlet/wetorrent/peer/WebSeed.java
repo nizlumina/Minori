@@ -46,7 +46,6 @@ public class WebSeed implements Peer
     private final static Request requestEnd = new Request(Integer.MAX_VALUE, 0, 0);
     static FileOutputStream fos;
     static int wrote = 0;
-    ;
     private final BlockingQueue<Request> pendingRequests = new LinkedBlockingQueue<Request>();
     private URL url;
     private HttpURLConnection connection;

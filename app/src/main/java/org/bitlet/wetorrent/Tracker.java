@@ -22,7 +22,6 @@ import org.bitlet.wetorrent.bencode.Bencode;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class Tracker
         this.announce = announce;
     }
 
-    public Map trackerRequest(Torrent torrent, String event) throws MalformedURLException, IOException
+    public Map trackerRequest(Torrent torrent, String event) throws IOException
     {
 
         String trackerUrlString = announce;
@@ -75,7 +74,7 @@ public class Tracker
             torrent.addEvent(new Event(this, "Querying tracker: " + trackerUrl.toString(), Level.FINE));
         }
         HttpURLConnection conn = (HttpURLConnection) trackerUrl.openConnection();
-        conn.setRequestProperty("User-Agent", torrent.agent);
+        conn.setRequestProperty("User-Agent", Torrent.agent);
 
         Bencode trackerResponse = new Bencode(new BufferedInputStream(conn.getInputStream()));
         lastRequestTime = System.currentTimeMillis();

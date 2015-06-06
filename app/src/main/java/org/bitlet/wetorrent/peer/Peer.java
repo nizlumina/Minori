@@ -24,11 +24,11 @@ import java.net.InetAddress;
 public interface Peer
 {
 
-    public void sendMessage(Message message);
+    void sendMessage(Message message);
 
-    public void setAmInterested(boolean b);
+    void setAmInterested(boolean b);
 
-    public void setIsChoked(boolean b);
+    void setIsChoked(boolean b);
 
     byte[] getPeerId();
 
@@ -36,7 +36,7 @@ public interface Peer
 
     InetAddress getIp();
 
-    public int getPort();
+    int getPort();
 
     long getLastReceivedMessageMillis();
 

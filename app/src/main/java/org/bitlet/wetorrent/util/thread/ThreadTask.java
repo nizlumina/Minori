@@ -20,9 +20,9 @@ package org.bitlet.wetorrent.util.thread;
 public interface ThreadTask
 {
 
-    public boolean execute() throws Exception;
+    boolean execute() throws Exception;
 
-    public void interrupt();
+    void interrupt();
 
-    public void exceptionCought(Exception e);
+    void exceptionCought(Exception e);
 }

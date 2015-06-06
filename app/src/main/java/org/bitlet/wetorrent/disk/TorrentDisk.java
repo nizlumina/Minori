@@ -22,34 +22,34 @@ import java.io.IOException;
 public interface TorrentDisk
 {
 
-    public void resume() throws IOException;
+    void resume() throws IOException;
 
-    public void resume(ResumeListener rl) throws IOException;
+    void resume(ResumeListener rl) throws IOException;
 
     /* It returns true if a resume could be performed */
-    public boolean init() throws IOException;
+    boolean init() throws IOException;
 
-    public byte[] getBitfieldCopy();
+    byte[] getBitfieldCopy();
 
-    public void write(int index, int begin, byte[] block) throws IOException;
+    void write(int index, int begin, byte[] block) throws IOException;
 
-    public byte[] read(int index, int begin, int length) throws IOException;
+    byte[] read(int index, int begin, int length) throws IOException;
 
-    public Long getCompleted();
+    Long getCompleted();
 
-    public boolean isCompleted(int index);
+    boolean isCompleted(int index);
 
-    public int getDownloaded(int index);
+    int getDownloaded(int index);
 
-    public boolean isAvailable(int index, int begin, int length);
+    boolean isAvailable(int index, int begin, int length);
 
-    public long available(int index, int begin);
+    long available(int index, int begin);
 
-    public long available(int index, int begin, long maxLength);
+    long available(int index, int begin, long maxLength);
 
-    public int getLength(int index);
+    int getLength(int index);
 
-    public int getFirstMissingByte(int index);
+    int getFirstMissingByte(int index);
 
-    public void close();
+    void close();
 }

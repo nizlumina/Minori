@@ -20,5 +20,5 @@ package org.bitlet.wetorrent.disk;
 public interface ResumeListener
 {
 
-    public void percent(long completed, long resumed);
+    void percent(long completed, long resumed);
 }
