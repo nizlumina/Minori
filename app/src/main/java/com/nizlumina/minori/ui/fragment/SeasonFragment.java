@@ -96,7 +96,7 @@ public class SeasonFragment extends Fragment
             mGridView.setClipToPadding(false);
         }
 
-        GalleryItemHolder.GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryItemHolder.GalleryPresenter<CompositeData>()
+        final GalleryItemHolder.GalleryPresenter<CompositeData> compositeDataPresenter = new GalleryItemHolder.GalleryPresenter<CompositeData>()
         {
             private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -137,7 +137,7 @@ public class SeasonFragment extends Fragment
             }
         };
 
-        GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter)
+        final GalleryItemHolder<CompositeData> compositeDataHolder = new GalleryItemHolder<CompositeData>(compositeDataPresenter)
         {
             @Override
             protected void modifyViewProperties(TextView titleView, ImageView imageView, TextView groupView, TextView episodeView)
@@ -166,7 +166,7 @@ public class SeasonFragment extends Fragment
 
                 if (!selectionMode && mFragmentListenerRef != null)
                 {
-                    DrawerFragmentListener fragmentListener = mFragmentListenerRef.get();
+                    final DrawerFragmentListener fragmentListener = mFragmentListenerRef.get();
                     if (fragmentListener != null)
                     {
                         CompositeData detailData = mCompositeDataAdapter.getItem(position);

@@ -18,6 +18,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -69,6 +70,7 @@ public class BatchModeActivity extends AppCompatActivity
 
     private EditText mSearchQueryEditText;
     private LoaderManager.LoaderCallbacks<BatchData> callback;
+    private ListView mSearchResultListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -101,8 +103,7 @@ public class BatchModeActivity extends AppCompatActivity
             attachViews(savedInstanceState);
 
             //initial setups
-            mCurrentId = 0;
-            applyViewsData(mBatchDatas.get(0));
+            applyBatchDataToActivity(mBatchDatas.get(0));
             setupLoaders(mBatchDatas);
         }
     }
@@ -203,12 +204,12 @@ public class BatchModeActivity extends AppCompatActivity
         final View searchCard = findViewById(R.id.abm_cv_searchcard);
         if (searchCard != null)
         {
-            final ListView searchResultListView = (ListView) searchCard.findViewById(R.id.lbcs_lv_searchresult);
-            if (searchResultListView != null)
+            mSearchResultListView = (ListView) searchCard.findViewById(R.id.lbcs_lv_searchresult);
+            if (mSearchResultListView != null)
             {
                 mSearchResultListAdapter = new GenericAdapter<>(BatchModeActivity.this, new ArrayList<NyaaFansubGroup>(100), new NyaaFansubGroupViewHolder());
-                searchResultListView.setAdapter(mSearchResultListAdapter);
-                searchResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                mSearchResultListView.setAdapter(mSearchResultListAdapter);
+                mSearchResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -254,14 +255,66 @@ public class BatchModeActivity extends AppCompatActivity
                 });
             }
         }
+
+        final TabLayout tabLayout = (TabLayout) findViewById(R.id.abm_tablayout);
+        if (tabLayout != null)
+        {
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+            for (int i = 0; i < mBatchDatas.size(); i++)
+            {
+                final TabLayout.Tab tab = tabLayout.newTab().setText(String.valueOf(i));
+                tabLayout.addTab(tab, i);
+            }
+            tabLayout.getTabAt(0).select();
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
+            {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab)
+                {
+                    final BatchData selectedBatchData = mBatchDatas.get(tab.getPosition());
+                    BatchModeActivity.this.applyBatchDataToActivity(selectedBatchData);
+                }
+
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab)
+                {
+
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab)
+                {
+
+                }
+            });
+        }
     }
 
     //TODO: HERE
-    private void applyViewsData(BatchData batchData)
+    private void applyBatchDataToActivity(BatchData batchData)
     {
+        mCurrentId = batchData.getId();
+
         final String title = batchData.compositeData.getLiveChartObject().getTitle();
         mBatchCardTitle.setText(title);
         mSearchQueryEditText.setText(Util.getBestTerms(title, false));
+
+        if (mSearchResultListAdapter.getCount() > 0)
+            mSearchResultListAdapter.clear();
+
+        final int checkedItemPosition = mSearchResultListView.getCheckedItemPosition();
+        if (checkedItemPosition >= 0)
+        {
+            mSearchResultListView.setItemChecked(checkedItemPosition, false);
+        }
+
+        final List<NyaaFansubGroup> searchResults = batchData.getSearchResults();
+        if (searchResults != null && searchResults.size() > 0)
+        {
+            mSearchResultListAdapter.addAll(searchResults);
+            mSearchResultListAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private static final class BatchData
