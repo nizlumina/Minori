@@ -2,17 +2,16 @@ package com.nizlumina.minori.internal.factory;
 
 import com.nizlumina.common.nyaa.NyaaEntry;
 import com.nizlumina.minori.internal.network.DownloadUnit;
-import com.nizlumina.minori.model.WatchData;
 
 /**
  * Simple factory for DownloadUnit
  */
 public class DownloadUnitFactory
 {
-    public static DownloadUnit fromWatchData(WatchData watchData)
-    {
-        return fromNyaaEntry(watchData.getNyaaEntry());
-    }
+//    public static DownloadUnit fromWatchData(WatchData watchData)
+//    {
+//        return fromNyaaEntry(watchData.getNyaaEntry());
+//    }
 
     public static DownloadUnit fromNyaaEntry(NyaaEntry nyaaEntry)
     {

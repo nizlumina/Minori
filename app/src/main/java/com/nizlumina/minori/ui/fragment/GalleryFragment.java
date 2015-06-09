@@ -19,14 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.controller.WatchlistController;
-import com.nizlumina.minori.model.WatchData;
-import com.nizlumina.minori.ui.adapter.GenericAdapter;
-import com.nizlumina.minori.ui.gallery.GalleryItemHolder;
 
 import java.lang.ref.SoftReference;
 
@@ -54,7 +48,6 @@ public class GalleryFragment extends DrawerContentFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Nullable
@@ -78,7 +71,7 @@ public class GalleryFragment extends DrawerContentFragment
     {
 
         gridView.setOnScrollListener(getToolbarContract().getAutoDisplayToolbarListener());
-
+        /*
         WatchlistController controller = new WatchlistController();
         GalleryItemHolder<WatchData> itemHolder = new GalleryItemHolder<>(new GalleryItemHolder.GalleryPresenter<WatchData>()
         {
@@ -121,6 +114,7 @@ public class GalleryFragment extends DrawerContentFragment
 
         GenericAdapter<WatchData> watchDataAdapter = new GenericAdapter<>(getActivity(), controller.getWatchDataList(), itemHolder);
         gridView.setAdapter(watchDataAdapter);
+        */
     }
 
     @Override

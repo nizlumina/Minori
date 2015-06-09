@@ -2,18 +2,16 @@ package com.nizlumina.minori.service;
 
 import android.app.DownloadManager;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.nizlumina.minori.MinoriApplication;
-import com.nizlumina.minori.controller.WatchlistController;
-import com.nizlumina.minori.internal.factory.DownloadUnitFactory;
 import com.nizlumina.minori.internal.network.DownloadUnit;
-import com.nizlumina.minori.model.WatchData;
-import com.nizlumina.minori.receiver.DownloadReceiver;
 
 
 /**
@@ -37,7 +35,7 @@ public class DownloadService extends IntentService
     {
         if (intent != null)
         {
-            DownloadUnit downloadUnit;
+            DownloadUnit downloadUnit = null;
             int id = intent.getIntExtra(IKEY_WATCHDATA_ID, -1);
             if (id == -1)
             {
@@ -45,9 +43,9 @@ public class DownloadService extends IntentService
             }
             else
             {
-                WatchlistController controller = new WatchlistController();
-                WatchData watchData = controller.getWatchData(id);
-                downloadUnit = DownloadUnitFactory.fromWatchData(watchData);
+//                WatchlistController controller = new WatchlistController();
+//                WatchData watchData = controller.getWatchData(id);
+//                downloadUnit = DownloadUnitFactory.fromWatchData(watchData);
             }
 
             if (downloadUnit != null)
@@ -55,8 +53,8 @@ public class DownloadService extends IntentService
                 download(downloadUnit);
             }
 
+            ServiceReceiver.completeWakefulIntent(intent);
         }
-        DownloadReceiver.completeWakefulIntent(intent);
     }
 
     private void download(DownloadUnit downloadUnit)
@@ -70,17 +68,21 @@ public class DownloadService extends IntentService
         {
             e.printStackTrace();
         }
+
         if (uri != null)
         {
-            DownloadManager.Request request = new DownloadManager.Request(uri)
+            final CharSequence charSequence = null;
+            final CharSequence charSequence1 = null;
+
+            final DownloadManager.Request request = new DownloadManager.Request(uri)
                     .setVisibleInDownloadsUi(false)
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setTitle("topkek")
-                    .setDescription("toplulz");
+                    .setTitle(charSequence)
+                    .setDescription(charSequence1);
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-            String downloadLocation = preferences.getString(MinoriApplication.Preference.PREF_KEY_DOWNLOAD_LOC, null);
+            final String downloadLocation = preferences.getString(MinoriApplication.Preference.PREF_KEY_DOWNLOAD_LOC, null);
 
             if (downloadLocation == null)
                 request.setDestinationUri(Uri.fromFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
@@ -91,8 +93,18 @@ public class DownloadService extends IntentService
             if (preferredNetwork > 0)
                 request.setAllowedNetworkTypes(preferredNetwork);
 
-            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            final DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
             manager.enqueue(request);
+        }
+    }
+
+    public static class ServiceReceiver extends WakefulBroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            intent.setClass(context, DownloadService.class);
+            startWakefulService(context, intent);
         }
     }
 }

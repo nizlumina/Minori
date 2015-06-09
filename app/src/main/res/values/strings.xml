@@ -3,7 +3,6 @@
 
     <string name="app_name">Minori</string>
     <string name="drawer_settings">Settings</string>
-    <string name="title_activity_test">testActivity</string>
     <string name="title_activity_screen">ScreenActivity</string>
     <string name="title_activity_gallery">GalleryActivity</string>
     <string name="accessibility_drawer_open">Open drawer</string>
@@ -13,7 +12,6 @@
     <string name="drawer_watchlist">Watchlist</string>
     <string name="drawer_season">Season Browser</string>
     <string name="drawer_search">Cat Search</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_hint">Cat Search</string>
     <string name="dialog_dismiss">Dismiss</string>
     <string name="series_filter_text">Series</string>
@@ -31,15 +29,14 @@
     </string-array>
     <string-array name="array_modes">
         <item>Release Day</item>
-        <item>Eager</item>
-        <item>15 Mins</item>
-        <item>30 Mins</item>
-        <item>1 Hour</item>
-        <item>2 Hour</item>
+        <item>Each 15 Mins</item>
+        <item>Each 30 Mins</item>
+        <item>Each 1 Hour</item>
+        <item>Each 2 Hour</item>
     </string-array>
+
     <string name="title_activity_batch">BatchActivity</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="toast_noqueryinput">Please input search query</string>
     <string name="error_noresselected">No resolution selected</string>
