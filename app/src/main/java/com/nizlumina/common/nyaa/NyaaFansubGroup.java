@@ -1,12 +1,19 @@
 package com.nizlumina.common.nyaa;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public final class NyaaFansubGroup
+public final class NyaaFansubGroup implements Parcelable
 {
-    public static final String MULTI_QUALITY = "Multi-Quality", MULTI_RES = "Multi-Res";
+    public static final Parcelable.Creator<NyaaFansubGroup> CREATOR = new Parcelable.Creator<NyaaFansubGroup>()
+    {
+        public NyaaFansubGroup createFromParcel(Parcel source) {return new NyaaFansubGroup(source);}
 
+        public NyaaFansubGroup[] newArray(int size) {return new NyaaFansubGroup[size];}
+    };
     private final String mGroupName;
     private final ArrayList<NyaaEntry> mNyaaEntries = new ArrayList<>(); //blind list for all entries under this fansub name
     private final ArrayList<String> mQualities = new ArrayList<>(); //only for display
@@ -20,6 +27,20 @@ public final class NyaaFansubGroup
     public NyaaFansubGroup(String groupName)
     {
         this.mGroupName = groupName;
+    }
+
+    protected NyaaFansubGroup(Parcel in)
+    {
+        this.mGroupName = in.readString();
+        in.readList(this.mNyaaEntries, List.class.getClassLoader());
+        in.readStringList(this.mQualities);
+        in.readList(this.mResolutions, List.class.getClassLoader());
+        this.mSeriesTitle = in.readString();
+        this.mId = in.readInt();
+        int tmpMTrustCategory = in.readInt();
+        this.mTrustCategory = tmpMTrustCategory == -1 ? null : NyaaEntry.Trust.values()[tmpMTrustCategory];
+        this.mLatestEpisode = in.readInt();
+        this.mModes = in.readInt();
     }
 
     public int getId()
@@ -67,21 +88,6 @@ public final class NyaaFansubGroup
         this.mModes = mModes;
     }
 
-//    public NyaaEntry getLatestEntry(NyaaEntry.Resolution resolution)
-//    {
-//        for (NyaaEntry entry : getNyaaEntries())
-//        {
-//            if (entry.getResolution() == resolution)
-//            {
-//                if (entry.getCurrentEpisode() == getLatestEpisode())
-//                {
-//                    return entry;
-//                }
-//            }
-//        }
-//        return null;
-//    }
-
     public String getGroupName()
     {
         return mGroupName;
@@ -102,6 +108,8 @@ public final class NyaaFansubGroup
         return mResolutions;
     }
 
+    //Android parcel implementation
+
     public String getSeriesTitle()
     {
         return mSeriesTitle;
@@ -112,23 +120,22 @@ public final class NyaaFansubGroup
         this.mSeriesTitle = seriesTitle;
     }
 
+    @Override
+    public int describeContents() { return 0; }
 
-//    public String getResolutionDisplayString()
-//    {
-//        if (mResolutions.size() > 0)
-//        {
-//            if (mResolutions.size() == 1)
-//            {
-//                return NyaaEntry.Resolution.getResolutionDisplayString(mResolutions.get(0), true);
-//            }
-//            else return MULTI_RES;
-//        }
-//        else return null;
-//    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(this.mGroupName);
+        dest.writeList(this.mNyaaEntries);
+        dest.writeStringList(this.mQualities);
+        dest.writeList(this.mResolutions);
+        dest.writeString(this.mSeriesTitle);
+        dest.writeInt(this.mId);
+        dest.writeInt(this.mTrustCategory == null ? -1 : this.mTrustCategory.ordinal());
+        dest.writeInt(this.mLatestEpisode);
+        dest.writeInt(this.mModes);
+    }
 
-//    //For debugging
-//    public String stringData()
-//    {
-//        return String.format("%s\n%s\n%s\n%s\n%s\n%s", getSeriesTitle(), getGroupName(), getId(), getLatestEpisode(), getResolutionDisplayString(), getTrustCategory().name());
-//    }
+    //end Android parcel implementation
 }

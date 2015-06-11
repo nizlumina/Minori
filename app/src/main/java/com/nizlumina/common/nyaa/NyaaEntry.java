@@ -1,10 +1,19 @@
 package com.nizlumina.common.nyaa;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Base data class for Nyaa stuffs
  */
-public final class NyaaEntry
+public final class NyaaEntry implements Parcelable
 {
+    public static final Parcelable.Creator<NyaaEntry> CREATOR = new Parcelable.Creator<NyaaEntry>()
+    {
+        public NyaaEntry createFromParcel(Parcel source) {return new NyaaEntry(source);}
+
+        public NyaaEntry[] newArray(int size) {return new NyaaEntry[size];}
+    };
     private int id = -1; //you can use this for distinguishing alarms (especially for pendingIntents)
     private int currentEpisode = -1;
     private boolean failToParse = false;
@@ -24,10 +33,32 @@ public final class NyaaEntry
     private Resolution resolution;
     private Category category;
 
-    //Downloader section
-    private boolean markedForDownload = false;
-
     public NyaaEntry() {}
+
+    protected NyaaEntry(Parcel in)
+    {
+        this.id = in.readInt();
+        this.currentEpisode = in.readInt();
+        this.failToParse = in.readByte() != 0;
+        this.title = in.readString();
+        this.rawTitle = in.readString();
+        this.fansub = in.readString();
+        this.episodeString = in.readString();
+        this.fileType = in.readString();
+        this.resolutionString = in.readString();
+        this.hash = in.readString();
+        this.quality = in.readString();
+        this.torrentLink = in.readString();
+        this.description = in.readString();
+        this.pubDate = in.readString();
+        this.extras = in.readString();
+        int tmpTrustCategory = in.readInt();
+        this.trustCategory = tmpTrustCategory == -1 ? null : Trust.values()[tmpTrustCategory];
+        int tmpResolution = in.readInt();
+        this.resolution = tmpResolution == -1 ? null : Resolution.values()[tmpResolution];
+        int tmpCategory = in.readInt();
+        this.category = tmpCategory == -1 ? null : Category.values()[tmpCategory];
+    }
 
     public int nextEpisode()
     {
@@ -338,14 +369,30 @@ public final class NyaaEntry
         this.category = category;
     }
 
-    public boolean isMarkedForDownload()
-    {
-        return markedForDownload;
-    }
+    @Override
+    public int describeContents() { return 0; }
 
-    public void setMarkedForDownload(boolean markedForDownload)
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
     {
-        this.markedForDownload = markedForDownload;
+        dest.writeInt(this.id);
+        dest.writeInt(this.currentEpisode);
+        dest.writeByte(failToParse ? (byte) 1 : (byte) 0);
+        dest.writeString(this.title);
+        dest.writeString(this.rawTitle);
+        dest.writeString(this.fansub);
+        dest.writeString(this.episodeString);
+        dest.writeString(this.fileType);
+        dest.writeString(this.resolutionString);
+        dest.writeString(this.hash);
+        dest.writeString(this.quality);
+        dest.writeString(this.torrentLink);
+        dest.writeString(this.description);
+        dest.writeString(this.pubDate);
+        dest.writeString(this.extras);
+        dest.writeInt(this.trustCategory == null ? -1 : this.trustCategory.ordinal());
+        dest.writeInt(this.resolution == null ? -1 : this.resolution.ordinal());
+        dest.writeInt(this.category == null ? -1 : this.category.ordinal());
     }
 
     public enum Trust
