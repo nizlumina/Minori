@@ -66,4 +66,11 @@ public class Season
         return this.season + String.valueOf(year);
     }
 
+
+    public final String getDisplayString()
+    {
+        final String year = String.valueOf(getYear());
+        final int length = year.length();
+        return season + " " + year.substring(length - 2, length);
+    }
 }

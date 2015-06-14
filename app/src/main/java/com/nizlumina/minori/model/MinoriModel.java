@@ -12,13 +12,66 @@
 
 package com.nizlumina.minori.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.nizlumina.common.nyaa.NyaaFansubGroup;
 import com.nizlumina.syncmaru.model.CompositeData;
 
 //A composite model that links all the models to be used by Minori
-public final class MinoriModel
+public final class MinoriModel implements Parcelable
 {
-    CompositeData compositeData;
-    NyaaFansubGroup nyaaFansubGroup;
+    public static final Parcelable.Creator<MinoriModel> CREATOR = new Parcelable.Creator<MinoriModel>()
+    {
+        public MinoriModel createFromParcel(Parcel source) {return new MinoriModel(source);}
 
+        public MinoriModel[] newArray(int size) {return new MinoriModel[size];}
+    };
+    private CompositeData compositeData;
+    private NyaaFansubGroup nyaaFansubGroup;
+
+    public MinoriModel() {}
+
+    public MinoriModel(CompositeData compositeData, NyaaFansubGroup nyaaFansubGroup)
+    {
+        this.compositeData = compositeData;
+        this.nyaaFansubGroup = nyaaFansubGroup;
+    }
+
+    protected MinoriModel(Parcel in)
+    {
+        this.compositeData = in.readParcelable(CompositeData.class.getClassLoader());
+        this.nyaaFansubGroup = in.readParcelable(NyaaFansubGroup.class.getClassLoader());
+    }
+
+    public CompositeData getCompositeData()
+    {
+        return compositeData;
+    }
+
+    public NyaaFansubGroup getNyaaFansubGroup()
+    {
+        return nyaaFansubGroup;
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeParcelable(this.compositeData, 0);
+        dest.writeParcelable(this.nyaaFansubGroup, 0);
+    }
+
+//    public static class Presenter
+//    {
+//        String title, imageURL, currentNyaaEpisode, resolution, modes, group;
+//
+//        public Presenter(MinoriModel minoriModel)
+//        {
+//            title = minoriModel.getNyaaFansubGroup().getSeriesTitle();
+//            imageURL =
+//        }
+//    }
 }

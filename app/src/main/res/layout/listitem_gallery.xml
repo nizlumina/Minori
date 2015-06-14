@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ The MIT License (MIT)
+  ~
+  ~ Copyright (c) 2014 Nizlumina Studio (Malaysia)
+  ~
+  ~ Unless specified, permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<android.support.v7.widget.CardView
+    style="@style/CardView.Dark"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:contentPadding="8dp">
+
+    <ImageView
+        android:id="@+id/item_image"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
+        android:layout_gravity="left"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/cd_poster_description"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_star_white_48dp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginLeft="78dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_title"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="?attr/textColorBase"
+            android:textSize="16sp"
+            tools:text="A Good Guy" />
+        <!--tools:text="Watashi Wakaranai Desu Dekinai ga Warau Don Don Sasquatch Oboeteru"-->
+
+
+        <TextView
+            android:id="@+id/item_episode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="4dp"
+            android:singleLine="true"
+            android:textColor="?attr/textColorTertiary"
+            tools:text="Next 9" />
+
+        <TextView
+            android:id="@+id/item_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/item_episode"
+            android:layout_alignParentRight="true"
+            android:singleLine="true"
+            android:textColor="?attr/textColorSenary"
+            tools:text="Release Day" />
+
+        <TextView
+            android:id="@+id/item_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/item_episode"
+            android:singleLine="true"
+            android:textColor="?attr/textColorSecondary"
+            tools:text="Commie" />
+
+
+        <TextView
+            android:id="@+id/item_trust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/item_group"
+            android:layout_alignParentRight="true"
+            android:singleLine="true"
+            android:textColor="?attr/textColorPrimary"
+            tools:text="Remakes" />
+
+        <TextView
+            android:id="@+id/item_resolution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/item_group"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@id/item_trust"
+            android:singleLine="true"
+            android:textColor="?attr/textColorQuinary"
+            tools:text="720p" />
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

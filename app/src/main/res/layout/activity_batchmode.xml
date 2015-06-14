@@ -98,16 +98,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:tabGravity="center" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/abm_fab_done"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_action_done_all_white"
+            android:visibility="gone"
             app:borderWidth="0dp"
-            app:fabSize="mini"
-            tools:tint="?attr/colorAccentShade" />
+            app:elevation="4dp"
+            app:pressedTranslationZ="12dp"
+            tools:tint="?attr/colorAccentShade"
+            tools:visibility="visible" />
 
     </LinearLayout>
 

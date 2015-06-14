@@ -3,6 +3,8 @@ package com.nizlumina.common.nyaa;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Base data class for Nyaa stuffs
  */
@@ -451,9 +453,20 @@ public final class NyaaEntry implements Parcelable
                     }
                     else
                     {
-                        return null;
+                        return Static.UNDEFINED_STRING;
                     }
             }
+        }
+
+        public static String getResolutionDisplayStringLinear(List<Resolution> resolutionKeys)
+        {
+            final StringBuilder stringBuilder = new StringBuilder();
+            for(int i = 0; i < resolutionKeys.size(); i++){
+                stringBuilder.append(getResolutionDisplayString(resolutionKeys.get(i), false));
+                if(resolutionKeys.size() - i > 1)
+                    stringBuilder.append(Character.SPACE_SEPARATOR);
+            }
+            return stringBuilder.toString();
         }
 
         public static Resolution matchResolution(String searchString)

@@ -13,22 +13,29 @@
 package com.nizlumina.minori.ui.activity;
 
 import android.animation.LayoutTransition;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.SparseArrayCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -55,22 +62,80 @@ import java.util.List;
 /**
  * The activity that deals with batching a selection of CompositeData and adds it to the main watchlist.
  * Loaders are implemented where each titles is auto searched.
- * We don't use fragments but instead opt for switching views/reapplying data and view state to on the fly. Why?
+ * We don't use fragments but instead opt for switching views/reapplying data and view state to on the fly.
  * <p/>
  * While its easier with fragments, instead of reinflating the same layout over and over (and implementing a sliding viewpager),
- * a simple fade-in of the data (which is just texts) is much more faster experience and more in line with the "batching" process.
+ * a simple fade-in of the data (which is just texts) is a much more faster setup experience.
  */
-public class BatchModeActivity extends AppCompatActivity
+public class BatchModeActivity extends BaseActivity
 {
-    private final SparseArrayCompat<BatchData> mBatchDatas = new SparseArrayCompat<>(20);
+    private static final String PARCELKEY_ARRAYLIST_COMPOSITEDATA = "MINORI_COMPOSITEDATAS";
+    private static final String PARCELKEY_SPARSEARRAY_BATCHDATAS = "MINORI_BATCHDATAS";
+    private static final String PARCELKEY_ARRAYLIST_NYAAFANSUBGROUPS = "MINORI_NYAAFANSUBGROUPS";
+
+    private final SparseArray<BatchData> mBatchDatas = new SparseArray<>(20);
     private TextView mBatchCardTitle;
     private int mCurrentId = -1;
     private SetupCard mSetupCard;
     private GenericAdapter<NyaaFansubGroup> mSearchResultListAdapter;
-
+    private FloatingActionButton mBatchCompletedFab;
     private EditText mSearchQueryEditText;
-    private LoaderManager.LoaderCallbacks<BatchData> callback;
     private ListView mSearchResultListView;
+    private LoaderManager.LoaderCallbacks<BatchData> callback;
+
+    private SetupCard.OnFinishListener setupCardListener = new SetupCard.OnFinishListener()
+    {
+        @Override
+        public void onFinishSetup(NyaaFansubGroup finalData)
+        {
+            BatchData batchData = mBatchDatas.get(mCurrentId, null);
+            if (batchData != null) //which is not possible
+            {
+                batchData.setSelectedNyaaFansubGroup(finalData);
+            }
+
+            if (allBatchDataSelectionSet())
+            {
+                mBatchCompletedFab.setVisibility(View.VISIBLE);
+            }
+
+        }
+    };
+
+    public static Intent buildIntentForActivity(Context context, @NonNull ArrayList<CompositeData> compositeDatas)
+    {
+        Intent intent = new Intent(context, BatchModeActivity.class);
+        intent.putParcelableArrayListExtra(BatchModeActivity.PARCELKEY_ARRAYLIST_COMPOSITEDATA, compositeDatas);
+        return intent;
+    }
+
+    public static ArrayList<NyaaFansubGroup> getResultFromActivity(@NonNull Intent resultIntent)
+    {
+        return resultIntent.getParcelableArrayListExtra(PARCELKEY_ARRAYLIST_NYAAFANSUBGROUPS);
+    }
+
+
+    //Do state saving first
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putSparseParcelableArray(PARCELKEY_SPARSEARRAY_BATCHDATAS, mBatchDatas);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        final SparseArray<BatchData> savedbatchDatas = savedInstanceState.getSparseParcelableArray(PARCELKEY_SPARSEARRAY_BATCHDATAS);
+        if (savedbatchDatas != null)
+        {
+            for (int i = 0; i < savedbatchDatas.size(); i++)
+            {
+                mBatchDatas.append(i, savedbatchDatas.get(i));
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -87,28 +152,26 @@ public class BatchModeActivity extends AppCompatActivity
             }
         }
 
-        final ArrayList<CompositeData> passedCompositeDatas = getIntent().getParcelableArrayListExtra(CompositeData.PARCELKEY_COMPOSITEDATA);
+        final ArrayList<CompositeData> passedCompositeDatas = getIntent().getParcelableArrayListExtra(BatchModeActivity.PARCELKEY_ARRAYLIST_COMPOSITEDATA);
         if (passedCompositeDatas != null)
         {
             //NOTE: i is used as index!
 
             for (int i = 0; i < passedCompositeDatas.size(); i++)
             {
-
                 mBatchDatas.append(i, new BatchData(i, passedCompositeDatas.get(i)));
-
             }
 
             Log.v(getClass().getSimpleName(), "Loading size: " + mBatchDatas.size());
             attachViews(savedInstanceState);
 
-            //initial setups
+            //initial setup
             applyBatchDataToActivity(mBatchDatas.get(0));
             setupLoaders(mBatchDatas);
         }
     }
 
-    private void setupLoaders(SparseArrayCompat<BatchData> batchDatas)
+    private void setupLoaders(SparseArray<BatchData> batchDatas)
     {
         for (int i = 0; i < batchDatas.size(); i++)
         {
@@ -164,13 +227,33 @@ public class BatchModeActivity extends AppCompatActivity
         {
             final Bundle args = new Bundle(20);
             args.putString(NyaaSearchResultLoader.KEY_SEARCH_ARG, terms);
-            //TODO:Reapply loader
             getSupportLoaderManager().restartLoader(mCurrentId, args, callback).forceLoad();
         }
         else
         {
             Toast.makeText(this, R.string.toast_noqueryinput, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void completeBatchMode()
+    {
+        ArrayList<NyaaFansubGroup> nyaaFansubGroups = new ArrayList<>(mBatchDatas.size());
+        for (int i = 0; i < mBatchDatas.size(); i++)
+        {
+            nyaaFansubGroups.add(mBatchDatas.get(i).getSelectedNyaaFansubGroup());
+        }
+        setResult(Activity.RESULT_OK, new Intent().putParcelableArrayListExtra(PARCELKEY_ARRAYLIST_NYAAFANSUBGROUPS, nyaaFansubGroups));
+        finish();
+    }
+
+    private boolean allBatchDataSelectionSet()
+    {
+        for (int i = 0; i < mBatchDatas.size(); i++)
+        {
+            if (mBatchDatas.get(i).selectedNyaaFansubGroup == null)
+                return false;
+        }
+        return true;
     }
 
     private void attachViews(Bundle savedInstanceState)
@@ -194,7 +277,7 @@ public class BatchModeActivity extends AppCompatActivity
         {
             if (setupCardView != null)
             {
-                mSetupCard = new SetupCard(setupCardView);
+                mSetupCard = new SetupCard(setupCardView, setupCardListener);
                 mSetupCard.initViews();
                 mSetupCard.setDefaultRes(NyaaEntry.Resolution.R720); //TODO: Apply sharedPrefs for default checked RES
             }
@@ -288,9 +371,21 @@ public class BatchModeActivity extends AppCompatActivity
                 }
             });
         }
+
+        mBatchCompletedFab = (FloatingActionButton) findViewById(R.id.abm_fab_done);
+        if (mBatchCompletedFab != null)
+        {
+            mBatchCompletedFab.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    completeBatchMode();
+                }
+            });
+        }
     }
 
-    //TODO: HERE
     private void applyBatchDataToActivity(BatchData batchData)
     {
         mCurrentId = batchData.getId();
@@ -314,11 +409,17 @@ public class BatchModeActivity extends AppCompatActivity
             mSearchResultListAdapter.addAll(searchResults);
             mSearchResultListAdapter.notifyDataSetChanged();
         }
-
+        //TODO:extra stuff?
     }
 
-    private static final class BatchData
+    private static final class BatchData implements Parcelable
     {
+        public static final Parcelable.Creator<BatchData> CREATOR = new Parcelable.Creator<BatchData>()
+        {
+            public BatchData createFromParcel(Parcel source) {return new BatchData(source);}
+
+            public BatchData[] newArray(int size) {return new BatchData[size];}
+        };
         private int id;
         private CompositeData compositeData;
         private List<NyaaFansubGroup> searchResults;
@@ -328,6 +429,14 @@ public class BatchModeActivity extends AppCompatActivity
         {
             BatchData.this.id = index;
             BatchData.this.compositeData = compositeData;
+        }
+
+        protected BatchData(Parcel in)
+        {
+            this.id = in.readInt();
+            this.compositeData = in.readParcelable(CompositeData.class.getClassLoader());
+            this.searchResults = in.createTypedArrayList(NyaaFansubGroup.CREATOR);
+            this.selectedNyaaFansubGroup = in.readParcelable(NyaaFansubGroup.class.getClassLoader());
         }
 
         public NyaaFansubGroup getSelectedNyaaFansubGroup()
@@ -359,12 +468,24 @@ public class BatchModeActivity extends AppCompatActivity
         {
             this.searchResults = searchResults;
         }
+
+        @Override
+        public int describeContents() { return 0; }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags)
+        {
+            dest.writeInt(this.id);
+            dest.writeParcelable(this.compositeData, 0);
+            dest.writeTypedList(searchResults);
+            dest.writeParcelable(this.selectedNyaaFansubGroup, 0);
+        }
     }
 
     //Small wrapper class
     private static final class SetupCard
     {
-        private final View mSetupCard;
+        private final View mSetupCardRoot;
         private NyaaFansubGroup mNyaaFansubGroup;
         private CheckBox res480CheckBox;
         private CheckBox res720CheckBox;
@@ -373,12 +494,15 @@ public class BatchModeActivity extends AppCompatActivity
         private EditText mEpisodeEditText;
         private SparseArrayCompat<CheckBox> mResCheckboxSparseArray;
         private Spinner modeSpinner;
+        private Button mApplyButton;
         private boolean mResAvailable = false;
         private NyaaEntry.Resolution mDefaultRes = null;
+        private OnFinishListener listener;
 
-        public SetupCard(View setupCardView)
+        public SetupCard(View setupCardView, OnFinishListener listener)
         {
-            this.mSetupCard = setupCardView;
+            this.mSetupCardRoot = setupCardView;
+            this.listener = listener;
         }
 
         public void setDefaultRes(NyaaEntry.Resolution mDefaultRes)
@@ -388,9 +512,9 @@ public class BatchModeActivity extends AppCompatActivity
 
         public void initViews()
         {
-            mEpisodeEditText = (EditText) mSetupCard.findViewById(R.id.libs_et_episode);
+            mEpisodeEditText = (EditText) mSetupCardRoot.findViewById(R.id.libs_et_episode);
 
-            mSetupCard.findViewById(R.id.libs_btn_firstep).setOnClickListener(new View.OnClickListener()
+            mSetupCardRoot.findViewById(R.id.libs_btn_firstep).setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -398,7 +522,7 @@ public class BatchModeActivity extends AppCompatActivity
                     mEpisodeEditText.setText("1");
                 }
             });
-            mSetupCard.findViewById(R.id.libs_btn_currep).setOnClickListener(new View.OnClickListener()
+            mSetupCardRoot.findViewById(R.id.libs_btn_currep).setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -407,7 +531,7 @@ public class BatchModeActivity extends AppCompatActivity
                     mEpisodeEditText.setText(String.valueOf(ep));
                 }
             });
-            mSetupCard.findViewById(R.id.libs_btn_nextep).setOnClickListener(new View.OnClickListener()
+            mSetupCardRoot.findViewById(R.id.libs_btn_nextep).setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -418,7 +542,7 @@ public class BatchModeActivity extends AppCompatActivity
             });
 
             //Checkboxes
-            mResolutionsContainer = mSetupCard.findViewById(R.id.libs_ll_mid);
+            mResolutionsContainer = mSetupCardRoot.findViewById(R.id.libs_ll_mid);
             res480CheckBox = (CheckBox) mResolutionsContainer.findViewById(R.id.libs_btn_480);
             res720CheckBox = (CheckBox) mResolutionsContainer.findViewById(R.id.libs_btn_720);
             res1080CheckBox = (CheckBox) mResolutionsContainer.findViewById(R.id.libs_btn_1080);
@@ -428,17 +552,26 @@ public class BatchModeActivity extends AppCompatActivity
             mResCheckboxSparseArray.append(NyaaEntry.Resolution.R720.ordinal(), res720CheckBox);
             mResCheckboxSparseArray.append(NyaaEntry.Resolution.R1080.ordinal(), res1080CheckBox);
 
-            modeSpinner = (Spinner) mSetupCard.findViewById(R.id.libs_spinner_modes);
+            modeSpinner = (Spinner) mSetupCardRoot.findViewById(R.id.libs_spinner_modes);
+            mApplyButton = (Button) mSetupCardRoot.findViewById(R.id.libs_btn_nextcard);
+            mApplyButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    listener.onFinishSetup(applyFinalData(v.getContext()));
+                }
+            });
         }
 
         public int getVisibility()
         {
-            return mSetupCard.getVisibility();
+            return mSetupCardRoot.getVisibility();
         }
 
         public void setVisibility(int visibility)
         {
-            mSetupCard.setVisibility(visibility);
+            mSetupCardRoot.setVisibility(visibility);
         }
 
         public void setData(NyaaFansubGroup nyaaFansubGroup)
@@ -532,13 +665,16 @@ public class BatchModeActivity extends AppCompatActivity
             }
 
             finalNyaaFansubGroup.setModes(modeSpinner.getSelectedItemPosition());
-
             finalNyaaFansubGroup.setSeriesTitle(mNyaaFansubGroup.getSeriesTitle());
             finalNyaaFansubGroup.setId(mNyaaFansubGroup.getId());
             finalNyaaFansubGroup.setTrustCategory(mNyaaFansubGroup.getTrustCategory());
 
-            //TODO:return modes as well
             return finalNyaaFansubGroup;
+        }
+
+        public interface OnFinishListener
+        {
+            void onFinishSetup(NyaaFansubGroup finalData);
         }
     }
 
@@ -552,7 +688,7 @@ public class BatchModeActivity extends AppCompatActivity
         @Override
         public int getLayoutResource()
         {
-            return R.layout.list_item_batchmode_search;
+            return R.layout.listitem_batchmode_search;
         }
 
         @Override

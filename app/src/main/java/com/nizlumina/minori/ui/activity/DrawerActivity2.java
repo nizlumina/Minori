@@ -22,7 +22,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -31,7 +30,7 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.ui.fragment.GalleryFragment;
 import com.nizlumina.minori.ui.fragment.SeasonMasterFragment;
 
-public class DrawerActivity2 extends AppCompatActivity
+public class DrawerActivity2 extends BaseActivity
 {
 
     private DrawerLayout mDrawerLayout;
@@ -42,6 +41,8 @@ public class DrawerActivity2 extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer2);
+        setupViews();
+        switchFragment(GalleryFragment.newInstance(), GalleryFragment.class.getName(), false, null);
     }
 
     private void setupViews()
@@ -58,18 +59,21 @@ public class DrawerActivity2 extends AppCompatActivity
                 switch (menuItem.getItemId())
                 {
                     case R.id.mm_nav_watchlist:
-                        switchFragment(new GalleryFragment(), GalleryFragment.class.getName(), false, null);
+                        switchFragment(GalleryFragment.newInstance(), GalleryFragment.class.getName(), false, null);
                         break;
                     case R.id.mm_nav_seasonbrowser:
-                        switchFragment(new SeasonMasterFragment(), GalleryFragment.class.getName(), false, null);
+                        switchFragment(SeasonMasterFragment.newInstance(), SeasonMasterFragment.class.getName(), false, null);
                         break;
                 }
+                mDrawerLayout.closeDrawers();
                 return false;
             }
         });
+
+
     }
 
-    private DrawerLayout getDrawerLayout()
+    public DrawerLayout getDrawerLayout()
     {
         return mDrawerLayout;
     }
@@ -90,11 +94,14 @@ public class DrawerActivity2 extends AppCompatActivity
     }
 
     /**
-     * A Fragment who optionally depends on DrawerActvity for communicating calls.
+     * A Fragment who optionally depends on DrawerActivity for communicating calls.
      */
     public abstract static class DrawerFragment extends Fragment
     {
-        public void setDrawerNavigationButton(@Nullable Toolbar toolbar)
+
+        private ActionBarDrawerToggle drawerToggle;
+
+        public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
         {
             final FragmentActivity activity = getActivity();
             if (activity != null && activity instanceof DrawerActivity2)
@@ -102,8 +109,9 @@ public class DrawerActivity2 extends AppCompatActivity
                 final DrawerLayout drawerLayout = ((DrawerActivity2) activity).getDrawerLayout();
                 if (drawerLayout != null)
                 {
-                    final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+                    drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
                     drawerLayout.setDrawerListener(drawerToggle);
+                    drawerToggle.syncState();
                 }
             }
         }

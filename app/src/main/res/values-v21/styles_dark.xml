@@ -13,8 +13,10 @@
 <resources>
 
     <style name="MinoriDark.TranslucentStatusBar" parent="MinoriDark">
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <!-- Used Flags in activity instead-->
+        <!--see http://stackoverflow.com/questions/27856603/lollipop-draw-behind-statusbar-with-its-color-set-to-transparent -->
     </style>
 </resources>

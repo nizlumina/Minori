@@ -208,7 +208,7 @@ public class DrawerActivity extends AppCompatActivity
         if (getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().size() == 0)
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener), GalleryFragment.getFragmentTag())
+                    .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance())
                     .commit();
 
     }
@@ -247,13 +247,13 @@ public class DrawerActivity extends AppCompatActivity
             case R.id.drawer_watchlist:
                 fragmentManager
                         .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance(fragmentListener))
+                        .replace(FRAGMENT_CONTAINER, GalleryFragment.newInstance())
                         .commit();
                 break;
             case R.id.drawer_season:
                 fragmentManager
                         .beginTransaction()
-                        .replace(FRAGMENT_CONTAINER, SeasonMasterFragment.newInstance(fragmentListener), SeasonMasterFragment.class.getSimpleName())
+                        .replace(FRAGMENT_CONTAINER, SeasonMasterFragment.newInstance(), SeasonMasterFragment.class.getSimpleName())
                         .commit();
                 break;
             case R.id.drawer_search:

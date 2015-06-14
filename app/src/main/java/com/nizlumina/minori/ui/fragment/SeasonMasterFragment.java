@@ -17,8 +17,11 @@ package com.nizlumina.minori.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,11 +32,9 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonDataIndexController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.model.SeasonType;
-import com.nizlumina.minori.ui.ToolbarContract;
-import com.nizlumina.minori.ui.common.SlidingTabLayout;
+import com.nizlumina.minori.ui.activity.DrawerActivity2;
 import com.nizlumina.syncmaru.model.Season;
 
-import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,43 +42,65 @@ import java.util.List;
 /**
  * A host fragment for SeasonFragment child tabs. Upon load, it acquires index from Firebase (or check its relevant cache) and populate child tabs as needed.
  */
-public class SeasonMasterFragment extends DrawerContentFragment
+public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
 {
+    private final static String FRAGMENT_TITLE = "Season Browser";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
-    private final String fragmentTitle = "Season Browser";
-
-    private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
-    private SlidingTabLayout mTabLayout;
-    private ViewPager mViewPager;
-
-    public static SeasonMasterFragment newInstance(DrawerFragmentListener fragmentListener)
+    //for sorting
+    private final Comparator<Season> seasonComparator = new Comparator<Season>()
     {
-        SeasonMasterFragment seasonTabHostFragment = new SeasonMasterFragment();
-        seasonTabHostFragment.mFragmentListenerRef = new SoftReference<>(fragmentListener);
-        return seasonTabHostFragment;
+        @Override
+        public int compare(Season lhs, Season rhs)
+        {
+            if (lhs.getYear() == rhs.getYear())
+            {
+                final SeasonType a = SeasonType.fromString(lhs.getSeason());
+                final SeasonType b = SeasonType.fromString(rhs.getSeason());
+                if (a != null && b != null)
+                {
+                    return a.compareTo(b);
+                }
+            }
+            return lhs.getYear() - rhs.getYear();
+        }
+    };
+
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private AppBarLayout mAppBar;
+    private int mToolbarHeight;
+
+    public static SeasonMasterFragment newInstance()
+    {
+        return new SeasonMasterFragment();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return mViewPager = (ViewPager) inflater.inflate(R.layout.view_viewpager, container, false);
+        View view = inflater.inflate(R.layout.fragment_seasonmaster, container, false);
+        mViewPager = (ViewPager) view.findViewById(R.id.fsm_viewpager);
+        mTabLayout = (TabLayout) view.findViewById(R.id.fsm_tablayout);
+        mAppBar = (AppBarLayout) view.findViewById(R.id.fsm_appbarlayout);
+        return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
-        disableExtraTopPadding();
-        super.onViewCreated(view, savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
+        mToolbarHeight = mAppBar.getMeasuredHeight();
 
-        final LayoutInflater inflater = LayoutInflater.from(getActivity());
-
-        final ToolbarContract toolbarContract = getToolbarContract();
-        toolbarContract.getToolbar().setTitle(fragmentTitle);
-        mTabLayout = (SlidingTabLayout) toolbarContract.setToolbarSiblingView(inflater, R.layout.view_slidingtab);
         onLoad(mTabLayout, mViewPager);
     }
 
-    private void onLoad(@NonNull final SlidingTabLayout tabLayout, @NonNull final ViewPager viewPager)
+    private void onLoad(@NonNull final TabLayout tabLayout, @NonNull final ViewPager viewPager)
     {
         mIndexController.loadIndex(new OnFinishListener<Void>()
         {
@@ -103,77 +126,16 @@ public class SeasonMasterFragment extends DrawerContentFragment
     private List<Season> getSeasonsListFromController()
     {
         final List<Season> mSeasons = mIndexController.getSeasonList();
-        Collections.sort(mSeasons, new Comparator<Season>()
-        {
-            @Override
-            public int compare(Season lhs, Season rhs)
-            {
-                if (lhs.getYear() == rhs.getYear())
-                    return SeasonType.fromString(lhs.getSeason()).compareTo(SeasonType.fromString(rhs.getSeason()));
-                return lhs.getYear() - rhs.getYear();
-            }
-        });
+        Collections.sort(mSeasons, seasonComparator);
         return mSeasons;
     }
 
-    private void buildViews(final List<Season> mSeasons, final ViewPager viewPager, final SlidingTabLayout tabLayout)
+    private void buildViews(final List<Season> mSeasons, final ViewPager viewPager, final TabLayout tabLayout)
     {
-        viewPager.setOffscreenPageLimit(1);
-        final ToolbarContract toolbarContract = getToolbarContract();
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setAdapter(new SeasonPagerAdapter(getChildFragmentManager(), mSeasons, mToolbarHeight));
+        tabLayout.setupWithViewPager(viewPager);
 
-        final FragmentStatePagerAdapter pagerAdapter = new FragmentStatePagerAdapter(getChildFragmentManager())
-        {
-            @Override
-            public Fragment getItem(int position)
-            {
-
-                SeasonFragment seasonFragment = SeasonFragment.newInstance(mSeasons.get(position), mFragmentListenerRef.get(), toolbarContract.getAutoDisplayToolbarListener());
-                Bundle args = new Bundle();
-                args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, toolbarContract.getToolbarContainer().getMeasuredHeight());
-                seasonFragment.setArguments(args);
-                return seasonFragment;
-            }
-
-            @Override
-            public int getCount()
-            {
-                return mSeasons.size();
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position)
-            {
-                Season season = mSeasons.get(position);
-                String year = String.valueOf(season.getYear());
-                return season.getSeason() + " " + year.substring(year.length() - 2, year.length());
-            }
-        };
-
-        viewPager.setAdapter(pagerAdapter);
-        tabLayout.setViewPager(viewPager);
-        tabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
-        {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
-            {
-                if (toolbarContract.isToolbarVisible())
-                    toolbarContract.showToolbar();
-            }
-
-            @Override
-            public void onPageSelected(int position)
-            {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state)
-            {
-
-            }
-        });
-
-        log("Pager Adapter init - Size: " + pagerAdapter.getCount());
         View view = getView();
 
         if (view != null)
@@ -193,5 +155,41 @@ public class SeasonMasterFragment extends DrawerContentFragment
     private void log(String input)
     {
         Log.v(getClass().getSimpleName(), input);
+    }
+
+
+    private static class SeasonPagerAdapter extends FragmentPagerAdapter
+    {
+        private final List<Season> seasons;
+        private final int toolbarHeight;
+
+        public SeasonPagerAdapter(FragmentManager fm, List<Season> seasons, int toolbarHeight)
+        {
+            super(fm);
+            this.seasons = seasons;
+            this.toolbarHeight = toolbarHeight;
+        }
+
+        @Override
+        public Fragment getItem(int position)
+        {
+            final SeasonFragment seasonFragment = SeasonFragment.newInstance(seasons.get(position));
+            final Bundle args = new Bundle();
+            args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, toolbarHeight);
+            seasonFragment.setArguments(args);
+            return seasonFragment;
+        }
+
+        @Override
+        public int getCount()
+        {
+            return seasons.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position)
+        {
+            return seasons.get(position).getDisplayString();
+        }
     }
 }

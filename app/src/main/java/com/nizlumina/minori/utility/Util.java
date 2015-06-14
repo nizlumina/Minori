@@ -195,4 +195,11 @@ public class Util
 
         return builder.toString().trim();
     }
+
+    //Stolen from Google I/O 2013 app
+//    public static boolean isTablet(Context context) {
+//        return (context.getResources().getConfiguration().screenLayout
+//                & Configuration.SCREENLAYOUT_SIZE_MASK)
+//                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+//    }
 }
