@@ -38,7 +38,7 @@ import com.nizlumina.common.nyaa.NyaaFansubGroup;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.Watchlist;
 import com.nizlumina.minori.model.MinoriModel;
-import com.nizlumina.minori.ui.activity.DrawerActivity2;
+import com.nizlumina.minori.ui.activity.DrawerActivity;
 import com.nizlumina.minori.ui.common.MarginItemDecoration;
 import com.nizlumina.minori.utility.Util;
 import com.nizlumina.syncmaru.model.CompositeData;
@@ -47,7 +47,7 @@ import com.nizlumina.syncmaru.model.SmallAnimeObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryFragment extends DrawerActivity2.DrawerFragment
+public class GalleryFragment extends DrawerActivity.DrawerFragment
 {
     private static final String PARCELKEY_MINORIMODELS = "minori_models";
     private Toolbar mToolbar;

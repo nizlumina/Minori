@@ -31,7 +31,7 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonDataIndexController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.model.SeasonType;
-import com.nizlumina.minori.ui.activity.DrawerActivity2;
+import com.nizlumina.minori.ui.activity.DrawerActivity;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.Collections;
@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * A host fragment for SeasonFragment child tabs. Upon load, it acquires index from Firebase (or check its relevant cache) and populate child tabs as needed.
  */
-public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
+public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
 {
     private final static String FRAGMENT_TITLE = "Season Browser";
     private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();

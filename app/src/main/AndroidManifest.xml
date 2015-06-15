@@ -45,7 +45,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.activity.DrawerActivity2"
+            android:name=".ui.activity.DrawerActivity"
             android:label="@string/app_name"
             android:theme="@style/MinoriDark.TranslucentStatusBar">
             <intent-filter>

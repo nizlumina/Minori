@@ -24,12 +24,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.ui.activity.DrawerActivity2;
+import com.nizlumina.minori.ui.activity.DrawerActivity;
 import com.nizlumina.minori.ui.presenter.CompositeDataPresenter;
 import com.nizlumina.minori.ui.view.BadgeView;
 import com.nizlumina.syncmaru.model.CompositeData;
 
-public class DetailFragment extends DrawerActivity2.DrawerFragment
+public class DetailFragment extends DrawerActivity.DrawerFragment
 {
     private static final String SCORE_CATEGORY = "score";
     private static final String STUDIO_CATEGORY = "studio";

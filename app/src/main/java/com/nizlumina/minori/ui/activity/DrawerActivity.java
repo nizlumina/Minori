@@ -38,7 +38,7 @@ import com.nizlumina.minori.ui.fragment.SeasonFragment;
 import com.nizlumina.minori.ui.fragment.SeasonMasterFragment;
 import com.nizlumina.syncmaru.model.CompositeData;
 
-public class DrawerActivity2 extends BaseActivity
+public class DrawerActivity extends BaseActivity
 {
 
     private DrawerLayout mDrawerLayout;
@@ -73,7 +73,7 @@ public class DrawerActivity2 extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer2);
+        setContentView(R.layout.activity_drawer);
         setupViews();
         if (savedInstanceState == null)
         {
@@ -98,7 +98,7 @@ public class DrawerActivity2 extends BaseActivity
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SeasonFragment.ACTION_REQUEST_DETAIL);
 
-        LocalBroadcastManager.getInstance(DrawerActivity2.this).registerReceiver(receiver, intentFilter);
+        LocalBroadcastManager.getInstance(DrawerActivity.this).registerReceiver(receiver, intentFilter);
     }
 
     private void setupViews()
@@ -160,9 +160,9 @@ public class DrawerActivity2 extends BaseActivity
         public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
         {
             final FragmentActivity activity = getActivity();
-            if (activity != null && activity instanceof DrawerActivity2)
+            if (activity != null && activity instanceof DrawerActivity)
             {
-                final DrawerLayout drawerLayout = ((DrawerActivity2) activity).getDrawerLayout();
+                final DrawerLayout drawerLayout = ((DrawerActivity) activity).getDrawerLayout();
                 if (drawerLayout != null)
                 {
                     drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
