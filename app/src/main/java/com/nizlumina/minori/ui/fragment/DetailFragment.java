@@ -61,9 +61,6 @@ public class DetailFragment extends DrawerActivity.DrawerFragment
     private void setupViews(View inflatedView)
     {
         final CompositeDataPresenter presenter = new CompositeDataPresenter(mCompositeData);
-//        Toolbar mainToolbar = getToolbarContract().getToolbar();
-//
-//        mainToolbar.setTitle(presenter.getTitle());
 
         final ImageView detailImageView = (ImageView) inflatedView.findViewById(R.id.detail_image);
         Glide.with(DetailFragment.this).load(presenter.getImageURL()).diskCacheStrategy(DiskCacheStrategy.ALL).into(detailImageView);
@@ -92,20 +89,11 @@ public class DetailFragment extends DrawerActivity.DrawerFragment
         final BadgeView episodeCountBadge = BadgeView.quickBuild(inflatedView, R.id.detail_badge_episodecount, EPISODECOUNT_CATEGORY, presenter.getEpisodesCount());
         episodeCountBadge.quickTint(R.color.green_800);
 
-//        final View downloadButton = inflatedView.findViewById(R.id.detail_button_download);
-//        if (downloadButton != null)
-//        {
-//            downloadButton.setOnClickListener(new View.OnClickListener()
-//            {
-//                @Override
-//                public void onClick(View v)
-//                {
-//                    if (drawerFragmentListener != null)
-//                    {
-//                        drawerFragmentListener.invokeFragmentChange(SearchFragment.newInstance(presenter.getTitle()));
-//                    }
-//                }
-//            });
-//        }
+    }
+
+    @Override
+    public String getFragmentTag()
+    {
+        return getClass().getSimpleName();
     }
 }

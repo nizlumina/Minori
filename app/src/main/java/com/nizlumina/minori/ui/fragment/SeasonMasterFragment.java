@@ -162,6 +162,12 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
         Log.v(getClass().getSimpleName(), input);
     }
 
+    @Override
+    public String getFragmentTag()
+    {
+        return getClass().getSimpleName();
+    }
+
 
     private static class SeasonPagerAdapter extends FragmentPagerAdapter
     {

@@ -149,6 +149,12 @@ public class GalleryFragment extends DrawerActivity.DrawerFragment
         return new MinoriModel(data, group);
     }
 
+    @Override
+    public String getFragmentTag()
+    {
+        return getClass().getSimpleName();
+    }
+
     private static class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryViewHolder>
     {
         private static final String nextEp = "Next Ep: ";

@@ -171,5 +171,7 @@ public class DrawerActivity extends BaseActivity
                 }
             }
         }
+
+        public abstract String getFragmentTag();
     }
 }
