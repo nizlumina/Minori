@@ -8,7 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 
 /**
@@ -202,4 +204,29 @@ public class Util
 //                & Configuration.SCREENLAYOUT_SIZE_MASK)
 //                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
 //    }
+
+    /**
+     * Since View.post(Runnable) is not actually guaranteed for measuring views
+     */
+    public static void postOnPreDraw(final Runnable runnable, final View view)
+    {
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
+        {
+            @Override
+            public boolean onPreDraw()
+            {
+                try
+                {
+                    runnable.run();
+                    return true;
+                }
+                finally
+                {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);
+                }
+            }
+        });
+    }
+
+
 }

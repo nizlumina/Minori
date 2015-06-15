@@ -13,6 +13,10 @@
 package com.nizlumina.minori.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +24,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -27,14 +32,42 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.ui.fragment.DetailFragment;
 import com.nizlumina.minori.ui.fragment.GalleryFragment;
+import com.nizlumina.minori.ui.fragment.SeasonFragment;
 import com.nizlumina.minori.ui.fragment.SeasonMasterFragment;
+import com.nizlumina.syncmaru.model.CompositeData;
 
 public class DrawerActivity2 extends BaseActivity
 {
 
     private DrawerLayout mDrawerLayout;
     private FrameLayout mFrameLayout;
+    private final BroadcastReceiver receiver = new BroadcastReceiver()
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (intent.getAction().equals(SeasonFragment.ACTION_REQUEST_DETAIL))
+            {
+                CompositeData dataFromRequest = SeasonFragment.getDataFromRequest(intent);
+                if (dataFromRequest != null)
+                    switchFragment(DetailFragment.newInstance(dataFromRequest), DetailFragment.class.getSimpleName(), true, DetailFragment.class.getName());
+            }
+        }
+    };
+
+    @Override
+    protected void onRestoreInstanceState(@Nullable Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,7 +75,30 @@ public class DrawerActivity2 extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer2);
         setupViews();
-        switchFragment(GalleryFragment.newInstance(), GalleryFragment.class.getName(), false, null);
+        if (savedInstanceState == null)
+        {
+            switchFragment(GalleryFragment.newInstance(), GalleryFragment.class.getName(), false, null);
+        }
+        else
+        {
+
+        }
+        setupBroadcastReceivers();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onDestroy();
+    }
+
+    private void setupBroadcastReceivers()
+    {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SeasonFragment.ACTION_REQUEST_DETAIL);
+
+        LocalBroadcastManager.getInstance(DrawerActivity2.this).registerReceiver(receiver, intentFilter);
     }
 
     private void setupViews()

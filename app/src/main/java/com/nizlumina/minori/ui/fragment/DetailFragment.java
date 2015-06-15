@@ -14,7 +14,6 @@ package com.nizlumina.minori.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +24,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.ui.activity.DrawerActivity2;
 import com.nizlumina.minori.ui.presenter.CompositeDataPresenter;
 import com.nizlumina.minori.ui.view.BadgeView;
 import com.nizlumina.syncmaru.model.CompositeData;
 
-import java.lang.ref.SoftReference;
-
-public class DetailFragment extends DrawerContentFragment
+public class DetailFragment extends DrawerActivity2.DrawerFragment
 {
     private static final String SCORE_CATEGORY = "score";
     private static final String STUDIO_CATEGORY = "studio";
@@ -39,12 +37,11 @@ public class DetailFragment extends DrawerContentFragment
     private static final String EPISODECOUNT_CATEGORY = "episodes";
 
     private CompositeData mCompositeData;
-    private SoftReference<DrawerFragmentListener> mFragmentListenerRef;
 
-    public static DetailFragment newInstance(DrawerFragmentListener drawerFragmentListener)
+    public static DetailFragment newInstance(CompositeData compositeData)
     {
         DetailFragment detailFragment = new DetailFragment();
-        detailFragment.mFragmentListenerRef = new SoftReference<>(drawerFragmentListener);
+        detailFragment.mCompositeData = compositeData;
         return detailFragment;
     }
 
@@ -64,10 +61,9 @@ public class DetailFragment extends DrawerContentFragment
     private void setupViews(View inflatedView)
     {
         final CompositeDataPresenter presenter = new CompositeDataPresenter(mCompositeData);
-        Toolbar mainToolbar = getToolbarContract().getToolbar();
-        final DrawerFragmentListener drawerFragmentListener = mFragmentListenerRef.get();
-
-        mainToolbar.setTitle(presenter.getTitle());
+//        Toolbar mainToolbar = getToolbarContract().getToolbar();
+//
+//        mainToolbar.setTitle(presenter.getTitle());
 
         final ImageView detailImageView = (ImageView) inflatedView.findViewById(R.id.detail_image);
         Glide.with(DetailFragment.this).load(presenter.getImageURL()).diskCacheStrategy(DiskCacheStrategy.ALL).into(detailImageView);
@@ -83,7 +79,7 @@ public class DetailFragment extends DrawerContentFragment
         }
         else
         {
-            mainToolbar.setSubtitle(presenter.getStudio());
+            //mainToolbar.setSubtitle(presenter.getStudio());
         }
 
 
@@ -111,13 +107,5 @@ public class DetailFragment extends DrawerContentFragment
 //                }
 //            });
 //        }
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        mCompositeData = getArguments().getParcelable(CompositeData.PARCELKEY_COMPOSITEDATA);
     }
 }

@@ -45,12 +45,16 @@ public class SeasonController
     private List<CompositeData> mCompositeDatas = new ArrayList<>();
     //Extras
     private List<Future> tasks = new ArrayList<>();
-
     public SeasonController(Season season)
     {
         mCurrentSeason = season;
         loggySmall = new Loggy(this.getClass().getSimpleName() + " - " + mCurrentSeason.getIndexKey());
         loggyMain = new Loggy(this.getClass().getSimpleName() + " - " + mCurrentSeason.getIndexKey());
+    }
+
+    public Season getSeason()
+    {
+        return mCurrentSeason;
     }
 
     //The main method from UI

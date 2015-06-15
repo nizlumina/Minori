@@ -13,13 +13,16 @@
 package com.nizlumina.minori.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +37,7 @@ import com.nizlumina.minori.controller.SeasonController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.ui.common.GridItemSetting;
 import com.nizlumina.minori.ui.common.MarginItemDecoration;
+import com.nizlumina.minori.utility.SparseBooleanArrayParcelable;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.LiveChartObject;
 import com.nizlumina.syncmaru.model.Season;
@@ -47,16 +51,20 @@ import java.util.List;
 
 public class SeasonFragment extends Fragment
 {
-    public static final String ARGS_GRIDVIEW_PADDING_TOP = "ARGS_GRIDVIEW_PADDING_TOP";
+    public static final String ACTION_REQUEST_DETAIL = SeasonFragment.class.getSimpleName() + "request$";
+    private static final String COMPOSITE_DATA_OUT = SeasonFragment.class.getSimpleName() + "data$";
     private static final int minItemWidthDp = 96;
     private static final float widthToHeightRatio = 0.7f;
     private static final int minItemSingleHorizontalMarginDP = 8;
-    private static final int minItemWidthTargetForTablet = 140;
-
+    private static final int minItemWidthDPTargetForTablet = 140; //this makes out around 5 column, while 120dp ~ 6 col,
     private SeasonController mSeasonController;
     private FloatingActionButton mBatchFab;
     private RecyclerView mRecyclerView;
-    private boolean selectionMode = false;
+
+    public static CompositeData getDataFromRequest(Intent intent)
+    {
+        return (CompositeData) intent.getParcelableExtra(COMPOSITE_DATA_OUT);
+    }
 
     public static SeasonFragment newInstance(Season season)
     {
@@ -76,20 +84,20 @@ public class SeasonFragment extends Fragment
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
         //Because there's no freaking way to measure view in your normal Android lifecycle unless you opt for deprecated methods.
-        View view = getView();
-        if (view != null && savedInstanceState == null)
+        if (mRecyclerView != null)
         {
-            view.post(new Runnable()
+            mRecyclerView.post(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    setupViews();
+                    Log.e("AHHH", mSeasonController.getSeason().getDisplayString() + " " + mRecyclerView.getWidth());
+                    setupViews(savedInstanceState);
                 }
             });
         }
@@ -99,17 +107,18 @@ public class SeasonFragment extends Fragment
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+        ((SeasonGridRecyclerAdapter) mRecyclerView.getAdapter()).onSaveInstanceState(outState);
     }
 
-    private void setupViews()
+    private void setupViews(@Nullable Bundle savedInstanceState)
     {
         final List<CompositeData> compositeDatas = new ArrayList<>();
 
         final DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int finalMinItemWidthDp = this.minItemWidthDp;
+        int finalMinItemWidthDp = minItemWidthDp;
         if (displayMetrics.widthPixels / displayMetrics.density > 600)
         {
-            finalMinItemWidthDp = minItemWidthTargetForTablet;
+            finalMinItemWidthDp = minItemWidthDPTargetForTablet;
         }
         final GridItemSetting gridItemSetting = new GridItemSetting(displayMetrics.density, mRecyclerView.getWidth(), finalMinItemWidthDp, widthToHeightRatio, minItemSingleHorizontalMarginDP);
 
@@ -118,6 +127,8 @@ public class SeasonFragment extends Fragment
         mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getColumnCount()));
 
         final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, getActivity(), SeasonFragment.this);
+        adapter.onRestoreInstanceState(savedInstanceState);
+
         mRecyclerView.setAdapter(adapter);
 
         mSeasonController.getCompositeDatas(new OnFinishListener<List<CompositeData>>()
@@ -149,23 +160,59 @@ public class SeasonFragment extends Fragment
 
             }
         }, false);
+
+
+        //Most important parts here
+        adapter.setOnItemClickListener(new OnItemClickListener()
+        {
+            @Override
+            public void onListItemClick(int position)
+            {
+                if (adapter.isSelectable())
+                {
+                    adapter.toggleSelection(position);
+                }
+                else
+                    startDetailFragmentForItem(compositeDatas.get(position));
+            }
+
+            @Override
+            public boolean onListItemLongClick(int position)
+            {
+                if (!adapter.isSelectable())
+                {
+                    adapter.setSelectable(true);
+                    adapter.toggleSelection(position);
+                }
+                return false;
+            }
+        });
     }
 
     private void startDetailFragmentForItem(CompositeData detailData)
     {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(CompositeData.PARCELKEY_COMPOSITEDATA, detailData);
-        DetailFragment detailFragment = DetailFragment.newInstance(null);
-        detailFragment.setArguments(bundle);
+        final Intent intent = new Intent(ACTION_REQUEST_DETAIL).putExtra(COMPOSITE_DATA_OUT, detailData);
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+    }
+
+    public interface OnItemClickListener
+    {
+        void onListItemClick(int position);
+
+        boolean onListItemLongClick(int position);
     }
 
     private static class SeasonGridRecyclerAdapter extends RecyclerView.Adapter<SeasonGridItem>
     {
+        private static final String SELECTIONS_BUNDLETAG = SeasonGridRecyclerAdapter.class.getName();
         private final List<CompositeData> compositeDatas;
         private final GridItemSetting setting;
         private final SoftReference<Fragment> fragmentSoftRef;
         private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        private OnItemClickListener onItemClickListener;
         private LayoutInflater inflater;
+        private boolean selectable = false;
+        private SparseBooleanArrayParcelable selections = new SparseBooleanArrayParcelable();
 
         public SeasonGridRecyclerAdapter(List<CompositeData> compositeDatas, GridItemSetting setting, Context context, Fragment fragment)
         {
@@ -178,8 +225,7 @@ public class SeasonFragment extends Fragment
         @Override
         public SeasonGridItem onCreateViewHolder(ViewGroup parent, int viewType)
         {
-            return new SeasonGridItem(inflater.inflate(SeasonGridItem.LAYOUT_RESOURCE, parent, false), setting.getWidthPixels(), setting.getHeightPixels());
-
+            return new SeasonGridItem(inflater.inflate(SeasonGridItem.LAYOUT_RESOURCE, parent, false), setting.getWidthPixels(), setting.getHeightPixels(), onItemClickListener);
         }
 
         @Override
@@ -194,12 +240,61 @@ public class SeasonFragment extends Fragment
                     .load(data.getMalObject().getImage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.getImageView());
+
+            holder.itemView.setActivated(selections.get(position));
+        }
+
+        public void setOnItemClickListener(OnItemClickListener onItemClickListener)
+        {
+            this.onItemClickListener = onItemClickListener;
         }
 
         @Override
         public int getItemCount()
         {
             return compositeDatas.size();
+        }
+
+        public void toggleSelection(int position)
+        {
+            if (selections.get(position))
+                selections.put(position, false);
+            else
+                selections.put(position, true);
+
+            notifyItemChanged(position);
+        }
+
+        public void clearSelections()
+        {
+            selections.clear();
+            notifyItemRangeChanged(0, compositeDatas.size());
+        }
+
+        public boolean isSelectable()
+        {
+            return selectable;
+        }
+
+        public void setSelectable(boolean enableSelection)
+        {
+            this.selectable = enableSelection;
+        }
+
+        public void onSaveInstanceState(Bundle outState)
+        {
+            outState.putParcelable(SELECTIONS_BUNDLETAG, selections);
+        }
+
+        public void onRestoreInstanceState(Bundle savedInstanceState)
+        {
+            if (savedInstanceState != null)
+                selections = savedInstanceState.getParcelable(SELECTIONS_BUNDLETAG);
+        }
+
+        public SparseBooleanArrayParcelable getSelections()
+        {
+            return selections;
         }
     }
 
@@ -210,14 +305,18 @@ public class SeasonFragment extends Fragment
         private final TextView score;
         private final TextView source;
         private final ImageView imageView;
+        private final OnItemClickListener itemClickListener;
 
-        public SeasonGridItem(View itemView, int posterWidth, int posterHeight)
+        public SeasonGridItem(View itemView, int posterWidth, int posterHeight, OnItemClickListener onItemClickListener)
         {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.item_title);
-            score = (TextView) itemView.findViewById(R.id.item_score);
-            source = (TextView) itemView.findViewById(R.id.item_source);
-            imageView = (ImageView) itemView.findViewById(R.id.item_image);
+            this.itemClickListener = onItemClickListener;
+
+            this.title = (TextView) itemView.findViewById(R.id.item_title);
+            this.score = (TextView) itemView.findViewById(R.id.item_score);
+            this.source = (TextView) itemView.findViewById(R.id.item_source);
+            this.imageView = (ImageView) itemView.findViewById(R.id.item_image);
+
             final ViewGroup.LayoutParams containerParams = itemView.getLayoutParams();
             containerParams.width = posterWidth;
 
@@ -225,18 +324,9 @@ public class SeasonFragment extends Fragment
             layoutParams.height = posterHeight;
 
             //No need to request layout since OnBindViewHolder does that.
-        }
 
-        @Override
-        public void onClick(View v)
-        {
-
-        }
-
-        @Override
-        public boolean onLongClick(View v)
-        {
-            return false;
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         public TextView getTitle()
@@ -257,6 +347,18 @@ public class SeasonFragment extends Fragment
         public ImageView getImageView()
         {
             return imageView;
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            itemClickListener.onListItemClick(getAdapterPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v)
+        {
+            return itemClickListener.onListItemLongClick(getAdapterPosition());
         }
     }
 }

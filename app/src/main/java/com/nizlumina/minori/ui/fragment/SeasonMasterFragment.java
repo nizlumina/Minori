@@ -17,7 +17,6 @@ package com.nizlumina.minori.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -67,8 +66,6 @@ public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
-    private AppBarLayout mAppBar;
-    private int mToolbarHeight;
 
     public static SeasonMasterFragment newInstance()
     {
@@ -82,12 +79,19 @@ public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_seasonmaster, container, false);
         mViewPager = (ViewPager) view.findViewById(R.id.fsm_viewpager);
         mTabLayout = (TabLayout) view.findViewById(R.id.fsm_tablayout);
-        mAppBar = (AppBarLayout) view.findViewById(R.id.fsm_appbarlayout);
+        //AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.fsm_appbarlayout);
         return view;
     }
 
@@ -95,8 +99,6 @@ public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        mToolbarHeight = mAppBar.getMeasuredHeight();
-
         onLoad(mTabLayout, mViewPager);
     }
 
@@ -133,8 +135,11 @@ public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
     private void buildViews(final List<Season> mSeasons, final ViewPager viewPager, final TabLayout tabLayout)
     {
         viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(new SeasonPagerAdapter(getChildFragmentManager(), mSeasons, mToolbarHeight));
+        viewPager.setAdapter(new SeasonPagerAdapter(getChildFragmentManager(), mSeasons));
         tabLayout.setupWithViewPager(viewPager);
+
+        int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
+        viewPager.setCurrentItem(position);
 
         View view = getView();
 
@@ -161,23 +166,17 @@ public class SeasonMasterFragment extends DrawerActivity2.DrawerFragment
     private static class SeasonPagerAdapter extends FragmentPagerAdapter
     {
         private final List<Season> seasons;
-        private final int toolbarHeight;
 
-        public SeasonPagerAdapter(FragmentManager fm, List<Season> seasons, int toolbarHeight)
+        public SeasonPagerAdapter(FragmentManager fm, List<Season> seasons)
         {
             super(fm);
             this.seasons = seasons;
-            this.toolbarHeight = toolbarHeight;
         }
 
         @Override
         public Fragment getItem(int position)
         {
-            final SeasonFragment seasonFragment = SeasonFragment.newInstance(seasons.get(position));
-            final Bundle args = new Bundle();
-            args.putInt(SeasonFragment.ARGS_GRIDVIEW_PADDING_TOP, toolbarHeight);
-            seasonFragment.setArguments(args);
-            return seasonFragment;
+            return SeasonFragment.newInstance(seasons.get(position));
         }
 
         @Override

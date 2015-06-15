@@ -71,7 +71,6 @@
             android:id="@+id/libs_ll_mid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/libs_ll_top"
             android:gravity="center_vertical"
             app:columnCount="3">
 
