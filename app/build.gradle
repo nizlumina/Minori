@@ -39,7 +39,7 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     //Glide requires that old support lib.
     compile 'com.github.bumptech.glide:glide:3.6.0'
-    //compile 'com.android.support:support-v4:19.1.0' //whether its really needed is untested yet. So far works fine.
+    //compile 'com.android.support:support-v4:19.1.0' //whether its really needed is untested yet. So far works fine uguuu~
     //compile 'com.github.bumptech.glide:okhttp-integration:1.2.1'
     //for okhttp
     compile 'commons-io:commons-io:2.4'
