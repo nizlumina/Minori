@@ -80,8 +80,9 @@ public class DiskIOService extends IntentService
      * @param requestID         Request ID. Also used for receiving results.
      * @param inputFile         The file to be read. The file must exist, be a file, and can be read.
      * @param useLocalBroadcast Only set this to true if {@link LocalBroadcastManager} is used to register the {@link DiskIOBroadcastReceiver} (the result is marshalled thru this receiver)
+     * @return True if the read task was started. False if there were any error to access file.
      */
-    public static void executeRead(Context context, int requestID, File inputFile, boolean useLocalBroadcast)
+    public static boolean executeRead(Context context, int requestID, File inputFile, boolean useLocalBroadcast)
     {
         if (inputFile.exists() && inputFile.isFile() && inputFile.canRead())
         {
@@ -89,64 +90,63 @@ public class DiskIOService extends IntentService
             DiskTask diskTask = new DiskTask(requestID, filePath, null, useLocalBroadcast);
             Intent intent = new Intent(ACTION_READ).putExtra(PARCELKEY_DISKTASK, diskTask);
             WakefulBroadcastReceiver.startWakefulService(context, intent);
+            return true;
         }
+        return false;
     }
 
     @Override
-    protected void onHandleIntent(Intent intent)
+    protected void onHandleIntent(@NonNull Intent intent)
     {
-        if (intent != null)
+        String action = intent.getAction();
+        if (action != null)
         {
-            String action = intent.getAction();
-            if (action != null)
+            DiskTask diskTask = intent.getParcelableExtra(PARCELKEY_DISKTASK);
+            if (diskTask != null)
             {
-                DiskTask diskTask = intent.getParcelableExtra(PARCELKEY_DISKTASK);
-                if (diskTask != null)
+                if (action.equals(ACTION_WRITE))
                 {
-                    if (action.equals(ACTION_WRITE))
+                    try
                     {
-                        try
-                        {
-                            IOUtils.write(diskTask.getPayload(), new BufferedOutputStream(new FileOutputStream(diskTask.getPath(), false)), Charset.defaultCharset());
-                        }
-                        catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        IOUtils.write(diskTask.getPayload(), new BufferedOutputStream(new FileOutputStream(diskTask.getPath(), false)), Charset.defaultCharset());
                     }
-                    if (action.equals(ACTION_READ))
+                    catch (IOException e)
                     {
-                        String outString = null;
-                        try
-                        {
-                            outString = IOUtils.toString(new BufferedInputStream(new FileInputStream(diskTask.getPath())), Charset.defaultCharset());
-                        }
-                        catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                        if (outString != null)
-                        {
-                            diskTask.setPayload(outString);
-                        }
-                    }
-
-                    Intent outIntent = new Intent(getApplicationContext(), DiskIOBroadcastReceiver.class);
-                    outIntent.putExtra(IKEY_REQ_ID, diskTask.getRequestID()).putExtra(PARCELKEY_DISKTASK, diskTask);
-
-                    if (intent.getBooleanExtra(IKEY_BOOL_LOCALBROADCAST, false))
-                    {
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(outIntent);
-                    }
-                    else
-                    {
-                        getApplicationContext().sendBroadcast(outIntent);
+                        e.printStackTrace();
                     }
                 }
+                if (action.equals(ACTION_READ))
+                {
+                    String outString = null;
+                    try
+                    {
+                        outString = IOUtils.toString(new BufferedInputStream(new FileInputStream(diskTask.getPath())), Charset.defaultCharset());
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    if (outString != null)
+                    {
+                        diskTask.setPayload(outString);
+                    }
+                }
+
+                Intent outIntent = new Intent(getApplicationContext(), DiskIOBroadcastReceiver.class);
+                outIntent.putExtra(IKEY_REQ_ID, diskTask.getRequestID()).putExtra(PARCELKEY_DISKTASK, diskTask);
+
+                if (intent.getBooleanExtra(IKEY_BOOL_LOCALBROADCAST, false))
+                {
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(outIntent);
+                }
+                else
+                {
+                    getApplicationContext().sendBroadcast(outIntent);
+                }
             }
-            WakefulBroadcastReceiver.completeWakefulIntent(intent);
         }
+        WakefulBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     public static class DiskTask implements Parcelable
@@ -196,11 +196,6 @@ public class DiskIOService extends IntentService
         public void setPayload(String payload)
         {
             this.payload = payload;
-        }
-
-        public boolean isUseLocalBroadcast()
-        {
-            return useLocalBroadcast;
         }
 
         @Override

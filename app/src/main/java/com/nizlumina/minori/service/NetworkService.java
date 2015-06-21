@@ -13,12 +13,14 @@
 package com.nizlumina.minori.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -41,7 +43,8 @@ public class NetworkService extends IntentService
     private static final String ACTION_SINGLE_NETWORKCALL = NetworkService.class.getName() + "$ACTION_SINGLE_NETWORKCALL";
     private static final String IKEY_URL = "IKEY_URL";
     private static final String IKEY_ID = "IKEY_ID";
-    private static final int DEFAULT_NON_ID = -42;
+    private static final String IKEY_BOOL_LOCALBROADCAST = "IKEY_ID";
+    private static final int DEFAULT_NON_ID = -1945;
     private Cache cache;
 
     public NetworkService()
@@ -49,66 +52,58 @@ public class NetworkService extends IntentService
         super("NetworkService");
     }
 
-    public NetworkService(String threadName)
-    {
-        super(threadName);
-    }
-
-    public static void startRequest(@NonNull Context context, int requestId, @NonNull String url, BroadcastReceiver receiver)
+    public static void startRequest(@NonNull Context context, int requestId, @NonNull String url, boolean useLocalBroadcast)
     {
         Intent intent = new Intent(context, NetworkService.class);
-        intent.setAction(ACTION_SINGLE_NETWORKCALL);
-        intent.putExtra(IKEY_ID, requestId);
-        intent.putExtra(IKEY_URL, url);
-        context.startService(intent);
-    }
-
-    public static void startRequest(@NonNull Context context, @NonNull String[] urls, BroadcastReceiver receiver)
-    {
-
+        intent.setAction(ACTION_SINGLE_NETWORKCALL)
+                .putExtra(IKEY_ID, requestId)
+                .putExtra(IKEY_URL, url)
+                .putExtra(IKEY_BOOL_LOCALBROADCAST, useLocalBroadcast);
+        WakefulBroadcastReceiver.startWakefulService(context, intent);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent)
+    protected void onHandleIntent(@NonNull Intent intent)
     {
-        if (intent != null)
+        final String action = intent.getAction();
+        if (action != null && action.equals(ACTION_SINGLE_NETWORKCALL))
         {
-            final String action = intent.getAction();
-            if (action != null && action.equals(ACTION_SINGLE_NETWORKCALL))
+            String url = intent.getStringExtra(IKEY_URL);
+            int id = intent.getIntExtra(IKEY_ID, DEFAULT_NON_ID);
+            if (url != null && id != DEFAULT_NON_ID)
             {
-                String url = intent.getStringExtra(IKEY_URL);
-                int id = intent.getIntExtra(IKEY_ID, DEFAULT_NON_ID);
-                if (url != null && id != DEFAULT_NON_ID)
+                final OkHttpClient client = new OkHttpClient();
+                if (cache == null)
                 {
-                    final OkHttpClient client = new OkHttpClient();
-                    if (cache == null)
+                    cache = new Cache(getCacheDir(), Config.CACHE_SIZE);
+                }
+                client.setCache(cache);
+                client.setCookieHandler(CookieHandler.getDefault());
+                final Request request = new Request.Builder().addHeader(Config.HEADERKEY_USER_AGENT, Config.USER_AGENT).get().url(url).build();
+                String result = null;
+                try
+                {
+                    Response response = client.newCall(request).execute();
+                    if (response != null && response.isSuccessful())
                     {
-                        cache = new Cache(getCacheDir(), Config.CACHE_SIZE);
+                        result = response.body().string();
                     }
-                    client.setCache(cache);
-                    client.setCookieHandler(CookieHandler.getDefault());
-                    final Request request = new Request.Builder().addHeader(Config.HEADERKEY_USER_AGENT, Config.USER_AGENT).get().url(url).build();
-                    String result = null;
-                    try
-                    {
-                        Response response = client.newCall(request).execute();
-                        if (response != null && response.isSuccessful())
-                        {
-                            result = response.body().string();
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    finally
-                    {
-                        final Intent out = BroadcastReceiver.getFinishIntent(id, result);
-                        LocalBroadcastManager.getInstance(NetworkService.this).sendBroadcast(out);
-                    }
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                finally
+                {
+                    final Intent outIntent = NetworkBroadcastReceiver.getFinishIntent(id, result);
+                    if (intent.getBooleanExtra(IKEY_BOOL_LOCALBROADCAST, false))
+                        LocalBroadcastManager.getInstance(NetworkService.this).sendBroadcast(outIntent);
+                    else
+                        getApplicationContext().sendBroadcast(outIntent);
                 }
             }
         }
+        WakefulBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     private static class Config
@@ -118,9 +113,9 @@ public class NetworkService extends IntentService
         private static final int CACHE_SIZE = 10 * 1024 * 1024;
     }
 
-    public static abstract class BroadcastReceiver extends android.content.BroadcastReceiver
+    public static abstract class NetworkBroadcastReceiver extends BroadcastReceiver
     {
-        private static final String FULLNAME = BroadcastReceiver.class.getName();
+        private static final String FULLNAME = NetworkBroadcastReceiver.class.getName();
         private static final String ACTION_DOWNLOAD_COMPLETED = FULLNAME + "$completed";
         private static final String IKEY_COMPLETEDSTRING = FULLNAME + "$result";
         private static final String ACTION_NETWORK_PROGRESS = FULLNAME + "$progress";

@@ -12,12 +12,7 @@ import java.util.ArrayList;
 public class MinoriApplication extends Application
 {
     private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<>();
-    private static Context mContext;
 
-    public static Context getAppContext()
-    {
-        return mContext;
-    }
 
     public synchronized static boolean listenersAvailable()
     {
@@ -36,11 +31,16 @@ public class MinoriApplication extends Application
             activityListeners.remove(listener);
     }
 
+    public static Context getAppContext()
+    {
+        return Singleton.getContext();
+    }
+
     @Override
     public void onCreate()
     {
         super.onCreate();
-        mContext = this;
+        Singleton.getInstance().setContext(MinoriApplication.this);
     }
 
     public interface ActivityListener {}
@@ -51,5 +51,40 @@ public class MinoriApplication extends Application
         public static final String PREF_FILE = "shared_prefs";
         public static final String PREF_KEY_PREFFERED_CONN = "preferred_conn";
         public static final String PREF_KEY_DOWNLOAD_LOC = "download_loc";
+    }
+
+
+    //A small private singleton for delegateing context access
+    private static class Singleton
+    {
+        private static volatile Context mContext;
+        private static volatile Singleton instance;
+
+        private Singleton() {}
+
+        public static Context getContext()
+        {
+            return mContext;
+        }
+
+        public void setContext(Context context)
+        {
+            mContext = context;
+        }
+
+        private static Singleton getInstance()
+        {
+            if (instance == null)
+            {
+                synchronized (Singleton.class)
+                {
+                    if (instance == null)
+                    {
+                        instance = new Singleton();
+                    }
+                }
+            }
+            return instance;
+        }
     }
 }
