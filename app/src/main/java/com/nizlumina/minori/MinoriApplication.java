@@ -45,7 +45,7 @@ public class MinoriApplication extends Application
     public void onCreate()
     {
         super.onCreate();
-        MinoriApplication.setContext(mContext);
+        MinoriApplication.setContext(MinoriApplication.this);
     }
 
     public interface ActivityListener {}

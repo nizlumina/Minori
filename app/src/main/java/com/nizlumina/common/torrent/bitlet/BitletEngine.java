@@ -180,7 +180,12 @@ public class BitletEngine implements TorrentEngine
 
                     File metafile = bitletObject.getMetafile();
                     if (metafile.exists())
-                        metafile.delete();
+                    {
+                       boolean delete = metafile.delete();
+                        if(!delete){
+
+                        }
+                    }
 
                     getTorrentMap().remove(id);
                 }
@@ -269,7 +274,7 @@ public class BitletEngine implements TorrentEngine
             //The below works since we each metafile.torrent downloaded have their name changed to an ID made via TorrentObject.generateID().
             //We have either the choice of serializing the metafile as well to the index or map each file separately by an agreed ID.
             //Since there's no guarantee of the metafiles being changed by underlying implementations (in the future), we chose the latter and opt to not bake in a heavy dependency with the said metafiles.
-            final Map<String, File> fileMap = new HashMap<>(files.length);
+            final Map<String, File> fileMap = new HashMap<>();
 
             for (final File file : files)
             {

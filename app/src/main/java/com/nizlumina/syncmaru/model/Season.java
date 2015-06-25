@@ -12,9 +12,18 @@
 
 package com.nizlumina.syncmaru.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 //Small class used for hashing to index. Feel free to roll your own.
-public class Season
+public class Season implements Parcelable
 {
+    public static final Parcelable.Creator<Season> CREATOR = new Parcelable.Creator<Season>()
+    {
+        public Season createFromParcel(Parcel source) {return new Season(source);}
+
+        public Season[] newArray(int size) {return new Season[size];}
+    };
     private String season;
     private int year;
     private String md5;
@@ -24,6 +33,13 @@ public class Season
         this.year = year;
         this.season = season;
         this.md5 = md5;
+    }
+
+    protected Season(Parcel in)
+    {
+        this.season = in.readString();
+        this.year = in.readInt();
+        this.md5 = in.readString();
     }
 
     public static String makeIndexKey(String season, int year)
@@ -66,11 +82,21 @@ public class Season
         return this.season + String.valueOf(year);
     }
 
-
     public final String getDisplayString()
     {
         final String year = String.valueOf(getYear());
         final int length = year.length();
         return season + " " + year.substring(length - 2, length);
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(this.season);
+        dest.writeInt(this.year);
+        dest.writeString(this.md5);
     }
 }

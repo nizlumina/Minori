@@ -68,27 +68,32 @@ public class StringCache
     /**
      * Safely read the cache from disk and populate {@link #getCache()}.
      * For all loading task, this must be called before any other methods is called.
+     * Returns true if cache exist AND loaded succesfully. False otherwise.
      */
-    public void loadCache()
+    public boolean loadCache()
     {
         File cacheFileInput = getCacheFile();
         if (cacheFileInput.exists())
         {
-            synchronized (mLock)
+            try
             {
-                try
+                synchronized (mLock)
                 {
                     FileInputStream fileInputStream = new FileInputStream(cacheFileInput);
                     String rawCache = IOUtils.toString(fileInputStream, encoding);
                     mStringCache = deformatCache(rawCache);
                 }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
+                if (mStringCache != null)
+                    return true;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
             }
         }
-        else Log.w(getCacheFileName(), "File does not exist");
+        else
+            Log.w(getCacheFileName(), "File does not exist");
+        return false;
     }
 
     /**
@@ -127,7 +132,7 @@ public class StringCache
     /**
      * @return The cache file instance from the application cache dir.
      */
-    private File getCacheFile()
+    public File getCacheFile()
     {
         return new File(MinoriApplication.getAppContext().getCacheDir(), mCacheFileName);
     }
@@ -163,7 +168,7 @@ public class StringCache
      * Deformat raw cache from storage
      *
      * @param input The raw {@link #getCache()} from storage
-     * @return The original string ({@link #getCache()}) before being saved.
+     * @return The original string ({@link #getCache()}) before being saved. Null if it cannot be deformatted.
      */
     private String deformatCache(String input)
     {

@@ -21,8 +21,10 @@ import com.nizlumina.minori.model.MinoriModel;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -35,10 +37,12 @@ public class Watchlist
     private final ArrayList<MinoriModel> watchDatas = new ArrayList<>();
     private final Type gsonType = new TypeToken<ArrayList<MinoriModel>>() {}.getType();
     private final Object IOLock = new Object();
+    private final File filesDir;
     private boolean loaded = false;
 
     private Watchlist()
     {
+        filesDir = MinoriApplication.getAppContext().getFilesDir();
     }
 
     public static Watchlist getInstance()
@@ -71,16 +75,20 @@ public class Watchlist
                     synchronized (IOLock)
                     {
                         final Gson gson = new GsonBuilder().serializeNulls().create();
-                        final File file = new File(MinoriApplication.getAppContext().getFilesDir(), "watchlist.json");
+                        final File file = new File(filesDir, "watchlist.json");
                         if (file.exists() && file.canRead())
                         {
                             final BufferedReader bufferedReader;
                             try
                             {
-                                bufferedReader = new BufferedReader(new FileReader(file));
+                                bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
                                 results = gson.fromJson(bufferedReader, gsonType);
                             }
                             catch (FileNotFoundException e)
+                            {
+                                e.printStackTrace();
+                            }
+                            catch (UnsupportedEncodingException e)
                             {
                                 e.printStackTrace();
                             }

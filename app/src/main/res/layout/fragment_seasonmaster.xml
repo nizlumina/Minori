@@ -15,18 +15,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/fsm_viewpager"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/fsm_appbarlayout"
+        style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -34,6 +25,14 @@
         android:layout_height="wrap_content"
         android:background="@null"
         tools:showIn="@layout/fragment_seasonmaster">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/fsm_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/fsm_tablayout"
@@ -43,4 +42,13 @@
             app:tabGravity="fill"
             app:tabMode="scrollable" />
     </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fsm_viewpager"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -16,10 +16,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nizlumina.minori.internal.FirebaseConfig;
-import com.nizlumina.minori.internal.ThreadWorker;
 import com.nizlumina.minori.internal.network.WebUnit;
 import com.nizlumina.minori.listener.OnFinishListener;
-import com.nizlumina.minori.utility.Loggy;
 import com.nizlumina.minori.utility.StringCache;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.Season;
@@ -27,29 +25,37 @@ import com.nizlumina.syncmaru.model.Season;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 //A simple controller for interacting with season data from Syncmaru + Firebase backend
 public class SeasonController
 {
-    //Test timers
-    final Loggy loggySmall;
-    //For GSON
-    final Loggy loggyMain;
-    //For index
+    private static final TypeToken<List<CompositeData>> mCompositeDataListToken = new TypeToken<List<CompositeData>>() {};
+    private static final Gson gson = new GsonBuilder().serializeNulls().create();
     private final WebUnit mFirebaseSeasonWebUnit = new WebUnit();
-    private final TypeToken<List<CompositeData>> mCompositeDataListToken = new TypeToken<List<CompositeData>>() {};
-    //For season in view
     private Season mCurrentSeason;
-    private List<CompositeData> mCompositeDatas = new ArrayList<>();
-    //Extras
-    private List<Future> tasks = new ArrayList<>();
+
     public SeasonController(Season season)
     {
         mCurrentSeason = season;
-        loggySmall = new Loggy(this.getClass().getSimpleName() + " - " + mCurrentSeason.getIndexKey());
-        loggyMain = new Loggy(this.getClass().getSimpleName() + " - " + mCurrentSeason.getIndexKey());
+    }
+
+    private static String getRelativeURL(Season input)
+    {
+        return "/" + input.getSeason() + "/" + input.getYear() + ".json";
+    }
+
+    private static boolean fromJSON(String indexJson, List<CompositeData> outList)
+    {
+        if (indexJson != null)
+        {
+            List<CompositeData> gsonResult = gson.fromJson(indexJson, mCompositeDataListToken.getType());
+            if (gsonResult != null)
+            {
+                outList.addAll(gsonResult);
+                return true;
+            }
+        }
+        return false;
     }
 
     public Season getSeason()
@@ -57,59 +63,24 @@ public class SeasonController
         return mCurrentSeason;
     }
 
-    //The main method from UI
-    public void getCompositeDatas(final OnFinishListener<List<CompositeData>> onFinishListener, final boolean userManualRefresh)
-    {
-        Callable<List<CompositeData>> backgroundThread = new Callable<List<CompositeData>>()
-        {
-            @Override
-            public List<CompositeData> call() throws Exception
-            {
-                loggyMain.logStartTime("MainTask start - Season: " + mCurrentSeason.getIndexKey());
-
-                processSeasonCache(mCurrentSeason, userManualRefresh);
-
-                loggyMain.logTimeDelta("MainTask End");
-                return mCompositeDatas;
-            }
-        };
-
-        new ThreadWorker<List<CompositeData>>().postAsyncTask(backgroundThread, onFinishListener);
-    }
-
-    //Index is initialized here
-
-
-    public void cancelRunningTask()
-    {
-        for (Future task : tasks)
-            task.cancel(true);
-    }
-
-
     //Process requested season
-    private void processSeasonCache(Season season, boolean forceWriteCache)
+    public void getSeasonData(boolean forceRefreshCache, final OnFinishListener<List<CompositeData>> onFinishListener)
     {
-        loggySmall.logStartTime("PROCESS: Season Cache");
-        Gson gson = new GsonBuilder().serializeNulls().create();
+        final StringCache seasonDataCache = new StringCache(mCurrentSeason.getIndexKey());
 
-        final StringCache seasonDataCache = new StringCache(season.getIndexKey());
+        boolean cacheOK = seasonDataCache.loadCache();
 
-        seasonDataCache.loadCache();
-        loggySmall.logTimeDelta("Season cache load ends");
+        final List<CompositeData> outList = new ArrayList<>();
+        boolean jsonOk = false;
 
-        List<CompositeData> gsonCompositeDatas = null;
-        if (!seasonDataCache.isValid())
+        if (!cacheOK || !seasonDataCache.isValid() || seasonDataCache.isStale(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit) || forceRefreshCache)
         {
             String seasonJSON = null;
             try
             {
-                loggySmall.logTimeDelta("No cache for season. Firebase season GET started");
-                String url = FirebaseConfig.SEASON_ENDPOINT + getRelativeURL(season);
-                loggySmall.logTimeDelta(url);
+                final String url = FirebaseConfig.SEASON_ENDPOINT + getRelativeURL(mCurrentSeason);
                 seasonJSON = mFirebaseSeasonWebUnit.getString(url);
                 seasonDataCache.setCache(seasonJSON);
-                loggySmall.logTimeDelta("Season data obtained from firebase");
             }
             catch (IOException e)
             {
@@ -118,42 +89,25 @@ public class SeasonController
 
             if (seasonJSON != null)
             {
-                gsonCompositeDatas = gson.fromJson(seasonJSON, mCompositeDataListToken.getType());
-                loggySmall.logTimeDelta("GSON - Read season JSON from firebase");
+                jsonOk = fromJSON(seasonJSON, outList);
             }
-            else loggySmall.logTimeDelta("GSON - Error, season JSON is null");
         }
         else
         {
-            gsonCompositeDatas = gson.fromJson(seasonDataCache.getCache(), mCompositeDataListToken.getType());
-            loggySmall.logTimeDelta("Cache found. Gson read season JSON from cache");
+            jsonOk = fromJSON(seasonDataCache.getCache(), outList);
         }
 
         //Finally set
-        if (gsonCompositeDatas != null)
+        if (jsonOk)
         {
-            if (mCompositeDatas.size() > 0) mCompositeDatas.clear();
-            mCompositeDatas.addAll(gsonCompositeDatas);
-        }
-
-        //Initiate save
-        if (seasonDataCache.getWriteFlag(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit, forceWriteCache))
-        {
-            loggySmall.logTimeDelta("Cache write flag true. Cache will be overwritten.");
-            new ThreadWorker<Void>().postAsyncTask(new Callable<Void>()
+            //Initiate save
+            if (seasonDataCache.getWriteFlag(FirebaseConfig.staleThreshold, FirebaseConfig.staleTimeUnit, forceRefreshCache))
             {
-                @Override
-                public Void call() throws Exception
-                {
-                    seasonDataCache.saveCache();
-                    return null;
-                }
-            }, null);
+                seasonDataCache.saveCache();
+            }
+            onFinishListener.onFinish(outList);
         }
-    }
+        else onFinishListener.onFinish(null);
 
-    private String getRelativeURL(Season input)
-    {
-        return "/" + input.getSeason() + "/" + input.getYear() + ".json";
     }
 }

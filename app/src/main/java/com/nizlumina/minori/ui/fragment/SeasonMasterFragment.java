@@ -14,28 +14,29 @@
 
 package com.nizlumina.minori.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.nizlumina.minori.R;
-import com.nizlumina.minori.controller.SeasonDataIndexController;
+import com.nizlumina.minori.controller.SeasonIndexController;
 import com.nizlumina.minori.listener.OnFinishListener;
-import com.nizlumina.minori.model.SeasonType;
+import com.nizlumina.minori.service.global.GlobalService;
+import com.nizlumina.minori.service.global.ServiceTask;
 import com.nizlumina.minori.ui.activity.DrawerActivity;
 import com.nizlumina.syncmaru.model.Season;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,29 +44,48 @@ import java.util.List;
  */
 public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
 {
-    private final static String FRAGMENT_TITLE = "Season Browser";
-    private final SeasonDataIndexController mIndexController = new SeasonDataIndexController();
-    //for sorting
-    private final Comparator<Season> seasonComparator = new Comparator<Season>()
-    {
-        @Override
-        public int compare(Season lhs, Season rhs)
-        {
-            if (lhs.getYear() == rhs.getYear())
-            {
-                final SeasonType a = SeasonType.fromString(lhs.getSeason());
-                final SeasonType b = SeasonType.fromString(rhs.getSeason());
-                if (a != null && b != null)
-                {
-                    return a.compareTo(b);
-                }
-            }
-            return lhs.getYear() - rhs.getYear();
-        }
-    };
-
+    private static final String FRAGMENT_TITLE = "Season Browser";
+    private static final String REQID_GETINDEX = SeasonMasterFragment.class.getName() + "$id_getindex";
+    private static String PALKEY_SAVEDSEASONS = SeasonMasterFragment.class.getSimpleName() + "$savedseasons";
+    private final ArrayList<Season> mSeasons = new ArrayList<>();
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    private Toolbar mToolbar;
+
+    private GlobalService.ServiceBroadcastReceiver broadcastReceiver = new GlobalService.ServiceBroadcastReceiver()
+    {
+        @Override
+        public void onProgress(String requestId, int progress)
+        {
+
+        }
+
+        @Override
+        public void onFinish(String requestId)
+        {
+            if (requestId.equals(REQID_GETINDEX))
+            {
+                List<Season> results = GlobalService.takeResult(getActivity(), requestId);
+                if (results != null)
+                {
+                    if (mSeasons.size() > 0)
+                        mSeasons.clear();
+                    mSeasons.addAll(results);
+                }
+
+                //to make sure setup only runs after view is measured
+                mTabLayout.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        //Log.v("UGU", "BAAAAA");
+                        setupViewPager();
+                    }
+                });
+            }
+        }
+    };
 
     public static SeasonMasterFragment newInstance()
     {
@@ -73,16 +93,58 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     }
 
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        LocalBroadcastManager.getInstance(activity).registerReceiver(broadcastReceiver, GlobalService.ServiceBroadcastReceiver.getIntentFilter());
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(PALKEY_SAVEDSEASONS, mSeasons);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        if (savedInstanceState == null)
+        {
+
+        }
+        else
+        {
+            //if this isn't null, result hence was already retrieved
+            ArrayList<Season> savedSeasons = savedInstanceState.getParcelableArrayList(PALKEY_SAVEDSEASONS);
+
+            if (savedSeasons != null && mSeasons.size() != savedSeasons.size())
+            {
+                mSeasons.clear();
+                mSeasons.addAll(savedSeasons);
+            }
+            else
+            {
+                //if above is false and this is true, this means result was already there but we missed the broadcast due to rotation
+                if (GlobalService.isRequestCompleted(REQID_GETINDEX))
+                {
+                    GlobalService.rebroadcastCompletion(getActivity(), REQID_GETINDEX);
+                }
+                else if (GlobalService.isRequestEnqueued(REQID_GETINDEX)) //if above is not true, this then means the request is still being processed but not completed
+                {
+                    //do nothing since receiver already registered so we'll just wait
+                }
+
+            }
+        }
     }
 
     @Override
@@ -91,7 +153,7 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
         View view = inflater.inflate(R.layout.fragment_seasonmaster, container, false);
         mViewPager = (ViewPager) view.findViewById(R.id.fsm_viewpager);
         mTabLayout = (TabLayout) view.findViewById(R.id.fsm_tablayout);
-        //AppBarLayout appBar = (AppBarLayout) view.findViewById(R.id.fsm_appbarlayout);
+        mToolbar = (Toolbar) view.findViewById(R.id.fsm_toolbar);
         return view;
     }
 
@@ -99,95 +161,88 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        onLoad(mTabLayout, mViewPager);
-    }
 
-    private void onLoad(@NonNull final TabLayout tabLayout, @NonNull final ViewPager viewPager)
-    {
-        mIndexController.loadIndex(new OnFinishListener<Void>()
+        setDrawerNavigationButton(mToolbar);
+        mToolbar.setTitle(FRAGMENT_TITLE);
+
+        //Only init first time
+        if (savedInstanceState == null)
         {
-            @Override
-            public void onFinish(Void result)
-            {
-                log("Index loaded");
-                final List<Season> mSeasons = getSeasonsListFromController();
-
-                if (getActivity() != null)
-                    getActivity().runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            buildViews(mSeasons, viewPager, tabLayout);
-                        }
-                    });
-            }
-        }, false); //todo:reevaluate index force refresh
-    }
-
-    private List<Season> getSeasonsListFromController()
-    {
-        final List<Season> mSeasons = mIndexController.getSeasonList();
-        Collections.sort(mSeasons, seasonComparator);
-        return mSeasons;
-    }
-
-    private void buildViews(final List<Season> mSeasons, final ViewPager viewPager, final TabLayout tabLayout)
-    {
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(new SeasonPagerAdapter(getChildFragmentManager(), mSeasons));
-        tabLayout.setupWithViewPager(viewPager);
-
-        int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
-        viewPager.setCurrentItem(position);
-
-        View view = getView();
-
-        if (view != null)
-        {
-            view.post(new Runnable()
+            final ServiceTask getIndexTask = new ServiceTask(REQID_GETINDEX, ServiceTask.RequestThread.NETWORK)
             {
                 @Override
                 public void run()
                 {
-                    int position = mSeasons.indexOf(mIndexController.getCurrentSeason());
-                    viewPager.setCurrentItem(position);
+                    SeasonIndexController controller = new SeasonIndexController();
+                    controller.getIndex(false, new OnFinishListener<List<Season>>()
+                    {
+                        @Override
+                        public void onFinish(List<Season> result)
+                        {
+                            if (result != null)
+                            {
+                                setResult(result);
+                            }
+                        }
+                    });
+                }
+            };
+            GlobalService.startRequest(getActivity(), getIndexTask);
+        }
+        else
+        {
+            //Log.v("UGU", "AAAAA");
+            mTabLayout.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    setupViewPager();
                 }
             });
+
         }
     }
 
-    private void log(String input)
+    private void setupViewPager()
     {
-        Log.v(getClass().getSimpleName(), input);
+        SeasonPagerAdapter adapter = new SeasonPagerAdapter(getChildFragmentManager(), mSeasons);
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setAdapter(adapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        int position = mSeasons.size() > 1 ? mSeasons.size() - 1 : 0; //get the last item
+        //Log.v("OHO", "Size " + mSeasons.size() + " pos " + position);
+        //mViewPager.setCurrentItem(position, true);
     }
 
-    @Override
-    public String getFragmentTag()
-    {
-        return getClass().getSimpleName();
-    }
-
-
-    private static class SeasonPagerAdapter extends FragmentPagerAdapter
+    private static class SeasonPagerAdapter extends FragmentStatePagerAdapter
     {
         private final List<Season> seasons;
+//        private final List<SeasonFragment> mSeasonFragments;
 
         public SeasonPagerAdapter(FragmentManager fm, List<Season> seasons)
         {
             super(fm);
             this.seasons = seasons;
+//            this.mSeasonFragments = new ArrayList<>(seasons.size());
+//
+//            for(Season season:seasons){
+//                mSeasonFragments.add(SeasonFragment.newInstance(season));
+//            }
         }
 
         @Override
         public Fragment getItem(int position)
         {
+//            return mSeasonFragments.get(position);
             return SeasonFragment.newInstance(seasons.get(position));
         }
 
         @Override
         public int getCount()
         {
+//            return mSeasonFragments.size();
             return seasons.size();
         }
 

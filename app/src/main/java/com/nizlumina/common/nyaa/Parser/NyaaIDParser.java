@@ -36,7 +36,7 @@ public class NyaaIDParser
             {
                 if (inputString.charAt(reverseIndex - i) == '=')
                 {
-                    return Integer.valueOf(inputString.substring(entryLength - i, entryLength));
+                    return Integer.parseInt(inputString.substring(entryLength - i, entryLength));
                 }
             }
             catch (Exception e)

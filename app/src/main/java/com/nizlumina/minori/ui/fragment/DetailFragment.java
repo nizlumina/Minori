@@ -90,10 +90,4 @@ public class DetailFragment extends DrawerActivity.DrawerFragment
         episodeCountBadge.quickTint(R.color.green_800);
 
     }
-
-    @Override
-    public String getFragmentTag()
-    {
-        return getClass().getSimpleName();
-    }
 }

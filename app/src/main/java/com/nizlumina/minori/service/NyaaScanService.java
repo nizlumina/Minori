@@ -37,11 +37,6 @@ public class NyaaScanService extends IntentService
         super("ScanService");
     }
 
-//    public static Intent makeServiceIntent(final NyaaEntry... entryForScan)
-//    {
-//        Intent intent = new Intent(MinoriApplication.getAppContext(), NyaaScanService.class);
-//    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
@@ -175,7 +170,6 @@ public class NyaaScanService extends IntentService
 
                 final Runnable runnable = new Runnable()
                 {
-                    final long delay = 1000;
                     int counter = 3;
 
                     @Override
@@ -185,7 +179,7 @@ public class NyaaScanService extends IntentService
                         {
                             try
                             {
-                                Thread.sleep(delay);
+                                Thread.sleep(1000);
                             }
                             catch (Exception e)
                             {

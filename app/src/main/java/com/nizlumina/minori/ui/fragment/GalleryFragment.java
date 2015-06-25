@@ -50,14 +50,10 @@ import java.util.List;
 public class GalleryFragment extends DrawerActivity.DrawerFragment
 {
     private static final String PARCELKEY_MINORIMODELS = "minori_models";
+    private static final String mTag = "GalleryFragment";
     private Toolbar mToolbar;
     private RecyclerView mRecyclerView;
     private ArrayList<MinoriModel> models = new ArrayList<>();
-
-    public static GalleryFragment newInstance()
-    {
-        return new GalleryFragment();
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
@@ -109,13 +105,13 @@ public class GalleryFragment extends DrawerActivity.DrawerFragment
 
         if (!loaded)
         {
-            Log.v(getClass().getSimpleName(), "Not loaded");
+            Log.v(mTag, "Not loaded");
             Watchlist.getInstance().getWatchDatasAsync(new Watchlist.OnFinishListener<ArrayList<MinoriModel>>()
             {
                 @Override
                 public void onFinish(final ArrayList<MinoriModel> result)
                 {
-                    Log.v(getClass().getSimpleName(), "Result received" + result.size());
+                    Log.v(mTag, "Result received" + result.size());
                     if (mRecyclerView != null)
                     {
                         for (int i = 0; i < 50; i++)
@@ -147,12 +143,6 @@ public class GalleryFragment extends DrawerActivity.DrawerFragment
 
 
         return new MinoriModel(data, group);
-    }
-
-    @Override
-    public String getFragmentTag()
-    {
-        return getClass().getSimpleName();
     }
 
     private static class GalleryRecyclerAdapter extends RecyclerView.Adapter<GalleryViewHolder>

@@ -27,6 +27,7 @@ public class GridItemSetting
 
     public GridItemSetting(float displayMetricsDensity, final int parentContainerWidthPixel, final int minItemWidthDp, final float widthToHeightRatio, final int minItemSingleHorizontalMarginDP)
     {
+//        Log.e(getClass().getSimpleName(), String.format(" DPI %f Parent Container %d MinWidth %d", displayMetricsDensity, parentContainerWidthPixel, minItemWidthDp));
         this.displayMetricsDensity = displayMetricsDensity;
         this.columnCount = (int) (parentContainerWidthPixel / (minItemWidthDp * displayMetricsDensity));
         this.containerWidthPixel = parentContainerWidthPixel;

@@ -14,6 +14,7 @@ package com.nizlumina.common.torrent;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * A model class that implements basic properties to be used by internal {@link com.nizlumina.common.torrent.TorrentEngine}
@@ -34,10 +35,10 @@ public class TorrentObject implements Serializable
         //Pseudo imgur. YOLO.
         final int length = 10;
         final char[] randomChars = new char[length];
-
+        Random random = new Random(42);
         for (int i = 0; i < length; ++i)
         {
-            final int randomVal = (int) (Math.random() * 52);
+            final int randomVal = random.nextInt() * 52;
             final char base;
             if (randomVal < 26)
                 base = 'A';

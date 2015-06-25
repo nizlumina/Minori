@@ -58,18 +58,6 @@ public class DrawerActivity extends BaseActivity
     };
 
     @Override
-    protected void onRestoreInstanceState(@Nullable Bundle savedInstanceState)
-    {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -77,11 +65,8 @@ public class DrawerActivity extends BaseActivity
         setupViews();
         if (savedInstanceState == null)
         {
-            switchFragment(GalleryFragment.newInstance(), GalleryFragment.class.getName(), false, null);
-        }
-        else
-        {
-
+            //switchFragment(new GalleryFragment(), GalleryFragment.class.getSimpleName(), false, null);
+            getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, new GalleryFragment(), "GalleryFragment").commit();
         }
         setupBroadcastReceivers();
     }
@@ -115,18 +100,31 @@ public class DrawerActivity extends BaseActivity
                 switch (menuItem.getItemId())
                 {
                     case R.id.mm_nav_watchlist:
-                        switchFragment(GalleryFragment.newInstance(), GalleryFragment.class.getName(), false, null);
-                        break;
+                    {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, new GalleryFragment(), "GalleryFragment").commit();
+
+//                        String tag = GalleryFragment.class.getSimpleName();
+//                        GalleryFragment backStackFragment = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(tag);
+//                        if (backStackFragment == null)
+//                        {
+//                            switchFragment(new GalleryFragment(), tag, false, tag);
+//                        }
+//                        else
+//                            switchFragment(backStackFragment, tag, false, tag);
+                    }
+                    break;
                     case R.id.mm_nav_seasonbrowser:
-                        switchFragment(SeasonMasterFragment.newInstance(), SeasonMasterFragment.class.getName(), false, null);
-                        break;
+                    {
+//                        String tag = SeasonMasterFragment.class.getSimpleName();
+//                        switchFragment(SeasonMasterFragment.newInstance(), tag, true, tag);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, SeasonMasterFragment.newInstance(), "SeasonMasterFragment").commit();
+                    }
+                    break;
                 }
                 mDrawerLayout.closeDrawers();
                 return false;
             }
         });
-
-
     }
 
     public DrawerLayout getDrawerLayout()
@@ -154,7 +152,6 @@ public class DrawerActivity extends BaseActivity
      */
     public abstract static class DrawerFragment extends Fragment
     {
-
         private ActionBarDrawerToggle drawerToggle;
 
         public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
@@ -172,6 +169,9 @@ public class DrawerActivity extends BaseActivity
             }
         }
 
-        public abstract String getFragmentTag();
+        public String getFragmentTag()
+        {
+            return getClass().getSimpleName();
+        }
     }
 }

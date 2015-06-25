@@ -33,7 +33,7 @@ public class AnimeObject
     //For loggings
     public String stringData()
     {
-        return String.format("ID [%s]\nSlug [%s]\nStatus [%s]\nTitle [%s]\nURL [%s]\nEps Count[%s]\nCache IMG URI [%s]\nWeb IMG URI [%s]\n\nSynopsis:\n %s\n\nAir Start [%s]\nAir Finish[%s]\n ", getId(), getSlug(), getStatus(), getTitle(), getUrl(), getEpisodeCount(), getCachedImageURI(), getImageUrl(), getSynopsis(), getStartedAiring(), getFinishedAiring());
+        return String.format("ID [%s]%nSlug [%s]%nStatus [%s]%nTitle [%s]%nURL [%s]%nEps Count[%s]%nCache IMG URI [%s]%nWeb IMG URI [%s]%n%nSynopsis:%n %s%n%nAir Start [%s]%nAir Finish[%s]%n ", getId(), getSlug(), getStatus(), getTitle(), getUrl(), getEpisodeCount(), getCachedImageURI(), getImageUrl(), getSynopsis(), getStartedAiring(), getFinishedAiring());
     }
 
     public int getId()

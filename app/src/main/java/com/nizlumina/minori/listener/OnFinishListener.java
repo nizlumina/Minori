@@ -12,7 +12,9 @@
 
 package com.nizlumina.minori.listener;
 
+import android.support.annotation.Nullable;
+
 public interface OnFinishListener<T>
 {
-    void onFinish(T result);
+    void onFinish(@Nullable T result);
 }

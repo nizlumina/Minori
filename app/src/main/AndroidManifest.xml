@@ -22,11 +22,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <service
-            android:name=".service.NyaaScanService"
-            android:exported="false" />
-
         <receiver
             android:name=".service.NyaaScanService$ServiceReceiver"
             android:enabled="true"
@@ -37,10 +32,17 @@
             android:exported="false" />
 
         <service
+            android:name=".service.NyaaScanService"
+            android:exported="false" />
+        <service
             android:name=".service.DownloadService"
             android:exported="false" />
         <service
             android:name=".service.TorrentService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".service.global.GlobalService"
             android:enabled="true"
             android:exported="false" />
 
@@ -50,6 +52,7 @@
             android:theme="@style/MinoriDark.TranslucentStatusBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -57,8 +60,7 @@
             android:name=".ui.activity.BatchModeActivity"
             android:label="@string/title_activity_batch"
             android:theme="@style/MinoriDark.TranslucentStatusBar"
-            android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
-        </activity>
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
     </application>
 
 </manifest>
