@@ -89,6 +89,7 @@ public class SeasonFragment extends Fragment
                 {
                     //Even though the main result is complete, we only display tv series for now (since that's what people will use it for anyway).
                     //Sectioning the UI for complete results will be decided later in the future
+                    mCompositeDatas.clear();
                     for (CompositeData compositeData : result)
                     {
                         if (compositeData.getLiveChartObject().getCategory() == LiveChartObject.Category.TV)
