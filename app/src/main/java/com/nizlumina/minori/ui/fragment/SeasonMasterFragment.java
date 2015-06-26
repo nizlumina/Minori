@@ -72,17 +72,16 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
                         mSeasons.clear();
                     mSeasons.addAll(results);
                 }
-
-                //to make sure setup only runs after view is measured
-                mTabLayout.post(new Runnable()
+                //make sure we post this
+                mViewPager.post(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        //Log.v("UGU", "BAAAAA");
                         setupViewPager();
                     }
                 });
+                //     Log.v(getFragmentTag(), "OF - " + results);
             }
         }
     };
@@ -116,6 +115,7 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
+        //Log.v(getFragmentTag(), "OC - " + savedInstanceState);
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null)
         {
@@ -191,58 +191,38 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
         }
         else
         {
-            //Log.v("UGU", "AAAAA");
-            mTabLayout.post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setupViewPager();
-                }
-            });
-
+            setupViewPager();
         }
     }
 
     private void setupViewPager()
     {
         SeasonPagerAdapter adapter = new SeasonPagerAdapter(getChildFragmentManager(), mSeasons);
-        mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(2);
         mTabLayout.setupWithViewPager(mViewPager);
-
-        int position = mSeasons.size() > 1 ? mSeasons.size() - 1 : 0; //get the last item
-        //Log.v("OHO", "Size " + mSeasons.size() + " pos " + position);
-        //mViewPager.setCurrentItem(position, true);
+        mViewPager.setCurrentItem(mSeasons.size() - 1);
     }
 
     private static class SeasonPagerAdapter extends FragmentStatePagerAdapter
     {
         private final List<Season> seasons;
-//        private final List<SeasonFragment> mSeasonFragments;
 
         public SeasonPagerAdapter(FragmentManager fm, List<Season> seasons)
         {
             super(fm);
             this.seasons = seasons;
-//            this.mSeasonFragments = new ArrayList<>(seasons.size());
-//
-//            for(Season season:seasons){
-//                mSeasonFragments.add(SeasonFragment.newInstance(season));
-//            }
         }
 
         @Override
         public Fragment getItem(int position)
         {
-//            return mSeasonFragments.get(position);
             return SeasonFragment.newInstance(seasons.get(position));
         }
 
         @Override
         public int getCount()
         {
-//            return mSeasonFragments.size();
             return seasons.size();
         }
 

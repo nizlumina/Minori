@@ -22,7 +22,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +111,7 @@ public class SeasonFragment extends Fragment
                     @Override
                     public void run()
                     {
+                        //Log.v(getRequestId(), "! WIDTH " + mRecyclerView.getWidth());
                         setupViews(mCompositeDatas);
                     }
                 });
@@ -145,7 +145,7 @@ public class SeasonFragment extends Fragment
     private String getRequestId()
     {
         if (mRequestId == null)
-            mRequestId = CLASSNAME + mSeason.getIndexKey();
+            mRequestId = CLASSNAME + "$" + mSeason.getIndexKey();
         return mRequestId;
     }
 
@@ -157,6 +157,40 @@ public class SeasonFragment extends Fragment
         if (args != null)
             mSeason = args.getParcelable(ARG_SEASON); //always init this
 
+        if (savedInstanceState == null)
+        {
+
+        }
+        else
+        {
+            ArrayList<CompositeData> savedList = savedInstanceState.getParcelableArrayList(getCompositeDatasParcelKey());
+
+            if (savedList != null)
+            {
+                if (mCompositeDatas.size() > 0)
+                    mCompositeDatas.clear();
+                mCompositeDatas.addAll(savedList);
+            }
+        }
+        //Log.v(mSeason.getDisplayString(), "onCreate " + savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_season, container, false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fs_recyclerview);
+        mBatchFab = (FloatingActionButton) view.findViewById(R.id.fs_batchfab);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+
+        //only trigger after configuration changes, not in first init since this was already called in broadcastreceiver
         if (savedInstanceState == null)
         {
             if (mSeason != null) //won't ever happen
@@ -182,54 +216,15 @@ public class SeasonFragment extends Fragment
         }
         else
         {
-            ArrayList<CompositeData> savedList = savedInstanceState.getParcelableArrayList(getCompositeDatasParcelKey());
-
-            if (savedList != null)
-            {
-                if (mCompositeDatas.size() > 0)
-                    mCompositeDatas.clear();
-                mCompositeDatas.addAll(savedList);
-            }
-        }
-        Log.v(mSeason.getDisplayString(), "onCreate " + savedInstanceState);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.fragment_season, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fs_recyclerview);
-        mBatchFab = (FloatingActionButton) view.findViewById(R.id.fs_batchfab);
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-
-        //only trigger after configuration changes, not in first init since this was already called in broadcastreceiver
-        if (savedInstanceState != null)
-        {
             mRecyclerView.post(new Runnable()
             {
                 @Override
                 public void run()
                 {
+                    //Log.v(getRequestId(), " WIDTH " + mRecyclerView.getWidth());
                     setupViews(mCompositeDatas);
                 }
             });
-//            getView().getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
-//            {
-//                @Override
-//                public boolean onPreDraw()
-//                {
-//
-//                    getView().getViewTreeObserver().removeOnPreDrawListener(this);
-//                    return false;
-//                }
-//            });
         }
     }
 
@@ -266,9 +261,9 @@ public class SeasonFragment extends Fragment
         }
         final GridItemSetting gridItemSetting = new GridItemSetting(mDisplayMetrics.density, mRecyclerView.getWidth(), finalMinItemWidthDp, widthToHeightRatio, minItemSingleHorizontalMarginDP);
         final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, mLayoutInflater, SeasonFragment.this);
-        mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridItemSetting.getColumnCount()));
         mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getColumnCount()));
+        mRecyclerView.setAdapter(adapter);
 
         //Most important parts here
         adapter.setOnItemClickListener(new OnItemClickListener()
