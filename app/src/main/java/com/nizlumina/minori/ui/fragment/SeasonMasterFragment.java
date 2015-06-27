@@ -14,7 +14,6 @@
 
 package com.nizlumina.minori.ui.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -99,13 +98,6 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     }
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        LocalBroadcastManager.getInstance(activity).registerReceiver(broadcastReceiver, GlobalService.ServiceBroadcastReceiver.getIntentFilter());
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
@@ -162,8 +154,11 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     {
         super.onActivityCreated(savedInstanceState);
 
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver, broadcastReceiver.getInstanceIntentFilter(REQID_GETINDEX));
+
         setDrawerNavigationButton(mToolbar);
         mToolbar.setTitle(FRAGMENT_TITLE);
+
 
         //Only init first time
         if (savedInstanceState == null)
@@ -199,9 +194,9 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     {
         SeasonPagerAdapter adapter = new SeasonPagerAdapter(getChildFragmentManager(), mSeasons);
         mViewPager.setAdapter(adapter);
-        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(0);
         mTabLayout.setupWithViewPager(mViewPager);
-        mViewPager.setCurrentItem(mSeasons.size() - 1);
+        //mViewPager.setCurrentItem(mSeasons.size() - 1); //removed since the behavior is deliriously drunken
     }
 
     private static class SeasonPagerAdapter extends FragmentStatePagerAdapter

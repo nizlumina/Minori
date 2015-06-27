@@ -13,6 +13,7 @@
 package com.nizlumina.minori.service.global;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -79,6 +80,21 @@ public class GlobalService extends Service
         return null;
     }
 
+    public static ServiceTask getTask(String requestId)
+    {
+        return sTaskMap.get(requestId);
+    }
+
+    public static ServiceTask takeTask(Context context, String requestId)
+    {
+        ServiceTask serviceTask = sTaskMap.remove(requestId);
+        if (sTaskMap.size() == 0)
+        {
+            stopService(context);
+        }
+        return serviceTask;
+    }
+
     /**
      * Check request completion.
      *
@@ -124,7 +140,7 @@ public class GlobalService extends Service
      */
     public static void rebroadcastCompletion(Context context, String requestId)
     {
-        LocalBroadcastManager.getInstance(context).sendBroadcast(buildCompletionIntent(context, requestId));
+        LocalBroadcastManager.getInstance(context).sendBroadcast(ServiceBroadcastReceiver.buildCompletionIntent(context, requestId));
     }
 
     /**
@@ -171,20 +187,6 @@ public class GlobalService extends Service
         context.stopService(intent);
     }
 
-    private static Intent buildProgressUpdateIntent(Context context, String requestId)
-    {
-        return new Intent(context, ServiceBroadcastReceiver.class)
-                .setAction(ServiceBroadcastReceiver.ACTION_PROGRESSUPDATE)
-                .putExtra(ServiceBroadcastReceiver.IKEY_REQID, requestId);
-    }
-
-    private static Intent buildCompletionIntent(Context context, String requestId)
-    {
-        return new Intent(context, ServiceBroadcastReceiver.class)
-                .setAction(ServiceBroadcastReceiver.ACTION_TASKCOMPLETE)
-                .putExtra(ServiceBroadcastReceiver.IKEY_REQID, requestId);
-    }
-
     @Override
     public IBinder onBind(Intent intent)
     {
@@ -221,11 +223,10 @@ public class GlobalService extends Service
                         wakeLock.acquire();
                         {
                             final LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
-                            final Intent progressIntent = buildProgressUpdateIntent(getApplicationContext(), requestId);
+                            final Intent progressIntent = ServiceBroadcastReceiver.buildProgressUpdateIntent(getApplicationContext(), requestId);
 
                             serviceTask.setProgressListener(new ServiceTask.onProgressListener()
                             {
-
                                 @Override
                                 public void onProgress(int progress)
                                 {
@@ -237,7 +238,7 @@ public class GlobalService extends Service
                             serviceTask.run();
                             serviceTask.setCompleted(true);
 
-                            Intent finalIntent = buildCompletionIntent(getApplicationContext(), requestId);
+                            Intent finalIntent = ServiceBroadcastReceiver.buildCompletionIntent(getApplicationContext(), requestId);
                             broadcastManager.sendBroadcast(finalIntent);
                         }
                         wakeLock.release();
@@ -277,19 +278,47 @@ public class GlobalService extends Service
     /**
      * A BroadcastReceiver to handles broadcast messages <b>from</b> the {@link GlobalService} and hands off as necessarily.
      */
-    public static abstract class ServiceBroadcastReceiver extends WakefulBroadcastReceiver
+    public static abstract class ServiceBroadcastReceiver extends BroadcastReceiver
     {
-        private static final String CLASSNAME = ServiceBroadcastReceiver.class.getName();
+        //Local brodacst receiver actually iterates thru multiple servicebroadcastreceiver with the same action
+        private static final String CLASSNAME = ServiceBroadcastReceiver.class.getSimpleName();
         private static final String ACTION_TASKCOMPLETE = CLASSNAME + "$task_complete";
         private static final String ACTION_PROGRESSUPDATE = CLASSNAME + "$progress_update";
         private static final String IKEY_PROGRESS_INT = CLASSNAME + "$ikey_progressint";
         private static final String IKEY_REQID = CLASSNAME + "$ikey_requestId";
 
-
-        public static IntentFilter getIntentFilter()
+        //General non instance reciever.
+        public static IntentFilter getBaseIntentFilter()
         {
             IntentFilter intentFilter = new IntentFilter(ACTION_TASKCOMPLETE);
             intentFilter.addAction(ACTION_PROGRESSUPDATE);
+            return intentFilter;
+        }
+
+        protected static Intent buildProgressUpdateIntent(Context context, String requestId)
+        {
+            return new Intent(context, ServiceBroadcastReceiver.class)
+                    .setAction(ACTION_PROGRESSUPDATE)
+                    .putExtra(IKEY_REQID, requestId)
+                    .addCategory(requestId);
+        }
+
+        protected static Intent buildCompletionIntent(Context context, String requestId)
+        {
+            return new Intent(context, ServiceBroadcastReceiver.class)
+                    .setAction(ACTION_TASKCOMPLETE)
+                    .putExtra(IKEY_REQID, requestId)
+                    .addCategory(requestId);
+        }
+
+        //We need this in case receivers of the same filters exist. Looking into LocalBroadcastReceiver codes, this actually optimize the number of final receivers who receive the broadcast.
+        public IntentFilter getInstanceIntentFilter(String... requestIds)
+        {
+            IntentFilter intentFilter = getBaseIntentFilter();
+            for (String requestId : requestIds)
+            {
+                intentFilter.addCategory(requestId);
+            }
             return intentFilter;
         }
 
@@ -328,7 +357,4 @@ public class GlobalService extends Service
          */
         public abstract void onFinish(String requestId);
     }
-
 }
-
-
