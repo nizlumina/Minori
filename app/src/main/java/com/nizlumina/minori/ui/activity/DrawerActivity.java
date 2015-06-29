@@ -12,18 +12,15 @@
 
 package com.nizlumina.minori.ui.activity;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,6 +29,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.nizlumina.minori.R;
+import com.nizlumina.minori.service.global.Director;
 import com.nizlumina.minori.ui.fragment.DetailFragment;
 import com.nizlumina.minori.ui.fragment.GalleryFragment;
 import com.nizlumina.minori.ui.fragment.SeasonFragment;
@@ -41,8 +39,6 @@ import com.nizlumina.syncmaru.model.CompositeData;
 public class DrawerActivity extends BaseActivity
 {
 
-    private DrawerLayout mDrawerLayout;
-    private FrameLayout mFrameLayout;
     private final BroadcastReceiver receiver = new BroadcastReceiver()
     {
         @Override
@@ -52,10 +48,14 @@ public class DrawerActivity extends BaseActivity
             {
                 CompositeData dataFromRequest = SeasonFragment.getDataFromRequest(intent);
                 if (dataFromRequest != null)
-                    switchFragment(DetailFragment.newInstance(dataFromRequest), DetailFragment.class.getSimpleName(), true, DetailFragment.class.getName());
+                {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, DetailFragment.newInstance(dataFromRequest), DetailFragment.class.getName()).addToBackStack(DetailFragment.class.getName()).commit();
+                }
             }
         }
     };
+    private DrawerLayout mDrawerLayout;
+    private FrameLayout mFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,8 +74,9 @@ public class DrawerActivity extends BaseActivity
     @Override
     protected void onDestroy()
     {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        Director.getInstance().shutdown();
     }
 
     private void setupBroadcastReceivers()
@@ -132,20 +133,20 @@ public class DrawerActivity extends BaseActivity
         return mDrawerLayout;
     }
 
-    private FrameLayout getFragmentContainer()
-    {
-        return mFrameLayout;
-    }
-
-    private void switchFragment(@NonNull Fragment fragment, @Nullable String fragmentTag, boolean addToBackStack, @Nullable String backStackTag)
-    {
-        @SuppressLint("CommitTransaction")
-        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(getFragmentContainer().getId(), fragment, fragmentTag);
-        if (addToBackStack)
-            fragmentTransaction.addToBackStack(backStackTag).commit();
-        else
-            fragmentTransaction.commit();
-    }
+//    private FrameLayout getFragmentContainer()
+//    {
+//        return mFrameLayout;
+//    }
+//
+////    private void switchFragment(@NonNull Fragment fragment, @Nullable String fragmentTag, boolean addToBackStack, @Nullable String backStackTag)
+////    {
+////        @SuppressLint("CommitTransaction")
+////        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(getFragmentContainer().getId(), fragment, fragmentTag);
+////        if (addToBackStack)
+////            fragmentTransaction.addToBackStack(backStackTag).commit();
+////        else
+////            fragmentTransaction.commit();
+////    }
 
     /**
      * A Fragment who optionally depends on DrawerActivity for communicating calls.

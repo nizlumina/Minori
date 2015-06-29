@@ -81,7 +81,9 @@ public class StringCache
                 {
                     FileInputStream fileInputStream = new FileInputStream(cacheFileInput);
                     String rawCache = IOUtils.toString(fileInputStream, encoding);
+                    fileInputStream.close();
                     mStringCache = deformatCache(rawCache);
+
                 }
                 if (mStringCache != null)
                     return true;

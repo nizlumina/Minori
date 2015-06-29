@@ -22,13 +22,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -36,8 +34,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonController;
 import com.nizlumina.minori.listener.OnFinishListener;
-import com.nizlumina.minori.service.global.GlobalService;
-import com.nizlumina.minori.service.global.ServiceTask;
+import com.nizlumina.minori.service.global.DirectorTask;
 import com.nizlumina.minori.ui.common.GridItemSetting;
 import com.nizlumina.minori.ui.common.MarginItemDecoration;
 import com.nizlumina.minori.utility.SparseBooleanArrayParcelable;
@@ -68,14 +65,71 @@ public class SeasonFragment extends Fragment
     private FloatingActionButton mBatchFab;
     private RecyclerView mRecyclerView;
     private DisplayMetrics mDisplayMetrics;
-    private LayoutInflater mLayoutInflater;
+    private final DirectorTask.Listener<List<CompositeData>> mListener = new DirectorTask.Listener<List<CompositeData>>()
+    {
+        @Override
+        public void onProgress(int progress)
+        {
+
+        }
+
+        @Override
+        public void onFinish(List<CompositeData> result)
+        {
+            if (result != null)
+            {
+                //Even though the main result is complete, we only display tv series for now (since that's what people will use it for anyway).
+                //Sectioning the UI for complete results will be decided later in the future
+                mCompositeDatas.clear();
+                for (CompositeData compositeData : result)
+                {
+                    if (compositeData.getLiveChartObject().getCategory() == LiveChartObject.Category.TV)
+                        mCompositeDatas.add(compositeData);
+                }
+
+                Collections.sort(mCompositeDatas, new Comparator<CompositeData>()
+                {
+                    @Override
+                    public int compare(CompositeData lhs, CompositeData rhs)
+                    {
+                        return (int) (100 * (rhs.getMalObject().getScore() - lhs.getMalObject().getScore()));
+                    }
+                });
+            }
+
+            //we still provide empty dataset on failure
+            mRecyclerView.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //Log.v(getRequestId(), "! WIDTH " + mRecyclerView.getWidth());
+                    setupViews(mCompositeDatas);
+                }
+            });
+
+        }
+    };
     private Season mSeason; //lazy init, via fragment args
+    private final DirectorTask<List<CompositeData>> mSeasonTask = new DirectorTask<List<CompositeData>>(null, DirectorTask.RequestThread.NETWORK)
+    {
+        @Override
+        public void run()
+        {
+            SeasonController seasonController = new SeasonController(mSeason);
+            seasonController.getSeasonData(false, new OnFinishListener<List<CompositeData>>()
+            {
+                @Override
+                public void onFinish(@Nullable List<CompositeData> result)
+                {
+                    publishResult(result);
+                }
+            });
+        }
+    };
     private String mParcelKeyCompositeDatas; //lazy init, via first get
     private String mRequestId; //lazy init, via first get
-    private ProgressBar mProgressBar;
-
-    private GlobalService.ServiceBroadcastReceiver mReceiver;
-
+    private boolean alreadyLoaded = false; // Explicit false. Since we don't ever utilize setRetainInstance(), rotation will reset the fragment to the initial state which, in this case, we do want.
 
     public static CompositeData getDataFromRequest(Intent intent)
     {
@@ -91,6 +145,11 @@ public class SeasonFragment extends Fragment
         return fragment;
     }
 
+//    private void log(String s)
+//    {
+//        Log.v(mSeason.getIndexKey().toUpperCase(), s);
+//    }
+
     public String getCompositeDatasParcelKey()
     {
         if (mParcelKeyCompositeDatas == null)
@@ -102,115 +161,21 @@ public class SeasonFragment extends Fragment
     private String getRequestId()
     {
         if (mRequestId == null)
-            mRequestId = CLASSNAME + "$" + mSeason.getIndexKey();
+            mRequestId = mSeason.getIndexKey();
         return mRequestId;
-    }
-
-    private void log(String s)
-    {
-        Log.v(mSeason.getIndexKey().toUpperCase(), s);
-    }
-
-    private void initReceiver()
-    {
-        mReceiver = new GlobalService.ServiceBroadcastReceiver()
-        {
-            @Override
-            public void onProgress(String requestId, int progress)
-            {
-
-            }
-
-            @Override
-            public void onFinish(String requestId)
-            {
-                if (requestId.equals(getRequestId()))
-                {
-                    final List<CompositeData> result = GlobalService.takeResult(getActivity(), requestId);
-                    if (result != null)
-                    {
-                        //Even though the main result is complete, we only display tv series for now (since that's what people will use it for anyway).
-                        //Sectioning the UI for complete results will be decided later in the future
-                        mCompositeDatas.clear();
-                        for (CompositeData compositeData : result)
-                        {
-                            if (compositeData.getLiveChartObject().getCategory() == LiveChartObject.Category.TV)
-                                mCompositeDatas.add(compositeData);
-                        }
-
-                        Collections.sort(mCompositeDatas, new Comparator<CompositeData>()
-                        {
-                            @Override
-                            public int compare(CompositeData lhs, CompositeData rhs)
-                            {
-                                return (int) (100 * (rhs.getMalObject().getScore() - lhs.getMalObject().getScore()));
-                            }
-                        });
-                    }
-
-                    //we still provide empty dataset on failure
-                    mRecyclerView.post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            //Log.v(getRequestId(), "! WIDTH " + mRecyclerView.getWidth());
-                            setupViews(mCompositeDatas);
-                        }
-                    });
-
-                }
-
-                log("OF - " + requestId);
-            }
-        };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mReceiver, mReceiver.getInstanceIntentFilter(getRequestId()));
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
-
         super.onCreate(savedInstanceState);
         final Bundle args = getArguments();
+
         if (args != null)
         {
             mSeason = args.getParcelable(ARG_SEASON); //always init this
-            if (mSeason != null)
-            {
-                initReceiver();
-            }
+            mSeasonTask.setId(getRequestId());
         }
-
-        if (savedInstanceState == null)
-        {
-
-        }
-        else
-        {
-            log("OC - get parcel. must be once.");
-            ArrayList<CompositeData> savedList = savedInstanceState.getParcelableArrayList(getCompositeDatasParcelKey());
-
-            if (savedList != null)
-            {
-                if (mCompositeDatas.size() > 0)
-                    mCompositeDatas.clear();
-                mCompositeDatas.addAll(savedList);
-            }
-            else
-            {
-                //if above is false and this is true, this means result was already there but we missed the broadcast due to rotation
-                if (GlobalService.isRequestCompleted(getRequestId()))
-                {
-                    GlobalService.rebroadcastCompletion(getActivity(), getRequestId());
-                }
-                else if (GlobalService.isRequestEnqueued(getRequestId())) //if above is not true, this then means the request is still being processed but not completed
-                {
-                    //do nothing since receiver already registered so we'll just wait
-                }
-            }
-        }
-        //Log.v(mSeason.getDisplayString(), "OC " + savedInstanceState);
     }
 
     @Nullable
@@ -220,7 +185,6 @@ public class SeasonFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_season, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fs_recyclerview);
         mBatchFab = (FloatingActionButton) view.findViewById(R.id.fs_batchfab);
-//        mProgressBar = (ProgressBar) view.findViewById(R.id.fs_progressbar);
         return view;
     }
 
@@ -228,29 +192,38 @@ public class SeasonFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        //only trigger after configuration changes, not in first init since this was already called in broadcastreceiver
-        if (savedInstanceState == null)
+
+        mSeasonTask.attach(mListener);
+
+        if (savedInstanceState == null && !alreadyLoaded)
         {
-            if (mSeason != null) //won't ever happen
+            alreadyLoaded = true;
+            mSeasonTask.enqueue();
+        }
+        else if (savedInstanceState != null)
+        {
+            //handles configuration changes
+            ArrayList<CompositeData> savedList = savedInstanceState.getParcelableArrayList(getCompositeDatasParcelKey());
+
+            if (savedList != null)
             {
-                log("OAC - service fired");
-                ServiceTask getSeasonTask = new ServiceTask(getRequestId(), ServiceTask.RequestThread.NETWORK)
+                if (mCompositeDatas.size() > 0)
+                    mCompositeDatas.clear();
+                mCompositeDatas.addAll(savedList);
+
+                mRecyclerView.post(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        SeasonController seasonController = new SeasonController(mSeason);
-                        seasonController.getSeasonData(false, new OnFinishListener<List<CompositeData>>()
-                        {
-                            @Override
-                            public void onFinish(@Nullable List<CompositeData> result)
-                            {
-                                setResult(result);
-                            }
-                        });
+                        setupViews(mCompositeDatas);
                     }
-                };
-                GlobalService.startRequest(getActivity(), getSeasonTask);
+                });
+            }
+            else
+            {
+                //if null, result may not been completed yet. Hence:
+                mSeasonTask.republishResultIfCompleted();
             }
         }
         else
@@ -260,7 +233,6 @@ public class SeasonFragment extends Fragment
                 @Override
                 public void run()
                 {
-                    //Log.v(getRequestId(), " WIDTH " + mRecyclerView.getWidth());
                     setupViews(mCompositeDatas);
                 }
             });
@@ -268,18 +240,17 @@ public class SeasonFragment extends Fragment
     }
 
     @Override
+    public void onPause()
+    {
+        super.onPause();
+        mSeasonTask.detach();
+    }
+
+    @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         mDisplayMetrics = activity.getResources().getDisplayMetrics();
-        mLayoutInflater = LayoutInflater.from(activity);
-    }
-
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -298,7 +269,7 @@ public class SeasonFragment extends Fragment
             finalMinItemWidthDp = minItemWidthDPTargetForTablet;
         }
         final GridItemSetting gridItemSetting = new GridItemSetting(mDisplayMetrics.density, mRecyclerView.getWidth(), finalMinItemWidthDp, widthToHeightRatio, minItemSingleHorizontalMarginDP);
-        final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, mLayoutInflater, SeasonFragment.this);
+        final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, getLayoutInflater(null), SeasonFragment.this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridItemSetting.getColumnCount()));
         mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getColumnCount()));
         mRecyclerView.setAdapter(adapter);
@@ -348,7 +319,7 @@ public class SeasonFragment extends Fragment
         private static final String SELECTIONS_BUNDLETAG = SeasonGridRecyclerAdapter.class.getName();
         private final List<CompositeData> compositeDatas;
         private final GridItemSetting setting;
-        private final WeakReference<Fragment> fragmentSoftRef;
+        private final WeakReference<Fragment> fragmentWeakReference;
         private final DecimalFormat decimalFormat = new DecimalFormat("#.##");
         private OnItemClickListener onItemClickListener;
         private LayoutInflater inflater;
@@ -360,7 +331,7 @@ public class SeasonFragment extends Fragment
             this.compositeDatas = compositeDatas;
             this.setting = setting;
             this.inflater = inflater;
-            fragmentSoftRef = new WeakReference<>(fragment);
+            fragmentWeakReference = new WeakReference<>(fragment);
         }
 
         @Override
@@ -378,7 +349,7 @@ public class SeasonFragment extends Fragment
             holder.getSource().setText(data.getLiveChartObject().getSource());
             holder.getScore().setText(decimalFormat.format(data.getMalObject().getScore()));
 
-            Glide.with(fragmentSoftRef.get())
+            Glide.with(fragmentWeakReference.get())
                     .load(data.getMalObject().getImage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.getImageView());

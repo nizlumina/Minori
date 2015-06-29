@@ -3,6 +3,7 @@ package com.nizlumina.minori;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,17 @@ public class MinoriApplication extends Application
     {
         super.onCreate();
         MinoriApplication.setContext(MinoriApplication.this);
+        if (BuildConfig.DEBUG)
+        {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyDialog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().build());
+        }
+    }
+
+    @Override
+    public void registerActivityLifecycleCallbacks(ActivityLifecycleCallbacks callback)
+    {
+        super.registerActivityLifecycleCallbacks(callback);
     }
 
     public interface ActivityListener {}
