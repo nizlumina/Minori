@@ -13,71 +13,74 @@
 package com.nizlumina.minori.ui.common;
 
 /**
- * Handy dandy class for determining the best grid item size provided it has a minimum width. Width, height, and margin properties are in pixels.
+ * Handy dandy class for determining the best grid item size provided it has a target width and container width. Width, height, and margin properties are in pixels.
+ * Get the item width via {@link #getItemWidthPixels()}. Extraneous rightmost and leftmost margin can be get via {@link #getExtraSideMarginPx()}.
  */
 public class GridItemSetting
 {
+    private int mExtraSideMarginPx;
     private int columnCount;
-    private int width;
-    private int height;
-    private int margin;
+    private int itemTargetWidthPx;
+    private int convertedHeightPx;
+    private int marginPx;
     private float displayMetricsDensity;
-    private int containerWidthPixel;
+    private int containerWidthPx;
     private float widthToHeightRatio;
 
-    public GridItemSetting(float displayMetricsDensity, final int parentContainerWidthPixel, final int minItemWidthDp, final float widthToHeightRatio, final int minItemSingleHorizontalMarginDP)
+    public GridItemSetting(final float displayMetricsDensity, final int parentContainerWidthPx, final int targetItemWidthDp, final float widthToHeightRatio, final int itemMarginDp)
     {
-//        Log.e(getClass().getSimpleName(), String.format(" DPI %f Parent Container %d MinWidth %d", displayMetricsDensity, parentContainerWidthPixel, minItemWidthDp));
         this.displayMetricsDensity = displayMetricsDensity;
-        this.columnCount = (int) (parentContainerWidthPixel / (minItemWidthDp * displayMetricsDensity));
-        this.containerWidthPixel = parentContainerWidthPixel;
-        final int freeHorizontalMargin = this.containerWidthPixel % minItemWidthDp / this.columnCount;
+        this.setMargin(itemMarginDp);
+        this.columnCount = (int) (parentContainerWidthPx / (targetItemWidthDp * displayMetricsDensity)); //floored. We throw out the few non-absolute pixels for now.
+        this.containerWidthPx = parentContainerWidthPx;
 
-        if (freeHorizontalMargin >= minItemSingleHorizontalMarginDP)
-        {
-            int freeWidth = freeHorizontalMargin - minItemSingleHorizontalMarginDP;
-            this.setWidth(minItemWidthDp + freeWidth);
-            this.setMargin(minItemSingleHorizontalMarginDP);
-        }
-        else
-        {
-            this.setWidth(minItemWidthDp);
-            this.setMargin(minItemSingleHorizontalMarginDP);
-        }
+        float yLeftovers = 0;
+
+        float grossTotalMarginPixel = this.columnCount * itemMarginDp * displayMetricsDensity; //Also floored with the same reason as above.
+        int totalMarginPixel = (int) grossTotalMarginPixel;
+        yLeftovers += grossTotalMarginPixel % 1;
+
+        float grossItemTargetWidth = (parentContainerWidthPx - totalMarginPixel) / this.columnCount;
+        this.itemTargetWidthPx = (int) grossItemTargetWidth;
+
+        yLeftovers += grossItemTargetWidth % 1;
+
+        if (yLeftovers >= 2)
+            mExtraSideMarginPx = (int) (yLeftovers / 2);
+        else mExtraSideMarginPx = 0;
 
         this.widthToHeightRatio = widthToHeightRatio;
         this.applyWidthToHeightRatio(this.widthToHeightRatio);
     }
 
-
-    public int getHeightPixels()
+    public int getExtraSideMarginPx()
     {
-        return height;
+        return mExtraSideMarginPx;
     }
 
-    public int getWidthPixels()
+    public int getItemHeightPixels()
     {
-        return width;
+        return convertedHeightPx;
     }
 
-    public void setWidth(int widthDP)
+    public int getItemWidthPixels()
     {
-        this.width = (int) (widthDP * displayMetricsDensity);
+        return itemTargetWidthPx;
     }
 
     public void applyWidthToHeightRatio(float ratio)
     {
-        this.height = (int) (this.width / ratio);
+        this.convertedHeightPx = (int) (this.itemTargetWidthPx / ratio);
     }
 
     public int getMarginPixels()
     {
-        return margin;
+        return marginPx;
     }
 
     public void setMargin(int marginDP)
     {
-        this.margin = (int) (marginDP * displayMetricsDensity);
+        this.marginPx = (int) (marginDP * displayMetricsDensity);
     }
 
     public int getColumnCount()
@@ -95,8 +98,8 @@ public class GridItemSetting
     public void setColumn(int columnCount)
     {
         this.columnCount = columnCount;
-        final int itemGrossWidth = containerWidthPixel / columnCount;
-        this.width = itemGrossWidth - margin;
+        final int itemGrossWidth = containerWidthPx / columnCount;
+        this.itemTargetWidthPx = itemGrossWidth - marginPx;
         this.applyWidthToHeightRatio(widthToHeightRatio);
     }
 }

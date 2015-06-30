@@ -65,16 +65,15 @@ public class DrawerActivity extends BaseActivity
         setupViews();
         if (savedInstanceState == null)
         {
-            //switchFragment(new GalleryFragment(), GalleryFragment.class.getSimpleName(), false, null);
             getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, new GalleryFragment(), "GalleryFragment").commit();
         }
         setupBroadcastReceivers();
     }
 
     @Override
-    protected void onDestroy()
+    protected void onPause()
     {
-        super.onDestroy();
+        super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         Director.getInstance().shutdown();
     }
@@ -133,20 +132,6 @@ public class DrawerActivity extends BaseActivity
         return mDrawerLayout;
     }
 
-//    private FrameLayout getFragmentContainer()
-//    {
-//        return mFrameLayout;
-//    }
-//
-////    private void switchFragment(@NonNull Fragment fragment, @Nullable String fragmentTag, boolean addToBackStack, @Nullable String backStackTag)
-////    {
-////        @SuppressLint("CommitTransaction")
-////        final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction().replace(getFragmentContainer().getId(), fragment, fragmentTag);
-////        if (addToBackStack)
-////            fragmentTransaction.addToBackStack(backStackTag).commit();
-////        else
-////            fragmentTransaction.commit();
-////    }
 
     /**
      * A Fragment who optionally depends on DrawerActivity for communicating calls.

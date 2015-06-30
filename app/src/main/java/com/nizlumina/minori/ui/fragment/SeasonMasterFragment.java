@@ -143,19 +143,22 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
             alreadyLoaded = true;
             mIndexTask.enqueue();
         }
-        else if (savedInstanceState != null)
-        {
-            final ArrayList<Season> savedSeasons = savedInstanceState.getParcelableArrayList(PALKEY_SAVEDSEASONS);
-            if (savedSeasons != null && mSeasons.size() != savedSeasons.size())
-            {
-                mSeasons.clear();
-                mSeasons.addAll(savedSeasons);
-            }
-            setupViewPager(); // Don't ever View.post() this. Parent of a nested fragment is very fickle. Such is life.
-        }
         else
         {
-            setupViewPager();
+            if (savedInstanceState != null)
+            {
+                final ArrayList<Season> savedSeasons = savedInstanceState.getParcelableArrayList(PALKEY_SAVEDSEASONS);
+                if (savedSeasons != null && mSeasons.size() != savedSeasons.size())
+                {
+                    mSeasons.clear();
+                    mSeasons.addAll(savedSeasons);
+                }
+                setupViewPager(); // Don't ever View.post() this. Parent of a nested fragment is very fickle. Such is life.
+            }
+            else
+            {
+                setupViewPager();
+            }
         }
     }
 

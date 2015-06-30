@@ -38,6 +38,7 @@ import com.nizlumina.minori.service.global.DirectorTask;
 import com.nizlumina.minori.ui.common.GridItemSetting;
 import com.nizlumina.minori.ui.common.MarginItemDecoration;
 import com.nizlumina.minori.utility.SparseBooleanArrayParcelable;
+import com.nizlumina.minori.utility.Util;
 import com.nizlumina.syncmaru.model.CompositeData;
 import com.nizlumina.syncmaru.model.LiveChartObject;
 import com.nizlumina.syncmaru.model.Season;
@@ -98,16 +99,14 @@ public class SeasonFragment extends Fragment
             }
 
             //we still provide empty dataset on failure
-            mRecyclerView.post(new Runnable()
+            Util.postOnPreDraw(new Runnable()
             {
                 @Override
                 public void run()
                 {
-                    //Log.v(getRequestId(), "! WIDTH " + mRecyclerView.getWidth());
                     setupViews(mCompositeDatas);
                 }
-            });
-
+            }, mRecyclerView);
         }
     };
     private Season mSeason; //lazy init, via fragment args
@@ -145,11 +144,6 @@ public class SeasonFragment extends Fragment
         return fragment;
     }
 
-//    private void log(String s)
-//    {
-//        Log.v(mSeason.getIndexKey().toUpperCase(), s);
-//    }
-
     public String getCompositeDatasParcelKey()
     {
         if (mParcelKeyCompositeDatas == null)
@@ -171,11 +165,10 @@ public class SeasonFragment extends Fragment
         super.onCreate(savedInstanceState);
         final Bundle args = getArguments();
 
-        if (args != null)
-        {
-            mSeason = args.getParcelable(ARG_SEASON); //always init this
-            mSeasonTask.setId(getRequestId());
-        }
+        if (args == null)
+            throw new AssertionError(SeasonFragment.CLASSNAME + " started with no args");
+        mSeason = args.getParcelable(ARG_SEASON); //always init this
+        mSeasonTask.setId(getRequestId());
     }
 
     @Nullable
@@ -211,14 +204,14 @@ public class SeasonFragment extends Fragment
                     mCompositeDatas.clear();
                 mCompositeDatas.addAll(savedList);
 
-                mRecyclerView.post(new Runnable()
+                Util.postOnPreDraw(new Runnable()
                 {
                     @Override
                     public void run()
                     {
                         setupViews(mCompositeDatas);
                     }
-                });
+                }, mRecyclerView);
             }
             else
             {
@@ -228,14 +221,14 @@ public class SeasonFragment extends Fragment
         }
         else
         {
-            mRecyclerView.post(new Runnable()
+            Util.postOnPreDraw(new Runnable()
             {
                 @Override
                 public void run()
                 {
                     setupViews(mCompositeDatas);
                 }
-            });
+            }, mRecyclerView);
         }
     }
 
@@ -262,6 +255,8 @@ public class SeasonFragment extends Fragment
 
     private void setupViews(final List<CompositeData> compositeDatas)
     {
+        if (mRecyclerView.getWidth() == 0)
+            throw new AssertionError(CLASSNAME + ": RecyclerView width is zero");
 
         int finalMinItemWidthDp = minItemWidthDp;
         if (mDisplayMetrics.widthPixels / mDisplayMetrics.density > 600)
@@ -271,7 +266,7 @@ public class SeasonFragment extends Fragment
         final GridItemSetting gridItemSetting = new GridItemSetting(mDisplayMetrics.density, mRecyclerView.getWidth(), finalMinItemWidthDp, widthToHeightRatio, minItemSingleHorizontalMarginDP);
         final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, getLayoutInflater(null), SeasonFragment.this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridItemSetting.getColumnCount()));
-        mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getColumnCount()));
+        mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getExtraSideMarginPx(), gridItemSetting.getColumnCount()));
         mRecyclerView.setAdapter(adapter);
 
         //Most important parts here
@@ -337,7 +332,7 @@ public class SeasonFragment extends Fragment
         @Override
         public SeasonGridItem onCreateViewHolder(ViewGroup parent, int viewType)
         {
-            return new SeasonGridItem(inflater.inflate(SeasonGridItem.LAYOUT_RESOURCE, parent, false), setting.getWidthPixels(), setting.getHeightPixels(), onItemClickListener);
+            return new SeasonGridItem(inflater.inflate(SeasonGridItem.LAYOUT_RESOURCE, parent, false), setting.getItemWidthPixels(), setting.getItemHeightPixels(), onItemClickListener);
         }
 
         @Override

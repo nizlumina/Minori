@@ -69,14 +69,6 @@ public class Director
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     private boolean isShuttingDown = false;
 
-//    public <T> DirectorTask<T> takeTask(String id)
-//    {
-//        //noinspection unchecked
-//        DirectorTask<T> directorTask = mHashMap.get(id);
-//        mHashMap.remove(id);
-//        return directorTask;
-//    }
-
     public static Director getInstance()
     {
         return ourInstance;
@@ -119,17 +111,17 @@ public class Director
      */
     public void shutdown()
     {
-//        isShuttingDown = true;
-//
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run()
-//            {
-//                if(isShuttingDown) //if still true, proceed
-//                    shutdownNow();
-//            }
-//        }, 15000);
+        isShuttingDown = true;
 
+        mHandler.postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (isShuttingDown) //if still true, proceed
+                    shutdownNow();
+            }
+        }, 5000);
     }
 
     public void shutdownNow()

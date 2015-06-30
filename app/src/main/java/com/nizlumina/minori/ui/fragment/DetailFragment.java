@@ -35,14 +35,24 @@ public class DetailFragment extends DrawerActivity.DrawerFragment
     private static final String STUDIO_CATEGORY = "studio";
     private static final String SOURCE_CATEGORY = "source";
     private static final String EPISODECOUNT_CATEGORY = "episodes";
+    private static final String ARGS_COMPOSITEDATA = DetailFragment.class.getSimpleName() + "$compositedata";
 
     private CompositeData mCompositeData;
 
     public static DetailFragment newInstance(CompositeData compositeData)
     {
-        DetailFragment detailFragment = new DetailFragment();
-        detailFragment.mCompositeData = compositeData;
+        final DetailFragment detailFragment = new DetailFragment();
+        final Bundle args = new Bundle();
+        args.putParcelable(ARGS_COMPOSITEDATA, compositeData);
+        detailFragment.setArguments(args);
         return detailFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        mCompositeData = getArguments().getParcelable(ARGS_COMPOSITEDATA);
     }
 
     @Override

@@ -10,19 +10,35 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--Alternative tab layout when height is lower than 420dp (tablayout can be off-scrolled), usually in phone landscape mode -->
+<android.support.design.widget.AppBarLayout
+    android:id="@+id/fsm_appbarlayout"
+    style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@null"
+    tools:showIn="@layout/fragment_seasonmaster">
 
-    <include layout="@layout/layout_tab" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/fsm_viewpager"
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/fsm_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:elevation="0dp"
+        app:layout_scrollFlags="scroll|enterAlways" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/fsm_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:clipToPadding="false"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:tabGravity="fill"
+        app:tabMode="scrollable" />
+</android.support.design.widget.AppBarLayout>

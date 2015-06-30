@@ -22,7 +22,9 @@ import android.view.View;
 public class MarginItemDecoration extends RecyclerView.ItemDecoration
 {
     private final int marginPixel;
-    private int gridSpanCount = -1;
+    private int sideMarginPixel = 0;
+    private int gridSpanCount = 1;
+    private int adjustedSideMargin;
 
     /**
      * Use this constructor for vertical linear RecyclerViews
@@ -32,10 +34,11 @@ public class MarginItemDecoration extends RecyclerView.ItemDecoration
     public MarginItemDecoration(int marginPixel)
     {
         this.marginPixel = marginPixel;
+        this.adjustedSideMargin = marginPixel;
     }
 
     /**
-     * Use this constructor for vertical grid based RecyclerViews
+     * Use this constructor for vertical grid based RecyclerViews with set columns.
      *
      * @param marginPixel   Item margin in pixels
      * @param gridSpanCount Column count for the grid
@@ -44,6 +47,22 @@ public class MarginItemDecoration extends RecyclerView.ItemDecoration
     {
         this.marginPixel = marginPixel;
         this.gridSpanCount = gridSpanCount;
+        this.adjustedSideMargin = marginPixel;
+    }
+
+    /**
+     * Use this constructor for vertical grid based RecyclerViews with an extra horizontal margin
+     *
+     * @param marginPixel     Item margin in pixels
+     * @param sideMarginPixel Extra margin at each side. 8px margin in here will result 8px margin from the left edge and 8px margin from the right edge.
+     * @param gridSpanCount   Column count for the grid
+     */
+    public MarginItemDecoration(int marginPixel, int sideMarginPixel, int gridSpanCount)
+    {
+        this.marginPixel = marginPixel;
+        this.gridSpanCount = gridSpanCount;
+        this.sideMarginPixel = sideMarginPixel;
+        this.adjustedSideMargin = marginPixel + sideMarginPixel;
     }
 
     @Override
@@ -53,15 +72,22 @@ public class MarginItemDecoration extends RecyclerView.ItemDecoration
 
         final int childAdapterPosition = parent.getChildAdapterPosition(view);
 
-        if (gridSpanCount > 0)
+        if (gridSpanCount > 1)
         {
             if (childAdapterPosition < gridSpanCount) //get only the top items
                 outRect.top = marginPixel;
 
-            if (childAdapterPosition % gridSpanCount == 0)
-                outRect.left = marginPixel;
+            if (childAdapterPosition % gridSpanCount == 0) //get only the leftmost item
+            {
+                outRect.left = adjustedSideMargin;
+            }
 
-            outRect.right = marginPixel;
+            if ((childAdapterPosition + 1) % gridSpanCount == 0) //get only the rightmost item
+            {
+                outRect.right = adjustedSideMargin;
+            }
+            else
+                outRect.right = marginPixel;
         }
         else
         {
