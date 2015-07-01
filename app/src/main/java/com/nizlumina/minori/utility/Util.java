@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,17 +199,11 @@ public class Util
         return builder.toString().trim();
     }
 
-    //Stolen from Google I/O 2013 app
-//    public static boolean isTablet(Context context) {
-//        return (context.getResources().getConfiguration().screenLayout
-//                & Configuration.SCREENLAYOUT_SIZE_MASK)
-//                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-//    }
 
     /**
      * Since View.post(Runnable) is not actually guaranteed for measuring views
      */
-    public static void postOnPreDraw(final Runnable runnable, final View view)
+    public static void postOnPreDraw(final View view, final Runnable runnable)
     {
         view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener()
         {
@@ -218,15 +213,36 @@ public class Util
                 try
                 {
                     runnable.run();
-                    return true;
                 }
                 finally
                 {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
                 }
+                return true;
             }
         });
     }
 
+    public static void postOnGlobalLayout(final View view, final Runnable runnable)
+    {
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
+        {
+            @Override
+            public void onGlobalLayout()
+            {
+                try
+                {
+                    runnable.run();
+                }
+                finally
+                {
+                    if (Build.VERSION.SDK_INT >= 16)
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    else
+                        view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+    }
 
 }
