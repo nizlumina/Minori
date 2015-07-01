@@ -34,6 +34,7 @@
                 android:layout_marginLeft="16dp"
                 android:contentDescription="@string/cd_poster_description"
                 android:scaleType="fitCenter"
+                android:transitionName="posterImage"
                 tools:background="@android:color/holo_blue_dark"
                 tools:src="@drawable/ic_star_white_48dp" />
 
@@ -56,6 +57,7 @@
                 android:layout_below="@id/detail_header_synopsis"
                 android:autoLink="web"
                 android:fontFamily="sans-serif-light"
+                android:textColor="?attr/textColorBase"
                 android:textSize="12sp"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
         </RelativeLayout>
@@ -104,25 +106,28 @@
         <!--android:text="LATEST REDDIT DISCUSSION" />-->
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <Button
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:text="MAL" />
 
             <Button
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:text="HUMMINGBIRD" />
 
             <Button
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:text="ANIDB" />
 

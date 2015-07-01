@@ -12,114 +12,83 @@
 
 package com.nizlumina.minori.ui.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.service.global.Director;
-import com.nizlumina.minori.ui.fragment.DetailFragment;
-import com.nizlumina.minori.ui.fragment.GalleryFragment;
-import com.nizlumina.minori.ui.fragment.SeasonFragment;
-import com.nizlumina.minori.ui.fragment.SeasonMasterFragment;
-import com.nizlumina.syncmaru.model.CompositeData;
 
-public class DrawerActivity extends BaseActivity
+public abstract class DrawerActivity extends BaseActivity
 {
-
-    private final BroadcastReceiver receiver = new BroadcastReceiver()
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            if (intent.getAction().equals(SeasonFragment.ACTION_REQUEST_DETAIL))
-            {
-                CompositeData dataFromRequest = SeasonFragment.getDataFromRequest(intent);
-                if (dataFromRequest != null)
-                {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, DetailFragment.newInstance(dataFromRequest), DetailFragment.class.getName()).addToBackStack(DetailFragment.class.getName()).commit();
-                }
-            }
-        }
-    };
     private DrawerLayout mDrawerLayout;
     private FrameLayout mFrameLayout;
+    private SmoothDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS | Window.FEATURE_ACTIVITY_TRANSITIONS);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
-        setupViews();
-        if (savedInstanceState == null)
-        {
-            getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, new GalleryFragment(), "GalleryFragment").commit();
-        }
-        setupBroadcastReceivers();
+        setupViews(savedInstanceState);
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         Director.getInstance().shutdown();
     }
 
-    private void setupBroadcastReceivers()
+    public FrameLayout getContentContainer()
     {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(SeasonFragment.ACTION_REQUEST_DETAIL);
-
-        LocalBroadcastManager.getInstance(DrawerActivity.this).registerReceiver(receiver, intentFilter);
+        return mFrameLayout;
     }
 
-    private void setupViews()
+    private void setupViews(final Bundle savedInstanceState)
     {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.ad_basedrawerlayout);
         mFrameLayout = (FrameLayout) findViewById(R.id.ad_fragmentcontainer);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.ad_drawer);
-
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.ad_drawer);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem)
             {
-                switch (menuItem.getItemId())
+                int itemId = menuItem.getItemId();
+                if (itemId != getDrawerItemId())
                 {
-                    case R.id.mm_nav_watchlist:
+                    final Intent activityIntent = new Intent();
+                    switch (itemId)
                     {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, new GalleryFragment(), "GalleryFragment").commit();
-
-//                        String tag = GalleryFragment.class.getSimpleName();
-//                        GalleryFragment backStackFragment = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(tag);
-//                        if (backStackFragment == null)
-//                        {
-//                            switchFragment(new GalleryFragment(), tag, false, tag);
-//                        }
-//                        else
-//                            switchFragment(backStackFragment, tag, false, tag);
+                        case R.id.mm_nav_watchlist:
+                        {
+                            activityIntent.setClass(DrawerActivity.this, GalleryActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        }
+                        break;
+                        case R.id.mm_nav_seasonbrowser:
+                        {
+                            activityIntent.setClass(DrawerActivity.this, SeasonBrowserActivity.class);
+                        }
+                        break;
                     }
-                    break;
-                    case R.id.mm_nav_seasonbrowser:
-                    {
-//                        String tag = SeasonMasterFragment.class.getSimpleName();
-//                        switchFragment(SeasonMasterFragment.newInstance(), tag, true, tag);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.ad_fragmentcontainer, SeasonMasterFragment.newInstance(), "SeasonMasterFragment").commit();
-                    }
-                    break;
+                    startActivity(activityIntent);
                 }
                 mDrawerLayout.closeDrawers();
                 return false;
@@ -127,17 +96,71 @@ public class DrawerActivity extends BaseActivity
         });
     }
 
+    public abstract int getDrawerItemId();
+
     public DrawerLayout getDrawerLayout()
     {
         return mDrawerLayout;
     }
 
+    public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
+    {
+        if (mDrawerLayout != null)
+        {
+            mDrawerToggle = new SmoothDrawerToggle(DrawerActivity.this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
+            mDrawerToggle.syncState();
+        }
+    }
+
+    private static class SmoothDrawerToggle extends ActionBarDrawerToggle
+    {
+
+        private Runnable mRunnable;
+
+        public SmoothDrawerToggle(Activity activity, DrawerLayout drawerLayout, int openDrawerContentDescRes, int closeDrawerContentDescRes)
+        {
+            super(activity, drawerLayout, openDrawerContentDescRes, closeDrawerContentDescRes);
+        }
+
+        public SmoothDrawerToggle(Activity activity, DrawerLayout drawerLayout, Toolbar toolbar, int openDrawerContentDescRes, int closeDrawerContentDescRes)
+        {
+            super(activity, drawerLayout, toolbar, openDrawerContentDescRes, closeDrawerContentDescRes);
+        }
+
+//        @Override
+//        public void onDrawerStateChanged(int newState)
+//        {
+//            super.onDrawerStateChanged(newState);
+//            if (newState == DrawerLayout.STATE_IDLE)
+//            {
+//            }
+//        }
+
+        public void enqueueRunnableOnIdle(Runnable runnable)
+        {
+            this.mRunnable = runnable;
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView)
+        {
+            super.onDrawerClosed(drawerView);
+
+            if (mRunnable != null)
+            {
+                mRunnable.run();
+                mRunnable = null;
+            }
+        }
+    }
 
     /**
      * A Fragment who optionally depends on DrawerActivity for communicating calls.
      */
     public abstract static class DrawerFragment extends Fragment
     {
+
         private ActionBarDrawerToggle drawerToggle;
 
         public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
@@ -145,13 +168,8 @@ public class DrawerActivity extends BaseActivity
             final FragmentActivity activity = getActivity();
             if (activity != null && activity instanceof DrawerActivity)
             {
-                final DrawerLayout drawerLayout = ((DrawerActivity) activity).getDrawerLayout();
-                if (drawerLayout != null)
-                {
-                    drawerToggle = new ActionBarDrawerToggle(activity, drawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
-                    drawerLayout.setDrawerListener(drawerToggle);
-                    drawerToggle.syncState();
-                }
+                ((DrawerActivity) activity).setDrawerNavigationButton(toolbar);
+
             }
         }
 

@@ -14,11 +14,12 @@ package com.nizlumina.minori.ui.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -35,6 +36,8 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.service.global.DirectorTask;
+import com.nizlumina.minori.ui.activity.DetailActivity;
+import com.nizlumina.minori.ui.activity.DrawerActivity;
 import com.nizlumina.minori.ui.common.GridItemSetting;
 import com.nizlumina.minori.ui.common.MarginItemDecoration;
 import com.nizlumina.minori.utility.SparseBooleanArrayParcelable;
@@ -50,10 +53,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SeasonFragment extends Fragment
+public class SeasonFragment extends DrawerActivity.DrawerFragment
 {
     private static final String CLASSNAME = SeasonFragment.class.getSimpleName();
-    public static final String ACTION_REQUEST_DETAIL = CLASSNAME + "$request";
     private static final String ARG_SEASON = CLASSNAME + "$season";
     private static final String COMPOSITE_DATA_OUT = CLASSNAME + "$dataout";
 
@@ -102,7 +104,8 @@ public class SeasonFragment extends Fragment
             setupViews(mCompositeDatas);
         }
     };
-    private Season mSeason; //lazy init, via fragment args
+    // init via fragment args
+    private Season mSeason;
     private final DirectorTask<List<CompositeData>> mSeasonTask = new DirectorTask<List<CompositeData>>(null, DirectorTask.RequestThread.NETWORK)
     {
         @Override
@@ -119,37 +122,22 @@ public class SeasonFragment extends Fragment
             });
         }
     };
-    private String mParcelKeyCompositeDatas; //lazy init, via first get
-    private String mRequestId; //lazy init, via first get
+    private String mParcelKeyCompositeDatas;
     private boolean alreadyLoaded = false; // Explicit false. Since we don't ever utilize setRetainInstance(), rotation will reset the fragment to the initial state which, in this case, we do want.
 
-    public static CompositeData getDataFromRequest(Intent intent)
-    {
-        return (CompositeData) intent.getParcelableExtra(COMPOSITE_DATA_OUT);
-    }
 
     public static SeasonFragment newInstance(Season season)
     {
-        Bundle args = new Bundle();
+        final Bundle args = new Bundle();
         args.putParcelable(ARG_SEASON, season);
-        SeasonFragment fragment = new SeasonFragment();
+        final SeasonFragment fragment = new SeasonFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     public String getCompositeDatasParcelKey()
     {
-        if (mParcelKeyCompositeDatas == null)
-            mParcelKeyCompositeDatas = CLASSNAME + "$compositedatas$" + mSeason.getIndexKey();
         return mParcelKeyCompositeDatas;
-    }
-
-    //lazy init
-    private String getRequestId()
-    {
-        if (mRequestId == null)
-            mRequestId = mSeason.getIndexKey();
-        return mRequestId;
     }
 
     @Override
@@ -161,7 +149,11 @@ public class SeasonFragment extends Fragment
         if (args == null)
             throw new AssertionError(SeasonFragment.CLASSNAME + " started with no args");
         mSeason = args.getParcelable(ARG_SEASON); //always init this
-        mSeasonTask.setId(getRequestId());
+
+        if (mSeason == null) throw new AssertionError("Season is null");
+        final String requestId = mSeason.getIndexKey();
+        mParcelKeyCompositeDatas = CLASSNAME + "$compositedatas$" + mSeason.getIndexKey();
+        mSeasonTask.setId(requestId);
     }
 
     @Nullable
@@ -239,13 +231,7 @@ public class SeasonFragment extends Fragment
             @Override
             public void run()
             {
-                int gridWidth;
-                if (mRecyclerView.getWidth() == 0)
-                {
-                    //hacks
-                    gridWidth = ((ViewGroup) getView().getParent()).getWidth();
-                }
-                else gridWidth = mRecyclerView.getWidth();
+                int gridWidth = mRecyclerView.getWidth();
 
                 int finalMinItemWidthDp = minItemWidthDp;
                 if (mDisplayMetrics.widthPixels / mDisplayMetrics.density > 600)
@@ -259,21 +245,21 @@ public class SeasonFragment extends Fragment
                 mRecyclerView.setAdapter(adapter);
 
                 //Most important parts here
-                adapter.setOnItemClickListener(new OnItemClickListener()
+                adapter.setOnItemClickListener(new SeasonGridRecyclerAdapter.OnItemClickListener()
                 {
                     @Override
-                    public void onListItemClick(int position)
+                    public void onListItemClick(int position, View view)
                     {
                         if (adapter.isSelectable())
                         {
                             adapter.toggleSelection(position);
                         }
                         else
-                            startDetailFragmentForItem(compositeDatas.get(position));
+                            launchDetailActivity(compositeDatas.get(position), view);
                     }
 
                     @Override
-                    public boolean onListItemLongClick(int position)
+                    public boolean onListItemLongClick(int position, View view)
                     {
                         if (!adapter.isSelectable())
                         {
@@ -288,17 +274,16 @@ public class SeasonFragment extends Fragment
 
     }
 
-    private void startDetailFragmentForItem(CompositeData detailData)
+    private void launchDetailActivity(CompositeData detailData, View sharedView)
     {
-        final Intent intent = new Intent(ACTION_REQUEST_DETAIL).putExtra(COMPOSITE_DATA_OUT, detailData);
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-    }
-
-    public interface OnItemClickListener
-    {
-        void onListItemClick(int position);
-
-        boolean onListItemLongClick(int position);
+        final Intent intent = DetailActivity.getActivityStartIntent(getActivity(), detailData);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        {
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), sharedView, "posterImage");
+            getActivity().startActivity(intent, options.toBundle());
+        }
+        else
+            startActivity(intent);
     }
 
     private static class SeasonGridRecyclerAdapter extends RecyclerView.Adapter<SeasonGridItem>
@@ -340,6 +325,7 @@ public class SeasonFragment extends Fragment
                     .load(data.getMalObject().getImage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.getImageView());
+
 
             holder.itemView.setActivated(selections.get(position));
         }
@@ -396,6 +382,13 @@ public class SeasonFragment extends Fragment
         {
             return selections;
         }
+
+        public interface OnItemClickListener
+        {
+            void onListItemClick(int position, View view);
+
+            boolean onListItemLongClick(int position, View view);
+        }
     }
 
     private static class SeasonGridItem extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener
@@ -405,9 +398,9 @@ public class SeasonFragment extends Fragment
         private final TextView score;
         private final TextView source;
         private final ImageView imageView;
-        private final OnItemClickListener itemClickListener;
+        private final SeasonGridRecyclerAdapter.OnItemClickListener itemClickListener;
 
-        public SeasonGridItem(View itemView, int posterWidth, int posterHeight, OnItemClickListener onItemClickListener)
+        public SeasonGridItem(View itemView, int posterWidth, int posterHeight, SeasonGridRecyclerAdapter.OnItemClickListener onItemClickListener)
         {
             super(itemView);
             this.itemClickListener = onItemClickListener;
@@ -452,13 +445,13 @@ public class SeasonFragment extends Fragment
         @Override
         public void onClick(View v)
         {
-            itemClickListener.onListItemClick(getAdapterPosition());
+            itemClickListener.onListItemClick(getAdapterPosition(), v);
         }
 
         @Override
         public boolean onLongClick(View v)
         {
-            return itemClickListener.onListItemLongClick(getAdapterPosition());
+            return itemClickListener.onListItemLongClick(getAdapterPosition(), v);
         }
     }
 }

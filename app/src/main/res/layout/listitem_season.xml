@@ -10,9 +10,9 @@
         android:id="@+id/item_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
         android:contentDescription="@string/cd_poster_description"
         android:scaleType="centerCrop"
+        android:transitionName="posterImage"
         tools:src="@drawable/ic_star_white_48dp" />
 
     <TextView

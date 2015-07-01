@@ -14,7 +14,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/MinoriDark">
+        android:theme="@style/MinoriDark.TranslucentStatusBar">
         <receiver
             android:name=".model.alarm.AlarmReceiver"
             android:enabled="true">
@@ -43,9 +43,9 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.activity.DrawerActivity"
+            android:name=".ui.activity.GalleryActivity"
             android:label="@string/app_name"
-            android:theme="@style/MinoriDark.TranslucentStatusBar">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,9 +53,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.activity.SeasonBrowserActivity"
+            android:parentActivityName=".ui.activity.GalleryActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.GalleryActivity" />
+        </activity>
+        <activity
+            android:name=".ui.activity.DetailActivity"
+            android:parentActivityName=".ui.activity.SeasonBrowserActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.SeasonBrowserActivity" />
+        </activity>
+        <activity
             android:name=".ui.activity.BatchModeActivity"
             android:label="@string/title_activity_batch"
-            android:theme="@style/MinoriDark.TranslucentStatusBar"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
     </application>
 

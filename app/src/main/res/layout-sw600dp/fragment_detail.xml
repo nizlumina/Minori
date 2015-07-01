@@ -27,6 +27,7 @@
             android:layout_width="@dimen/gallery_image_width"
             android:layout_height="@dimen/gallery_image_height"
             android:layout_marginRight="16dp"
+            android:transitionName="posterImage"
             tools:src="@color/red_800" />
 
         <TextView
@@ -45,6 +46,7 @@
             android:layout_below="@id/detail_header_synopsis"
             android:layout_toRightOf="@id/detail_image"
             android:autoLink="web"
+            android:textColor="?attr/textColorBase"
             tools:text="Jugem Jugem Unko Nage Ki Ototoi no Shin-chan no Pantsu Shinpachi no Jinsei Balmunk Fezarion Isaac Schneider San Bun no Ichi Junjyou na Kanjyou no Nokotta San Bun no Ni wa Sakamuke ga Kininaru Kanjyou Uragiri wa Boku no Namae wo Shitteiruyou de Shinranai no wo Boku wa Shitteiru Rusu Surume Medaka Kazuno Kokoedame Medaka….Kono Medaka wa saki no to wa Chigau Yatsu Dakara﻿ Ikeno Medaka no Hou Dakara Raa-yuu yuuteimiouki Mukou Pepepepepepepepepepepepe Bichiguso Maru" />
     </RelativeLayout>
 
