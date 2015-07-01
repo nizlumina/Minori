@@ -32,6 +32,7 @@ import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.service.global.Director;
 import com.nizlumina.minori.service.global.DirectorTask;
 import com.nizlumina.minori.ui.activity.DrawerActivity;
+import com.nizlumina.minori.utility.Util;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
 {
     private static final String FRAGMENT_TITLE = "Season Browser";
     private static final String REQID_GETINDEX = SeasonMasterFragment.class.getName() + "$id_getindex";
+    private static final String ARG_ALREADYLOADED = "LOADED";
     private static String PALKEY_SAVEDSEASONS = SeasonMasterFragment.class.getSimpleName() + "$savedseasons";
     private final ArrayList<Season> mSeasons = new ArrayList<>();
     private final DirectorTask<List<Season>> mIndexTask = new DirectorTask<List<Season>>(REQID_GETINDEX, DirectorTask.RequestThread.NETWORK)
@@ -84,15 +86,8 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
                     mSeasons.clear();
                 mSeasons.addAll(result);
             }
-            //make sure we post this
-            mViewPager.post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setupViewPager();
-                }
-            });
+
+            setupViewPager();
 
             Director.getInstance().removeTask(REQID_GETINDEX);
         }
@@ -117,6 +112,7 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(PALKEY_SAVEDSEASONS, mSeasons);
+        outState.putBoolean(ARG_ALREADYLOADED, alreadyLoaded);
     }
 
     @Override
@@ -127,6 +123,16 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
         mTabLayout = (TabLayout) view.findViewById(R.id.fsm_tablayout);
         mToolbar = (Toolbar) view.findViewById(R.id.fsm_toolbar);
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+        {
+            alreadyLoaded = savedInstanceState.getBoolean(ARG_ALREADYLOADED);
+        }
     }
 
     @Override
@@ -148,12 +154,22 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
             if (savedInstanceState != null)
             {
                 final ArrayList<Season> savedSeasons = savedInstanceState.getParcelableArrayList(PALKEY_SAVEDSEASONS);
-                if (savedSeasons != null && mSeasons.size() != savedSeasons.size())
+                if (savedSeasons != null)
                 {
-                    mSeasons.clear();
-                    mSeasons.addAll(savedSeasons);
+                    if (savedSeasons.size() == 0)
+                    {
+                        //only returns true due to double rotation bug (go to detail, rotate twice, then return to the season browser)
+                        //the bundle is there but the value is lost. I know right?
+                        alreadyLoaded = true;
+                        mIndexTask.enqueue();
+                    }
+                    else
+                    {
+                        mSeasons.clear();
+                        mSeasons.addAll(savedSeasons);
+                        setupViewPager(); // Don't ever View.post() this. Parent of a nested fragment is very fickle. Such is life.
+                    }
                 }
-                setupViewPager(); // Don't ever View.post() this. Parent of a nested fragment is very fickle. Such is life.
             }
             else
             {
@@ -164,10 +180,26 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
 
     private void setupViewPager()
     {
-        final SeasonPagerAdapter adapter = new SeasonPagerAdapter(getChildFragmentManager(), mSeasons);
-        mViewPager.setAdapter(adapter);
-        mTabLayout.setupWithViewPager(mViewPager);
-        //mViewPager.setCurrentItem(mSeasons.size() - 1); //removed since the behavior is deliriously drunk
+        Util.postOnPreDraw(mViewPager, new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final SeasonPagerAdapter adapter = new SeasonPagerAdapter(getChildFragmentManager(), mSeasons);
+                mViewPager.setAdapter(adapter);
+                mTabLayout.setupWithViewPager(mViewPager);
+                mViewPager.post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        int currentItem = mSeasons.size() - 1;
+                        mViewPager.setCurrentItem(currentItem);
+                        mTabLayout.getTabAt(currentItem).select();
+                    }
+                });
+            }
+        });
     }
 
     private static class SeasonPagerAdapter extends FragmentStatePagerAdapter

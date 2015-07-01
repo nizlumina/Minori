@@ -99,14 +99,7 @@ public class SeasonFragment extends Fragment
             }
 
             //we still provide empty dataset on failure
-            Util.postOnPreDraw(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setupViews(mCompositeDatas);
-                }
-            }, mRecyclerView);
+            setupViews(mCompositeDatas);
         }
     };
     private Season mSeason; //lazy init, via fragment args
@@ -204,14 +197,7 @@ public class SeasonFragment extends Fragment
                     mCompositeDatas.clear();
                 mCompositeDatas.addAll(savedList);
 
-                Util.postOnPreDraw(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        setupViews(mCompositeDatas);
-                    }
-                }, mRecyclerView);
+                setupViews(mCompositeDatas);
             }
             else
             {
@@ -221,14 +207,7 @@ public class SeasonFragment extends Fragment
         }
         else
         {
-            Util.postOnPreDraw(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    setupViews(mCompositeDatas);
-                }
-            }, mRecyclerView);
+            setupViews(mCompositeDatas);
         }
     }
 
@@ -255,45 +234,58 @@ public class SeasonFragment extends Fragment
 
     private void setupViews(final List<CompositeData> compositeDatas)
     {
-        if (mRecyclerView.getWidth() == 0)
-            throw new AssertionError(CLASSNAME + ": RecyclerView width is zero");
-
-        int finalMinItemWidthDp = minItemWidthDp;
-        if (mDisplayMetrics.widthPixels / mDisplayMetrics.density > 600)
-        {
-            finalMinItemWidthDp = minItemWidthDPTargetForTablet;
-        }
-        final GridItemSetting gridItemSetting = new GridItemSetting(mDisplayMetrics.density, mRecyclerView.getWidth(), finalMinItemWidthDp, widthToHeightRatio, minItemSingleHorizontalMarginDP);
-        final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, getLayoutInflater(null), SeasonFragment.this);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridItemSetting.getColumnCount()));
-        mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getExtraSideMarginPx(), gridItemSetting.getColumnCount()));
-        mRecyclerView.setAdapter(adapter);
-
-        //Most important parts here
-        adapter.setOnItemClickListener(new OnItemClickListener()
+        Util.postOnPreDraw(mRecyclerView, new Runnable()
         {
             @Override
-            public void onListItemClick(int position)
+            public void run()
             {
-                if (adapter.isSelectable())
+                int gridWidth;
+                if (mRecyclerView.getWidth() == 0)
                 {
-                    adapter.toggleSelection(position);
+                    //hacks
+                    gridWidth = ((ViewGroup) getView().getParent()).getWidth();
                 }
-                else
-                    startDetailFragmentForItem(compositeDatas.get(position));
-            }
+                else gridWidth = mRecyclerView.getWidth();
 
-            @Override
-            public boolean onListItemLongClick(int position)
-            {
-                if (!adapter.isSelectable())
+                int finalMinItemWidthDp = minItemWidthDp;
+                if (mDisplayMetrics.widthPixels / mDisplayMetrics.density > 600)
                 {
-                    adapter.setSelectable(true);
-                    adapter.toggleSelection(position);
+                    finalMinItemWidthDp = minItemWidthDPTargetForTablet;
                 }
-                return false;
+                final GridItemSetting gridItemSetting = new GridItemSetting(mDisplayMetrics.density, gridWidth, finalMinItemWidthDp, widthToHeightRatio, minItemSingleHorizontalMarginDP);
+                final SeasonGridRecyclerAdapter adapter = new SeasonGridRecyclerAdapter(compositeDatas, gridItemSetting, getLayoutInflater(null), SeasonFragment.this);
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridItemSetting.getColumnCount()));
+                mRecyclerView.addItemDecoration(new MarginItemDecoration(gridItemSetting.getMarginPixels(), gridItemSetting.getExtraSideMarginPx(), gridItemSetting.getColumnCount()));
+                mRecyclerView.setAdapter(adapter);
+
+                //Most important parts here
+                adapter.setOnItemClickListener(new OnItemClickListener()
+                {
+                    @Override
+                    public void onListItemClick(int position)
+                    {
+                        if (adapter.isSelectable())
+                        {
+                            adapter.toggleSelection(position);
+                        }
+                        else
+                            startDetailFragmentForItem(compositeDatas.get(position));
+                    }
+
+                    @Override
+                    public boolean onListItemLongClick(int position)
+                    {
+                        if (!adapter.isSelectable())
+                        {
+                            adapter.setSelectable(true);
+                            adapter.toggleSelection(position);
+                        }
+                        return false;
+                    }
+                });
             }
         });
+
     }
 
     private void startDetailFragmentForItem(CompositeData detailData)

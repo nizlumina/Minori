@@ -61,13 +61,14 @@ public class Director
             return Director.class.getSimpleName() + "-thread-" + mCount.incrementAndGet();
         }
     };
-
-    private static final ExecutorService sDiskIOservice = Executors.newFixedThreadPool(1);
-    private static final ThreadPoolExecutor sThreadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
     private static final Director ourInstance = new Director();
     private static final ConcurrentHashMap<String, DirectorTask> mHashMap = new ConcurrentHashMap<>();
     private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private ExecutorService sDiskIOservice;
+    private ThreadPoolExecutor sThreadPoolExecutor;
     private boolean isShuttingDown = false;
+
+    private Director() {}
 
     public static Director getInstance()
     {
@@ -77,6 +78,17 @@ public class Director
     public <T> void enqueue(DirectorTask<T> directorTask)
     {
         mHashMap.put(directorTask.getId(), directorTask);
+
+        if (sDiskIOservice == null || sDiskIOservice.isShutdown())
+        {
+            sDiskIOservice = Executors.newFixedThreadPool(1);
+        }
+
+        if (sThreadPoolExecutor == null || sThreadPoolExecutor.isShutdown())
+        {
+            sThreadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
+        }
+
         if (directorTask.getRequestThread().equals(DirectorTask.RequestThread.DISK))
         {
             sDiskIOservice.submit(directorTask);
