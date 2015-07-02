@@ -41,4 +41,5 @@
     <string name="toast_noqueryinput">Please input search query</string>
     <string name="error_noresselected">No resolution selected</string>
     <string name="error_noepsentered">No episode entered</string>
+    <string name="drawer_torrent">Torrent Engine</string>
 </resources>

@@ -31,7 +31,7 @@ import com.nizlumina.minori.controller.SeasonIndexController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.service.global.Director;
 import com.nizlumina.minori.service.global.DirectorTask;
-import com.nizlumina.minori.ui.activity.DrawerActivity;
+import com.nizlumina.minori.ui.activity.BaseDrawerActivity;
 import com.nizlumina.minori.utility.Util;
 import com.nizlumina.syncmaru.model.Season;
 
@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * A host fragment for SeasonFragment child tabs. Upon load, it acquires index from Firebase (or check its relevant cache) and populate child tabs as needed.
  */
-public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
+public class SeasonMasterFragment extends BaseDrawerActivity.DrawerFragment
 {
     private static final String FRAGMENT_TITLE = "Season Browser";
     private static final String REQID_GETINDEX = SeasonMasterFragment.class.getName() + "$id_getindex";
@@ -118,10 +118,10 @@ public class SeasonMasterFragment extends DrawerActivity.DrawerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_seasonmaster, container, false);
-        mViewPager = (ViewPager) view.findViewById(R.id.fsm_viewpager);
-        mTabLayout = (TabLayout) view.findViewById(R.id.fsm_tablayout);
-        mToolbar = (Toolbar) view.findViewById(R.id.fsm_toolbar);
+        View view = inflater.inflate(R.layout.layout_tabparent, container, false);
+        mViewPager = (ViewPager) view.findViewById(R.id.ltp_viewpager);
+        mTabLayout = (TabLayout) view.findViewById(R.id.ltp_tablayout);
+        mToolbar = (Toolbar) view.findViewById(R.id.ltp_toolbar);
         return view;
     }
 

@@ -17,7 +17,7 @@ import android.os.Bundle;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.ui.fragment.GalleryFragment;
 
-public class GalleryActivity extends DrawerActivity
+public class GalleryActivity extends BaseDrawerActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)

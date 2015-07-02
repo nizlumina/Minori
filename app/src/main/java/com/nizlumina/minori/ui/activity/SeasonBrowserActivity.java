@@ -34,7 +34,7 @@ import com.nizlumina.syncmaru.model.Season;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeasonBrowserActivity extends DrawerActivity
+public class SeasonBrowserActivity extends BaseDrawerActivity
 {
     private static final String FRAGMENT_TITLE = "Season Browser";
     private static final String CLASSTAG = SeasonBrowserActivity.class.getSimpleName();
@@ -125,11 +125,11 @@ public class SeasonBrowserActivity extends DrawerActivity
 
     public void setupViews(@Nullable Bundle savedInstanceState)
     {
-        View view = LayoutInflater.from(SeasonBrowserActivity.this).inflate(R.layout.fragment_seasonmaster, getContentContainer(), false);
+        View view = LayoutInflater.from(SeasonBrowserActivity.this).inflate(R.layout.layout_tabparent, getContentContainer(), false);
         getContentContainer().addView(view);
-        mViewPager = (ViewPager) view.findViewById(R.id.fsm_viewpager);
-        mTabLayout = (TabLayout) view.findViewById(R.id.fsm_tablayout);
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.fsm_toolbar);
+        mViewPager = (ViewPager) view.findViewById(R.id.ltp_viewpager);
+        mTabLayout = (TabLayout) view.findViewById(R.id.ltp_tablayout);
+        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.ltp_toolbar);
 
         setDrawerNavigationButton(toolbar);
         toolbar.setTitle(FRAGMENT_TITLE);

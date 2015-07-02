@@ -12,7 +12,7 @@
 
 <!--Alternative tab layout when height is lower than 420dp (tablayout can be off-scrolled), usually in phone landscape mode -->
 <android.support.design.widget.AppBarLayout
-    android:id="@+id/fsm_appbarlayout"
+    android:id="@+id/ltp_appbarlayout"
     style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,7 +23,7 @@
     tools:showIn="@layout/fragment_seasonmaster">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/fsm_toolbar"
+        android:id="@+id/ltp_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -31,7 +31,7 @@
         app:layout_scrollFlags="scroll|enterAlways" />
 
     <android.support.design.widget.TabLayout
-        android:id="@+id/fsm_tablayout"
+        android:id="@+id/ltp_tablayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"

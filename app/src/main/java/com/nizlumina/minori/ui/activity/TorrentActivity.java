@@ -12,9 +12,22 @@
 
 package com.nizlumina.minori.ui.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 
-public class BaseActivity extends AppCompatActivity
+import com.nizlumina.minori.R;
+
+public class TorrentActivity extends BaseDrawerActivity
 {
+    @Override
+    public int getDrawerItemId()
+    {
+        return R.id.mm_nav_torrent;
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+    }
 }

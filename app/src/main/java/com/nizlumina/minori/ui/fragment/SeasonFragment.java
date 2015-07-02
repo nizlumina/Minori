@@ -36,8 +36,8 @@ import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonController;
 import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.service.global.DirectorTask;
+import com.nizlumina.minori.ui.activity.BaseDrawerActivity;
 import com.nizlumina.minori.ui.activity.DetailActivity;
-import com.nizlumina.minori.ui.activity.DrawerActivity;
 import com.nizlumina.minori.ui.common.GridItemSetting;
 import com.nizlumina.minori.ui.common.MarginItemDecoration;
 import com.nizlumina.minori.utility.SparseBooleanArrayParcelable;
@@ -53,7 +53,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class SeasonFragment extends DrawerActivity.DrawerFragment
+public class SeasonFragment extends BaseDrawerActivity.DrawerFragment
 {
     private static final String CLASSNAME = SeasonFragment.class.getSimpleName();
     private static final String ARG_SEASON = CLASSNAME + "$season";

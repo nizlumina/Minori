@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +32,7 @@ import android.widget.FrameLayout;
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.service.global.Director;
 
-public abstract class DrawerActivity extends BaseActivity
+public abstract class BaseDrawerActivity extends AppCompatActivity
 {
     private DrawerLayout mDrawerLayout;
     private FrameLayout mFrameLayout;
@@ -79,12 +80,12 @@ public abstract class DrawerActivity extends BaseActivity
                     {
                         case R.id.mm_nav_watchlist:
                         {
-                            activityIntent.setClass(DrawerActivity.this, GalleryActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            activityIntent.setClass(BaseDrawerActivity.this, GalleryActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         }
                         break;
                         case R.id.mm_nav_seasonbrowser:
                         {
-                            activityIntent.setClass(DrawerActivity.this, SeasonBrowserActivity.class);
+                            activityIntent.setClass(BaseDrawerActivity.this, SeasonBrowserActivity.class);
                         }
                         break;
                     }
@@ -107,7 +108,7 @@ public abstract class DrawerActivity extends BaseActivity
     {
         if (mDrawerLayout != null)
         {
-            mDrawerToggle = new SmoothDrawerToggle(DrawerActivity.this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+            mDrawerToggle = new SmoothDrawerToggle(BaseDrawerActivity.this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
             mDrawerLayout.setDrawerListener(mDrawerToggle);
             mDrawerToggle.syncState();
         }
@@ -166,9 +167,9 @@ public abstract class DrawerActivity extends BaseActivity
         public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
         {
             final FragmentActivity activity = getActivity();
-            if (activity != null && activity instanceof DrawerActivity)
+            if (activity != null && activity instanceof BaseDrawerActivity)
             {
-                ((DrawerActivity) activity).setDrawerNavigationButton(toolbar);
+                ((BaseDrawerActivity) activity).setDrawerNavigationButton(toolbar);
 
             }
         }

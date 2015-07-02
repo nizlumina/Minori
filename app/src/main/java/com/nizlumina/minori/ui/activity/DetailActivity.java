@@ -19,7 +19,7 @@ import android.os.Bundle;
 import com.nizlumina.minori.ui.fragment.DetailFragment;
 import com.nizlumina.syncmaru.model.CompositeData;
 
-public class DetailActivity extends DrawerActivity
+public class DetailActivity extends BaseDrawerActivity
 {
 
     private static final String COMPOSITE_DATA_IN = DetailActivity.class.getSimpleName() + "$compositedata_in";

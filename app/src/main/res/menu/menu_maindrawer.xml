@@ -20,6 +20,9 @@
             android:id="@+id/mm_nav_seasonbrowser"
             android:title="@string/drawer_season" />
         <item
+            android:id="@+id/mm_nav_torrent"
+            android:title="@string/drawer_torrent" />
+        <item
             android:id="@+id/mm_nav_setting"
             android:title="@string/drawer_settings" />
     </group>
