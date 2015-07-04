@@ -10,34 +10,15 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<!--The standard tab layout-->
-<android.support.design.widget.AppBarLayout
-    android:id="@+id/ltp_appbarlayout"
-    style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+<android.support.design.widget.TabLayout
+    android:id="@+id/ltp_tablayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@null"
-    tools:showIn="@layout/fragment_seasonmaster">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/ltp_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:elevation="0dp"
-        app:layout_scrollFlags="scroll|enterAlways" />
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/ltp_tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:clipToPadding="false"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        app:tabGravity="fill"
-        app:tabMode="scrollable" />
-</android.support.design.widget.AppBarLayout>
+    android:background="?attr/colorPrimary"
+    android:clipToPadding="false"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    app:tabGravity="fill"
+    app:tabMode="scrollable" />
