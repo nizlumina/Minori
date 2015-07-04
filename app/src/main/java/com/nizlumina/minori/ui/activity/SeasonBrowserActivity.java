@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import com.nizlumina.minori.R;
@@ -125,8 +124,7 @@ public class SeasonBrowserActivity extends BaseDrawerActivity
 
     public void setupViews(@Nullable Bundle savedInstanceState)
     {
-        View view = LayoutInflater.from(SeasonBrowserActivity.this).inflate(R.layout.layout_tabparent, getContentContainer(), false);
-        getContentContainer().addView(view);
+        View view = inflateContent(R.layout.layout_tabparent);
         mViewPager = (ViewPager) view.findViewById(R.id.ltp_viewpager);
         mTabLayout = (TabLayout) view.findViewById(R.id.ltp_tablayout);
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.ltp_toolbar);
@@ -176,7 +174,6 @@ public class SeasonBrowserActivity extends BaseDrawerActivity
             {
                 int currentItem = mSeasons.size() - 1;
                 mViewPager.setCurrentItem(currentItem);
-                //mTabLayout.getTabAt(currentItem).select();
             }
         });
     }

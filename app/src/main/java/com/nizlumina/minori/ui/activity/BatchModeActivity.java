@@ -67,7 +67,7 @@ import java.util.List;
  * While its easier with fragments, instead of reinflating the same layout over and over (and implementing a sliding viewpager),
  * a simple fade-in of the data (which is just texts) is a much more faster setup experience.
  */
-public class BatchModeActivity extends BaseActivity
+public class BatchModeActivity extends BaseDrawerActivity
 {
     private static final String PARCELKEY_ARRAYLIST_COMPOSITEDATA = "MINORI_COMPOSITEDATAS";
     private static final String PARCELKEY_SPARSEARRAY_BATCHDATAS = "MINORI_BATCHDATAS";
@@ -169,6 +169,12 @@ public class BatchModeActivity extends BaseActivity
             applyBatchDataToActivity(mBatchDatas.get(0));
             setupLoaders(mBatchDatas);
         }
+    }
+
+    @Override
+    public int getDrawerItemId()
+    {
+        return 0;
     }
 
     private void setupLoaders(SparseArray<BatchData> batchDatas)

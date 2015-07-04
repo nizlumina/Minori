@@ -36,8 +36,8 @@ import com.nizlumina.common.torrent.bitlet.BitletEngine;
  */
 public class TorrentService extends Service
 {
-    private final IBinder mServiceBinder = new TorrentServiceBinder();
     private final TorrentEngine mTorrentEngine = new BitletEngine();
+    private final IBinder mServiceBinder = new TorrentServiceBinder(mTorrentEngine);
 
     @Override
     public IBinder onBind(Intent intent)
@@ -68,8 +68,8 @@ public class TorrentService extends Service
     @Override
     public void onDestroy()
     {
-        mTorrentEngine.stopEngine();
         super.onDestroy();
+        mTorrentEngine.stopEngine();
     }
 
     @Override
@@ -101,9 +101,14 @@ public class TorrentService extends Service
     /**
      * A Binder class following Android docs
      */
-    public class TorrentServiceBinder extends Binder
+    public static class TorrentServiceBinder extends Binder
     {
-        private final TorrentEngine torrentEngine = mTorrentEngine;
+        private final TorrentEngine torrentEngine;
+
+        public TorrentServiceBinder(TorrentEngine torrentEngine)
+        {
+            this.torrentEngine = torrentEngine;
+        }
 
         public TorrentEngine getTorrentEngine()
         {

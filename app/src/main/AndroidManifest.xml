@@ -67,6 +67,13 @@
                 android:value=".ui.activity.SeasonBrowserActivity" />
         </activity>
         <activity
+            android:name=".ui.activity.TorrentActivity"
+            android:parentActivityName=".ui.activity.SeasonBrowserActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activity.SeasonBrowserActivity" />
+        </activity>
+        <activity
             android:name=".ui.activity.BatchModeActivity"
             android:label="@string/title_activity_batch"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />

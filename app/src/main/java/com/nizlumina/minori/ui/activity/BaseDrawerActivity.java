@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -48,6 +50,13 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
         setupViews(savedInstanceState);
+    }
+
+    public View inflateContent(@LayoutRes int layoutResourceId)
+    {
+        View inflatedView = LayoutInflater.from(BaseDrawerActivity.this).inflate(layoutResourceId, getContentContainer(), false);
+        getContentContainer().addView(inflatedView);
+        return inflatedView;
     }
 
     @Override
@@ -79,15 +88,14 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
                     switch (itemId)
                     {
                         case R.id.mm_nav_watchlist:
-                        {
                             activityIntent.setClass(BaseDrawerActivity.this, GalleryActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        }
-                        break;
+                            break;
                         case R.id.mm_nav_seasonbrowser:
-                        {
                             activityIntent.setClass(BaseDrawerActivity.this, SeasonBrowserActivity.class);
-                        }
-                        break;
+                            break;
+                        case R.id.mm_nav_torrent:
+                            activityIntent.setClass(BaseDrawerActivity.this, TorrentActivity.class);
+                            break;
                     }
                     startActivity(activityIntent);
                 }
