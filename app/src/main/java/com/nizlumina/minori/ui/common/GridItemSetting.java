@@ -40,7 +40,7 @@ public class GridItemSetting
         int totalMarginPixel = (int) grossTotalMarginPixel;
         yLeftovers += grossTotalMarginPixel % 1;
 
-        float grossItemTargetWidth = (parentContainerWidthPx - totalMarginPixel) / this.columnCount;
+        float grossItemTargetWidth = (parentContainerWidthPx - totalMarginPixel) / (float) this.columnCount;
         this.itemTargetWidthPx = (int) grossItemTargetWidth;
 
         yLeftovers += grossItemTargetWidth % 1;
@@ -51,6 +51,16 @@ public class GridItemSetting
 
         this.widthToHeightRatio = widthToHeightRatio;
         this.applyWidthToHeightRatio(this.widthToHeightRatio);
+    }
+
+    public void setMargin(int marginDP)
+    {
+        this.marginPx = (int) (marginDP * displayMetricsDensity);
+    }
+
+    public void applyWidthToHeightRatio(float ratio)
+    {
+        this.convertedHeightPx = (int) (this.itemTargetWidthPx / ratio);
     }
 
     public int getExtraSideMarginPx()
@@ -68,19 +78,9 @@ public class GridItemSetting
         return itemTargetWidthPx;
     }
 
-    public void applyWidthToHeightRatio(float ratio)
-    {
-        this.convertedHeightPx = (int) (this.itemTargetWidthPx / ratio);
-    }
-
     public int getMarginPixels()
     {
         return marginPx;
-    }
-
-    public void setMargin(int marginDP)
-    {
-        this.marginPx = (int) (marginDP * displayMetricsDensity);
     }
 
     public int getColumnCount()

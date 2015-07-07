@@ -12,6 +12,8 @@
 
 package com.nizlumina.common.torrent.bitlet;
 
+import android.support.annotation.NonNull;
+
 import com.nizlumina.common.torrent.TorrentObject;
 
 import org.bitlet.wetorrent.Metafile;
@@ -29,6 +31,15 @@ import java.security.NoSuchAlgorithmException;
 public class BitletObject extends TorrentObject
 {
     private transient Torrent mTorrent;
+
+    public BitletObject() {}
+
+    public BitletObject(final TorrentObject torrentObject)
+    {
+        setId(torrentObject.getId());
+        setMetafilePath(torrentObject.getMetafilePath());
+        setStatus(torrentObject.getStatus());
+    }
 
     /**
      * Init the {@link Torrent} property for this object. Metafile will be read and decoded, port listener setup, and the disk will be ready for downloading w.r.t. the passed downloadDirectory.
@@ -83,6 +94,35 @@ public class BitletObject extends TorrentObject
         return success;
     }
 
+    /**
+     * Init the {@link Torrent} property for this object. Metafile will be used, port listener wil be set up, and the disk will be ready for downloading w.r.t. the passed downloadDirectory.
+     *
+     * @param metafile          Loaded metafile to be passed as parameter.
+     * @param downloadDirectory The directory for this torrent download
+     * @param port              The port where this torrent will use for downloading
+     * @return true on succesful init. False on any initialization exception.
+     */
+    public boolean initTorrent(@NonNull Metafile metafile, File downloadDirectory, int port)
+    {
+        boolean success = false;
+        try
+        {
+            final TorrentDisk torrentDisk = new PlainFileSystemTorrentDisk(metafile, downloadDirectory);
+            torrentDisk.init();
+
+            final IncomingPeerListener peerListener = new IncomingPeerListener(port);
+
+            final Torrent torrent = new Torrent(metafile, torrentDisk, peerListener);
+
+            this.setTorrent(torrent); //important setter
+            success = true;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return success;
+    }
 
     public Torrent getTorrent()
     {

@@ -20,7 +20,7 @@ public class JSONStorageFactory
 {
     public static void saveJSONArray(final JSONArray jsonArray, final FileOutputStream fileOutputStream)
     {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fileOutputStream, Charset.forName("UTF-8")));
         try
         {
             writer.write(jsonArray.toString(4));

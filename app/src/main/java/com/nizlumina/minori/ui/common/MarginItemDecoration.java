@@ -22,7 +22,6 @@ import android.view.View;
 public class MarginItemDecoration extends RecyclerView.ItemDecoration
 {
     private final int marginPixel;
-    private int sideMarginPixel = 0;
     private int gridSpanCount = 1;
     private int adjustedSideMargin;
 
@@ -61,7 +60,6 @@ public class MarginItemDecoration extends RecyclerView.ItemDecoration
     {
         this.marginPixel = marginPixel;
         this.gridSpanCount = gridSpanCount;
-        this.sideMarginPixel = sideMarginPixel;
         this.adjustedSideMargin = marginPixel + sideMarginPixel;
     }
 

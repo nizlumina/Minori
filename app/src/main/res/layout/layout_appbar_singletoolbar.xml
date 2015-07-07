@@ -10,12 +10,22 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<android.support.v7.widget.Toolbar
-    android:id="@+id/main_toolbar"
+<android.support.design.widget.AppBarLayout
+    android:id="@+id/main_appbar"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:background="?attr/colorPrimary"
-    android:elevation="0dp"
-    tools:ignore="Overdraw,UnusedAttribute" />
+    android:layout_height="wrap_content"
+    android:background="@null"
+    app:elevation="0dp"
+    tools:showIn="@layout/fragment_gallery">
+
+    <include layout="@layout/layout_toolbar_base" />
+
+    <include
+        layout="@layout/view_shadow_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/maintoolbar_elevation"
+        app:layout_scrollFlags="scroll|enterAlways" />
+</android.support.design.widget.AppBarLayout>

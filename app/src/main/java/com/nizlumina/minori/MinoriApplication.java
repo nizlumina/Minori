@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
 
+import com.nizlumina.minori.service.TorrentService;
+
 import java.util.ArrayList;
 
 /**
@@ -14,11 +16,6 @@ public class MinoriApplication extends Application
 {
     public static volatile Context mContext;
     private static volatile ArrayList<ActivityListener> activityListeners = new ArrayList<>();
-
-    private static void setContext(Context context)
-    {
-        mContext = context;
-    }
 
     public synchronized static boolean listenersAvailable()
     {
@@ -52,6 +49,13 @@ public class MinoriApplication extends Application
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyDialog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().build());
         }
+
+        TorrentService.startService(MinoriApplication.this);
+    }
+
+    private static void setContext(Context context)
+    {
+        mContext = context;
     }
 
     @Override

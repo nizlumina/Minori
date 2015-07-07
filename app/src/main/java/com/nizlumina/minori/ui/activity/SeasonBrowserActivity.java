@@ -12,15 +12,20 @@
 
 package com.nizlumina.minori.ui.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewParent;
 
 import com.nizlumina.minori.R;
 import com.nizlumina.minori.controller.SeasonIndexController;
@@ -28,6 +33,7 @@ import com.nizlumina.minori.listener.OnFinishListener;
 import com.nizlumina.minori.service.global.Director;
 import com.nizlumina.minori.service.global.DirectorTask;
 import com.nizlumina.minori.ui.fragment.SeasonFragment;
+import com.nizlumina.minori.utility.Util;
 import com.nizlumina.syncmaru.model.Season;
 
 import java.util.ArrayList;
@@ -87,6 +93,9 @@ public class SeasonBrowserActivity extends BaseDrawerActivity
     };
 
     private boolean mAlreadyLoaded = false;
+    private AppBarLayout mAppBar;
+    @SuppressWarnings("FieldCanBeLocal")
+    private AppBarLayout.OnOffsetChangedListener mOnOffsetChangedListener; // this must be a field due to weak reference being used in AppBarLayout listener implementation. We need this due to extra bottom shadow being set on preload for pre-lollipop.
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -101,36 +110,61 @@ public class SeasonBrowserActivity extends BaseDrawerActivity
     }
 
     @Override
+    public int getDrawerItemId()
+    {
+        return R.id.mm_nav_seasonbrowser;
+    }
+
+    @Override
     public void onPause()
     {
         super.onPause();
         mIndexTask.detach();
     }
 
-    @Override
-    public int getDrawerItemId()
-    {
-        return R.id.mm_nav_seasonbrowser;
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(PALKEY_SAVEDSEASONS, mSeasons);
-        outState.putBoolean(ARG_ALREADYLOADED, mAlreadyLoaded);
-    }
-
     public void setupViews(@Nullable Bundle savedInstanceState)
     {
-        View view = inflateContent(R.layout.layout_tabparent);
+        final View view = inflateContent(R.layout.activity_seasonbrowser);
         mViewPager = (ViewPager) view.findViewById(R.id.ltp_viewpager);
         mTabLayout = (TabLayout) view.findViewById(R.id.ltp_tablayout);
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.ltp_toolbar);
 
-        setDrawerNavigationButton(toolbar);
+        mAppBar = (AppBarLayout) view.findViewById(R.id.main_appbar);
+
+        //small hack
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            final ViewParent parent = mAppBar.getParent();
+            if (parent instanceof CoordinatorLayout)
+            {
+                final CoordinatorLayout parentLayout = (CoordinatorLayout) parent;
+                final View bottomShadow = LayoutInflater.from(SeasonBrowserActivity.this).inflate(R.layout.view_shadow_top, parentLayout, false);
+                parentLayout.addView(bottomShadow);
+
+                Util.postOnPreDraw(mAppBar, new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        ((CoordinatorLayout.LayoutParams) bottomShadow.getLayoutParams()).topMargin = mAppBar.getHeight();
+                    }
+                });
+
+                mOnOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener()
+                {
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int i)
+                    {
+                        bottomShadow.setTranslationY(i);
+                    }
+                };
+                mAppBar.addOnOffsetChangedListener(mOnOffsetChangedListener);
+            }
+
+        }
+
+        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.main_toolbar);
         toolbar.setTitle(FRAGMENT_TITLE);
+        setDrawerNavigationButton(toolbar);
 
         mIndexTask.attach(mListener);
         //Only init first time
@@ -176,6 +210,14 @@ public class SeasonBrowserActivity extends BaseDrawerActivity
                 mViewPager.setCurrentItem(currentItem);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(PALKEY_SAVEDSEASONS, mSeasons);
+        outState.putBoolean(ARG_ALREADYLOADED, mAlreadyLoaded);
     }
 
     private static class SeasonPagerAdapter extends FragmentStatePagerAdapter

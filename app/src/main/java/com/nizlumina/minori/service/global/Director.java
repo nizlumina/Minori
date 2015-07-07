@@ -16,7 +16,7 @@ After hotly debating about it, there's no easy and maintainable way for enqueing
 
 That said, Android configuration changes suck monkey balls. To be bug-free, it really forces you to use "dirty" patterns whether you like it or not. So yes, you are forced to use Singleton if you have not-too-short of a task that needs to report to the UI. AsyncTask is just a bandaid. Not to mention utilizing retained fragment is simply making a singleton that is just under a different name.
 
- On another note, this rant doesn't apply to you if you scope down your tasks carefully and recreates the mutiple IntentService and its variation to handle them. Plus it's good if you code all those to be that specific (with all your lovely complex factories) but for the lazy programmers out there, you want to avoid introducing a boilerplate only you yourself can understand. Or worse, seeing you becoming the boilerplate itself.
+ On another note, this rant doesn't apply to you if you use RxJava, or you scoped down your tasks carefully and recreates the mutiple IntentService and its variation to handle them. Plus it's good if you code all those to be that specific (with all your lovely complex factories) but for the lazy programmers out there, you want to avoid introducing a boilerplate only you yourself can understand. Or worse, seeing you becoming the boilerplate itself.
 
  Finally, if you've yet to drown in your factories and ideals, avoid using this. Otherwise, a simple class, portable and reusable across projects, and easy enough to be understood and applied to the future maintainers, become my decision that finally broke the camel's back. */
 
@@ -75,10 +75,8 @@ public class Director
         return ourInstance;
     }
 
-    public <T> void enqueue(DirectorTask<T> directorTask)
+    public void init()
     {
-        mHashMap.put(directorTask.getId(), directorTask);
-
         if (sDiskIOservice == null || sDiskIOservice.isShutdown())
         {
             sDiskIOservice = Executors.newFixedThreadPool(1);
@@ -88,6 +86,11 @@ public class Director
         {
             sThreadPoolExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory);
         }
+    }
+
+    public <T> void enqueue(DirectorTask<T> directorTask)
+    {
+        mHashMap.put(directorTask.getId(), directorTask);
 
         if (directorTask.getRequestThread().equals(DirectorTask.RequestThread.DISK))
         {

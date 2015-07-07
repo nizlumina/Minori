@@ -13,14 +13,14 @@
 package com.nizlumina.minori.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.nizlumina.common.torrent.EngineConfig;
 import com.nizlumina.common.torrent.TorrentEngine;
-import com.nizlumina.common.torrent.TorrentObject;
 import com.nizlumina.common.torrent.bitlet.BitletEngine;
 
 /**
@@ -36,32 +36,36 @@ import com.nizlumina.common.torrent.bitlet.BitletEngine;
  */
 public class TorrentService extends Service
 {
+    private static final String ACTION_STARTSERVICE = TorrentService.class.getSimpleName() + "$START_SERVICE";
     private final TorrentEngine mTorrentEngine = new BitletEngine();
     private final IBinder mServiceBinder = new TorrentServiceBinder(mTorrentEngine);
 
-    @Override
-    public IBinder onBind(Intent intent)
+    public static void startService(Context context)
     {
-        return mServiceBinder;
+        context.startService(new Intent(context, TorrentService.class).setAction(ACTION_STARTSERVICE));
+    }
+
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+        log("OC");
+        initEngine();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null)
-        {
-            handleIntent(bundle);
-        }
+        log("OSM");
+        handleIntent(intent);
         return Service.START_STICKY;
     }
 
-    private void handleIntent(Bundle bundle)
+    private void handleIntent(Intent intent)
     {
-        final TorrentObject torrentObject = (TorrentObject) bundle.getSerializable(TorrentObject.class.getName());
-        if (torrentObject != null)
+        if (intent.getAction().equals(ACTION_STARTSERVICE))
         {
-            mTorrentEngine.onReceiveNewTorrentObject(torrentObject);
+
         }
     }
 
@@ -70,18 +74,37 @@ public class TorrentService extends Service
     {
         super.onDestroy();
         mTorrentEngine.stopEngine();
+        log("OD");
     }
 
     @Override
-    public void onCreate()
+    public IBinder onBind(Intent intent)
     {
-        super.onCreate();
-        initEngine();
+        log("OB");
+        return mServiceBinder;
     }
 
-    /**
-     * Init engine in a background thread.
-     */
+    @Override
+    public boolean onUnbind(Intent intent)
+    {
+        log("UB");
+        if (!mTorrentEngine.isAnyTorrentDownloading())
+            stopSelf();
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onRebind(Intent intent)
+    {
+        super.onRebind(intent);
+        log("RB");
+    }
+
+    private void log(String s)
+    {
+        Log.v(getClass().getSimpleName(), s);
+    }
+
     private void initEngine()
     {
 
@@ -93,9 +116,31 @@ public class TorrentService extends Service
 
         //Concrete implementations. Enums for choosing engine might be implemented later as well.
         mTorrentEngine.initializeSettings(engineConfig);
+        mTorrentEngine.setOnNoMoreRunningTaskListener(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                stopSelf();
+            }
+        });
 
+        mTorrentEngine.setOnEngineStartedListener(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (!mTorrentEngine.isAnyTorrentDownloading())
+                    stopSelf();
+            }
+        });
         //Start as soon as possible
         mTorrentEngine.startEngine();
+    }
+
+    private Intent makeServiceIntent()
+    {
+        return new Intent(getApplicationContext(), TorrentService.class).setAction("START_SERVICE");
     }
 
     /**

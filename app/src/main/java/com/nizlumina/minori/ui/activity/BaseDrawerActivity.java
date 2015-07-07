@@ -38,7 +38,7 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
 {
     private DrawerLayout mDrawerLayout;
     private FrameLayout mFrameLayout;
-    private SmoothDrawerToggle mDrawerToggle;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -49,26 +49,8 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer);
+        Director.getInstance().init();
         setupViews(savedInstanceState);
-    }
-
-    public View inflateContent(@LayoutRes int layoutResourceId)
-    {
-        View inflatedView = LayoutInflater.from(BaseDrawerActivity.this).inflate(layoutResourceId, getContentContainer(), false);
-        getContentContainer().addView(inflatedView);
-        return inflatedView;
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        Director.getInstance().shutdown();
-    }
-
-    public FrameLayout getContentContainer()
-    {
-        return mFrameLayout;
     }
 
     private void setupViews(final Bundle savedInstanceState)
@@ -84,11 +66,11 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
                 int itemId = menuItem.getItemId();
                 if (itemId != getDrawerItemId())
                 {
-                    final Intent activityIntent = new Intent();
+                    final Intent activityIntent = new Intent().setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     switch (itemId)
                     {
                         case R.id.mm_nav_watchlist:
-                            activityIntent.setClass(BaseDrawerActivity.this, GalleryActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            activityIntent.setClass(BaseDrawerActivity.this, GalleryActivity.class);
                             break;
                         case R.id.mm_nav_seasonbrowser:
                             activityIntent.setClass(BaseDrawerActivity.this, SeasonBrowserActivity.class);
@@ -98,6 +80,19 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
                             break;
                     }
                     startActivity(activityIntent);
+                    if (getDrawerItemId() != R.id.mm_nav_watchlist)
+                        finish();
+
+//                    mDrawerToggle.enqueueRunnableOnDrawerClosed(new Runnable()
+//                    {
+//                        @Override
+//                        public void run()
+//                        {
+//                            startActivity(activityIntent);
+//                            if (getDrawerItemId() != R.id.mm_nav_watchlist)
+//                                finish();
+//                        }
+//                    });
                 }
                 mDrawerLayout.closeDrawers();
                 return false;
@@ -106,6 +101,25 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
     }
 
     public abstract int getDrawerItemId();
+
+    public View inflateContent(@LayoutRes int layoutResourceId)
+    {
+        View inflatedView = LayoutInflater.from(BaseDrawerActivity.this).inflate(layoutResourceId, getContentContainer(), false);
+        getContentContainer().addView(inflatedView);
+        return inflatedView;
+    }
+
+    public FrameLayout getContentContainer()
+    {
+        return mFrameLayout;
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        Director.getInstance().shutdown();
+    }
 
     public DrawerLayout getDrawerLayout()
     {
@@ -116,7 +130,7 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
     {
         if (mDrawerLayout != null)
         {
-            mDrawerToggle = new SmoothDrawerToggle(BaseDrawerActivity.this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
+            mDrawerToggle = new ActionBarDrawerToggle(BaseDrawerActivity.this, mDrawerLayout, toolbar, R.string.accessibility_drawer_open, R.string.accessibility_drawer_close);
             mDrawerLayout.setDrawerListener(mDrawerToggle);
             mDrawerToggle.syncState();
         }
@@ -146,7 +160,7 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
 //            }
 //        }
 
-        public void enqueueRunnableOnIdle(Runnable runnable)
+        public void enqueueRunnableOnDrawerClosed(Runnable runnable)
         {
             this.mRunnable = runnable;
         }
@@ -169,8 +183,6 @@ public abstract class BaseDrawerActivity extends AppCompatActivity
      */
     public abstract static class DrawerFragment extends Fragment
     {
-
-        private ActionBarDrawerToggle drawerToggle;
 
         public void setDrawerNavigationButton(@NonNull Toolbar toolbar)
         {

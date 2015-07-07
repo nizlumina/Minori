@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <!--
   ~ The MIT License (MIT)
   ~
@@ -13,16 +11,13 @@
   ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   -->
 
-<EditText
-    android:id="@+id/sf_search_edittext"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    android:layout_alignParentBottom="true"
-    android:background="?attr/colorPrimary"
-    android:gravity="center"
-    android:hint="@string/search_hint"
-    android:inputType="textVisiblePassword"
-    android:textColor="?attr/textColorBase"
-    tools:showIn="@layout/fragment_search" />
+    android:layout_height="wrap_content"
+    android:background="@null"
+    android:elevation="@dimen/maintoolbar_elevation"
+    tools:showIn="@layout/fragment_gallery">
+
+    <include layout="@layout/layout_toolbar_base" />
+</android.support.design.widget.AppBarLayout>

@@ -12,7 +12,7 @@
 
 package com.nizlumina.common.torrent;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * An interface for implementating a generic TorrentEngine.
@@ -27,19 +27,32 @@ public interface TorrentEngine
      *
      * @param torrentObject A TorrentObject created from any valid source (metafile/magnet/etc).
      */
-    void onReceiveNewTorrentObject(TorrentObject torrentObject);
+    void add(TorrentObject torrentObject);
 
-    void download(String id);
+    void resume(String id);
 
     void pause(String id);
 
     void remove(String id);
 
-    List<TorrentObject> getTorrentObjects();
+    Collection<String> getTorrentIds();
+
+    boolean isAnyTorrentDownloading(); //reconsidering neccessity of this method
+
+    String getTorrentName(String id);
+
+    String getTorrentDetails(String id);
+
+    void setListener(String id, TorrentObject.TorrentListener listener);
+
+    void setOnNoMoreRunningTaskListener(Runnable listener);
+
+    void setOnEngineStartedListener(Runnable listener);
 
     void startEngine();
 
     void stopEngine();
 
     void initializeSettings(EngineConfig engineConfig);
+
 }

@@ -12,25 +12,42 @@
 
 package com.nizlumina.common.torrent;
 
-import java.io.File;
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.lang.ref.WeakReference;
 import java.util.Random;
 
 /**
  * A model class that implements basic properties to be used by internal {@link com.nizlumina.common.torrent.TorrentEngine}
  */
-public class TorrentObject implements Serializable
+public class TorrentObject implements Parcelable
 {
+    public static final Parcelable.Creator<TorrentObject> CREATOR = new Parcelable.Creator<TorrentObject>()
+    {
+        public TorrentObject createFromParcel(Parcel source) {return new TorrentObject(source);}
+
+        public TorrentObject[] newArray(int size) {return new TorrentObject[size];}
+    };
     private String id;
     private Status status;
-    private File metafile;
+    private String metafilePath;
+    private WeakReference<TorrentListener> listenerWeakRef;
 
     public TorrentObject() {}
 
+    protected TorrentObject(Parcel in)
+    {
+        this.id = in.readString();
+        int tmpStatus = in.readInt();
+        this.status = tmpStatus == -1 ? null : Status.values()[tmpStatus];
+        this.metafilePath = in.readString();
+    }
+
     /**
-     * Generate a random String with size 10.
+     * Util method to generate a random String id with size 10. It may or may not be used depending on the engine/subclass id implementation.
      */
-    public static String generateId()
+    private static String generateId()
     {
         //Pseudo imgur. YOLO.
         final int length = 10;
@@ -51,14 +68,37 @@ public class TorrentObject implements Serializable
 
     }
 
+    public String getMetafilePath()
+    {
+        return metafilePath;
+    }
+
+    public TorrentObject setMetafilePath(String metafilePath)
+    {
+        this.metafilePath = metafilePath;
+        return this;
+    }
+
+    public TorrentListener getListener()
+    {
+        return listenerWeakRef.get();
+    }
+
+    public TorrentObject setListener(TorrentListener listener)
+    {
+        this.listenerWeakRef = new WeakReference<>(listener);
+        return this;
+    }
+
     public String getId()
     {
         return id;
     }
 
-    public void setId(String id)
+    public TorrentObject setId(String id)
     {
         this.id = id;
+        return this;
     }
 
     public Status getStatus()
@@ -66,23 +106,30 @@ public class TorrentObject implements Serializable
         return status;
     }
 
-    public void setStatus(Status status)
+    public TorrentObject setStatus(Status status)
     {
         this.status = status;
+        return this;
     }
 
-    public File getMetafile()
-    {
-        return metafile;
-    }
+    @Override
+    public int describeContents() { return 0; }
 
-    public void setMetafile(File metafile)
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
     {
-        this.metafile = metafile;
+        dest.writeString(this.id);
+        dest.writeInt(this.status == null ? -1 : this.status.ordinal());
+        dest.writeString(this.metafilePath);
     }
 
     public enum Status
     {
         PAUSED, COMPLETED, DOWNLOADING
+    }
+
+    public interface TorrentListener
+    {
+        void onUpdate(long downloaded, long uploaded, long completedBytes, long size, int activePeersNumber, int seedersNumber);
     }
 }

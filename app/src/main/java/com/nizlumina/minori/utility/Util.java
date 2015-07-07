@@ -33,11 +33,11 @@ public class Util
         return (int) (px * scale + 0.5f);
     }
 
-    public static String formatSize(long bytes) //Source: http://stackoverflow.com/a/24805871/3939904
+    public static String formatSize(long bytes, int decimalPlaces) //Source: http://stackoverflow.com/a/24805871/3939904
     {
         if (bytes < 1024) return bytes + " B";
         int z = (63 - Long.numberOfLeadingZeros(bytes)) / 10;
-        return String.format("%.1f %sB", (double) bytes / (1L << (z * 10)), " KMGTPE".charAt(z));
+        return String.format("%." + decimalPlaces + "f %sB", (double) bytes / (1L << (z * 10)), " KMGTPE".charAt(z));
     }
 
     //Net Utils
@@ -245,4 +245,12 @@ public class Util
         });
     }
 
+    public static String humanReadableByteCount(long bytes, boolean si, int decimalPlace)
+    {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%." + decimalPlace + "f %sB", bytes / Math.pow(unit, exp), pre);
+    }
 }
