@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '23.0.0 rc2'
+    buildToolsVersion '23.0.0 rc3'
 
     defaultConfig {
         applicationId "com.nizlumina.minori"
@@ -31,17 +31,17 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //Android official support libs
-    compile 'com.android.support:cardview-v7:22.2.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
-    compile 'com.android.support:gridlayout-v7:22.2.0'
-    compile 'com.android.support:palette-v7:22.2.0'
-    compile 'com.android.support:design:22.2.0'
-    //Glide requires that old support lib.
+    compile 'com.android.support:cardview-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:gridlayout-v7:22.2.1'
+    compile 'com.android.support:palette-v7:22.2.1'
+    compile 'com.android.support:design:22.2.1'
+
+    //compile 'com.android.support:support-v4:19.1.0' //Glide requires that old support lib though whether it's really needed is untested yet. So far works fine uguuu~
+    compile 'com.github.bumptech.glide:okhttp-integration:1.2.1' //for okhttp integration
     compile 'com.github.bumptech.glide:glide:3.6.0'
-    //compile 'com.android.support:support-v4:19.1.0' //whether its really needed is untested yet. So far works fine uguuu~
-    //compile 'com.github.bumptech.glide:okhttp-integration:1.2.1'
-    //for okhttp
+
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'org.jsoup:jsoup:1.8.2'
@@ -49,7 +49,4 @@ dependencies {
     //for recyclerview stuff
     //noinspection GradleDynamicVersion
     compile 'com.bignerdranch.android:recyclerview-multiselect:+'
-    //NEW!!
-    // debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3'
-    //releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 }
